@@ -14,8 +14,8 @@ namespace {
 }
 #endif
 
-void mu2ecore::ToyFragment::checkADCData(int daq_adc_bits) const {
-  mu2ecore::ToyFragment::adc_t const * adcPtr(findBadADC(daq_adc_bits));
+void mu2e::ToyFragment::checkADCData(int daq_adc_bits) const {
+  mu2e::ToyFragment::adc_t const * adcPtr(findBadADC(daq_adc_bits));
   if (adcPtr != dataEnd()) {
     throw cet::exception("IllegalADCVal")
         << "Illegal value of ADC word #"
@@ -27,7 +27,7 @@ void mu2ecore::ToyFragment::checkADCData(int daq_adc_bits) const {
   }
 }
 
-std::ostream & mu2ecore::operator << (std::ostream & os, ToyFragment const & f) {
+std::ostream & mu2e::operator << (std::ostream & os, ToyFragment const & f) {
   os << "ToyFragment event size: "
      << f.hdr_event_size()
      << ", run number: "

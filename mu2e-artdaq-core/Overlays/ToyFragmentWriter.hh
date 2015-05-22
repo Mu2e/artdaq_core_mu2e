@@ -19,12 +19,12 @@
 
 #include <iostream>
 
-namespace mu2ecore {
+namespace mu2e {
   class ToyFragmentWriter;
 }
 
 
-class mu2ecore::ToyFragmentWriter: public mu2ecore::ToyFragment {
+class mu2e::ToyFragmentWriter: public mu2e::ToyFragment {
 public:
 
 
@@ -64,7 +64,7 @@ private:
 // passed to contain the artdaq::Fragment header + the
 // ToyFragment::Metadata object, otherwise it throws
 
-mu2ecore::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
+mu2e::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
   ToyFragment(f), artdaq_Fragment_(f) {
    
     // If this assert doesn't hold, then can't call
@@ -91,34 +91,34 @@ mu2ecore::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline mu2ecore::ToyFragment::adc_t * mu2ecore::ToyFragmentWriter::dataBegin() {
+inline mu2e::ToyFragment::adc_t * mu2e::ToyFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
   return reinterpret_cast<adc_t *>(header_() + 1);
 }
 
-inline mu2ecore::ToyFragment::adc_t * mu2ecore::ToyFragmentWriter::dataEnd() {
+inline mu2e::ToyFragment::adc_t * mu2e::ToyFragmentWriter::dataEnd() {
   return dataBegin() + total_adc_values();
 }
 
 
-inline void mu2ecore::ToyFragmentWriter::resize(size_t nAdcs) {
+inline void mu2e::ToyFragmentWriter::resize(size_t nAdcs) {
   auto es(calc_event_size_words_(nAdcs));
   artdaq_Fragment_.resize(words_to_frag_words_(es));
   header_()->event_size = es;
 }
 
-inline size_t mu2ecore::ToyFragmentWriter::calc_event_size_words_(size_t nAdcs) {
+inline size_t mu2e::ToyFragmentWriter::calc_event_size_words_(size_t nAdcs) {
   return adcs_to_words_(nAdcs) + hdr_size_words();
 }
 
-inline size_t mu2ecore::ToyFragmentWriter::adcs_to_words_(size_t nAdcs) {
+inline size_t mu2e::ToyFragmentWriter::adcs_to_words_(size_t nAdcs) {
   auto mod(nAdcs % adcs_per_word_());
   return (mod == 0) ?
     nAdcs / adcs_per_word_() :
     nAdcs / adcs_per_word_() + 1;
 }
 
-inline size_t mu2ecore::ToyFragmentWriter::words_to_frag_words_(size_t nWords) {
+inline size_t mu2e::ToyFragmentWriter::words_to_frag_words_(size_t nWords) {
   size_t mod = nWords % words_per_frag_word_();
   return mod ?
     nWords / words_per_frag_word_() + 1 :

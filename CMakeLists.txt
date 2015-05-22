@@ -54,9 +54,7 @@ find_ups_boost( v1_50_0 filesystem
 cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PATH )
 
 # macros for art_dictionary and simple_plugin
-include(ArtDictionary)
 include(ArtMake)
-include(BuildPlugins)
 include(CetTest)
 
 # source

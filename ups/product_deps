@@ -17,7 +17,8 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core		v1_04_10
+artdaq_core	v1_04_11
+TRACE           v3_05_00
 cetbuildtools	v4_09_02	-	only_for_build
 end_product_list
 
@@ -29,13 +30,13 @@ end_product_list
 # -nq- means there is no qualifier
 # a "-" means the dependent product is not required by the parent and will not be setup
 
-qualifier               artdaq_core
-e6:s7:debug             e6:s7:debug
-e6:s7:prof              e6:s7:prof
-e7:s8:debug             e7:s8:debug
-e7:s8:prof              e7:s8:prog
-e7:s10:debug            e7:s10:debug
-e7:s10:prof             e7:s10:prof
+qualifier               artdaq_core	TRACE
+e6:s7:debug             e6:s7:debug     e6
+e6:s7:prof              e6:s7:prof      e6
+e7:s8:debug             e7:s8:debug	e7
+e7:s8:prof              e7:s8:prog	e7
+e7:s10:debug            e7:s10:debug	e7
+e7:s10:prof             e7:s10:prof	e7
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:

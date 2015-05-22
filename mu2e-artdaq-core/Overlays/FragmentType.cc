@@ -10,8 +10,8 @@ namespace {
   names { "MISSED", "TOY1", "TOY2", "UNKNOWN" };
 }
 
-mu2ecore::FragmentType
-mu2ecore::toFragmentType(std::string t_string)
+mu2e::FragmentType
+mu2e::toFragmentType(std::string t_string)
 {
   std::transform(t_string.begin(),
                  t_string.end(),
@@ -25,7 +25,7 @@ mu2ecore::toFragmentType(std::string t_string)
 }
 
 std::string
-mu2ecore::fragmentTypeToString(FragmentType val)
+mu2e::fragmentTypeToString(FragmentType val)
 {
   if (val < FragmentType::INVALID) {
     return names[val - FragmentType::MISSED];
