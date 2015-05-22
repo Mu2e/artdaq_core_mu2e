@@ -106,7 +106,7 @@ inline mu2e::DTCFragment::packet_t * mu2e::DTCFragmentWriter::dataEnd() {
 
 
 inline void mu2e::DTCFragmentWriter::resize(size_t nPackets) {
-  auto es(calc_event_size_words_(nPackets));
+  auto es(calc_event_size_words_(nPackets + 1));
   artdaq_Fragment_.resize(words_to_frag_words_(es));
   header_()->event_size = nPackets;
 }
