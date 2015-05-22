@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace mu2ecore {
+namespace mu2e {
 
   struct GetPackageBuildInfo {
 

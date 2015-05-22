@@ -2,11 +2,12 @@
 #define mu2e_artdaq_core_Overlays_FragmentType_hh
 #include "artdaq-core/Data/Fragment.hh"
 
-namespace mu2ecore {
+namespace mu2e {
 
   namespace detail {
     enum FragmentType : artdaq::Fragment::type_t
     { MISSED = artdaq::Fragment::FirstUserFragmentType,
+        DTC,
 	TOY1,
 	TOY2,
         INVALID // Should always be last.

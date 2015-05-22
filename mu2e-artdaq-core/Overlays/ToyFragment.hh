@@ -11,14 +11,14 @@
 // Implementation of "ToyFragment", an artdaq::Fragment overlay class
 // used for pedagogical purposes
 
-namespace mu2ecore {
+namespace mu2e {
   class ToyFragment;
 
   // Let the "<<" operator dump the ToyFragment's data to stdout
   std::ostream & operator << (std::ostream &, ToyFragment const &);
 }
 
-class mu2ecore::ToyFragment {
+class mu2e::ToyFragment {
   public:
 
   // The ToyFragment represents its data through the adc_t type, which
