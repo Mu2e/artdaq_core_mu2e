@@ -8,7 +8,7 @@ std::ostream & mu2e::operator << (std::ostream & os, DTCFragment const & f) {
      << ", packet count: "
      << f.hdr_packet_count()
      << ", run number: "
-     << f.hdr_run_numbe()
+     << f.hdr_run_number()
      << "\n";
 
   return os;
