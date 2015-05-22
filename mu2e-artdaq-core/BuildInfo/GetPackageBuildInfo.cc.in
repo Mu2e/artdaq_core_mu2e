@@ -1,0 +1,19 @@
+#include "mu2e-artdaq-core/BuildInfo/GetPackageBuildInfo.hh"
+
+#include <string>
+
+namespace mu2ecore {
+
+  artdaq::PackageBuildInfo GetPackageBuildInfo::getPackageBuildInfo() {
+
+    artdaq::PackageBuildInfo pkg;
+
+    pkg.setPackageName("mu2e-artdaq-core");
+    pkg.setPackageVersion("@version@");
+    pkg.setBuildTimestamp("@utcDateTime@");
+
+    return pkg;
+  }
+
+}
+
