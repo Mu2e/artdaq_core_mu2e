@@ -10,6 +10,9 @@ namespace mu2e {
         DTC,
 	TOY1,
 	TOY2,
+	TRK, // Tracker fragment
+	CAL, // Calorimeter fragment
+	CRV, // Cosmic Ray Veto fragment
         INVALID // Should always be last.
         };
 

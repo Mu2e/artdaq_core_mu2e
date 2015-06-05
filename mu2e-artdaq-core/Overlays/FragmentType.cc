@@ -7,7 +7,7 @@
 
 namespace {
   static std::vector<std::string> const
-  names { "MISSED", "DTC", "TOY1", "TOY2", "UNKNOWN" };
+  names { "MISSED", "DTC", "TOY1", "TOY2", "TRK", "CAL", "CRV", "UNKNOWN" };
 }
 
 mu2e::FragmentType
