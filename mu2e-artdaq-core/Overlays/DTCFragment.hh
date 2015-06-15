@@ -37,11 +37,20 @@ class mu2e::DTCFragment {
   struct Metadata {
 
     typedef uint8_t data_t;
+    typedef char addr_t[64];
+    typedef uint32_t run_number_t;
 
     data_t sim_mode : 4;
     data_t unused : 4; // 4 + 4 = 8 bits
+
+    data_t unused1;
+    data_t unused2;
+    data_t unused3;   
     
-    static size_t const size_words = 1ul; // Units of Metadata::data_t
+    addr_t hostname;
+    run_number_t run_number;
+
+    static size_t const size_words = 72ul; // Units of Metadata::data_t
   };
 
   static_assert (sizeof (Metadata) == Metadata::size_words * sizeof (Metadata::data_t), "DTCFragment::Metadata size changed");
@@ -60,17 +69,15 @@ class mu2e::DTCFragment {
   struct Header {
     typedef uint8_t data_t;
 
-    typedef uint32_t run_number_t;
     typedef uint64_t timestamp_t;
     typedef uint32_t data_size_t;
+    
+    data_size_t event_size;
 
     timestamp_t timestamp : 48;
     timestamp_t unused : 16;
 
-    data_size_t event_size : 32;
     
-    run_number_t run_number : 32;
-
     static size_t const size_words = 16ul; // Units of Header::data_t
   };
 
@@ -82,10 +89,9 @@ class mu2e::DTCFragment {
   DTCFragment(artdaq::Fragment const & f ) : artdaq_Fragment_(f) {}
 
   // const getter functions for the data in the header
-
-  Header::timestamp_t hdr_timestamp() const { return header_()->timestamp; }
   Header::data_size_t hdr_packet_count() const { return header_()->event_size; }
-  Header::run_number_t hdr_run_number() const { return header_()->run_number; }
+  Header::timestamp_t hdr_timestamp() const { return header_()->timestamp; }
+
   static constexpr size_t hdr_size_words() { return Header::size_words; }
  
   size_t dataSize() const {

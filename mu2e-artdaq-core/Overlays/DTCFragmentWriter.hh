@@ -44,10 +44,6 @@ public:
     return reinterpret_cast<Header *>(&*artdaq_Fragment_.dataBegin());
   }
 
-  void set_hdr_run_number(Header::run_number_t run_number) { 
-    header_()->run_number = run_number;
-  }
-
   void set_hdr_timestamp(Header::timestamp_t timestamp) {
     header_()->timestamp = timestamp;
   }
@@ -106,7 +102,7 @@ inline mu2e::DTCFragment::packet_t * mu2e::DTCFragmentWriter::dataEnd() {
 
 
 inline void mu2e::DTCFragmentWriter::resize(size_t nPackets) {
-  auto es(calc_event_size_words_(nPackets + 1));
+  auto es(calc_event_size_words_(nPackets));
   artdaq_Fragment_.resize(words_to_frag_words_(es));
   header_()->event_size = nPackets;
 }
