@@ -142,7 +142,8 @@ inline void mu2e::DetectorFragmentWriter::generateOffsetTable(const std::vector<
   *(dataBegin()) = (adc_t)dataBlockVec.size();
   for(size_t cur_index = 0, cur_offset = dataBlockVec.size()+1; cur_index < dataBlockVec.size(); cur_index++) {
     // The first offset is always the position of the end of the offset list (dataBlockVec.size()+1)
-    cur_offset += dataBlockVec[cur_index];
+    // Include a factor of 8 so that the offsets are in units of 16-bit adc_t values (8 per 128-bit packet)
+    cur_offset += 8*dataBlockVec[cur_index];
     *(dataBegin()+1+cur_index) = (adc_t)cur_offset;
   }
   setDataBlockIndex(0);

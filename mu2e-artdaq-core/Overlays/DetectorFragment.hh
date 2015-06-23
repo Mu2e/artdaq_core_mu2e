@@ -105,7 +105,19 @@ class mu2e::DetectorFragment {
     // The offset list begins 1 adc_t length away from the end of the header_.
     // Each entry in the list is the number of 128-bit packets in that DataBlock
     // so we multiply by 8 to get the number of adc_t values in the DataBlock
-    return 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + current_offset_index_)));
+
+    if(current_offset_index_==0) {
+      // The first entry in the offset list (1 adc_t value beyond the end of the header)
+      // contains the number of 16-bit adc_t values in the first DataBlock. Plus the
+      // number of adc_t values in the offset list (numDataBlocks()+1, where the extra
+      // value is used to store the number DataBlocks)
+      return (*((reinterpret_cast<adc_t const *>(header_() + 1)) + 1)) - (numDataBlocks()+1);
+    } else {
+      // For the number of adc_t values in DataBlocks after the first one, take the
+      // difference between the Nth offset and the (N-1)th offset
+      return   (*((reinterpret_cast<adc_t const *>(header_() + 1)) + 1 + (current_offset_index_    )))
+	     - (*((reinterpret_cast<adc_t const *>(header_() + 1)) + 1 + (current_offset_index_ - 1)));
+    }
   }
 
   // Start of the ADC values, returned as a pointer to the ADC type
@@ -158,6 +170,14 @@ class mu2e::DetectorFragment {
     return *(reinterpret_cast<adc_t const *>(header_() + 1));
   }
 
+  size_t offset() {
+    return current_offset_;
+  }
+  
+  size_t offsetIndex() {
+    return current_offset_index_;
+  }
+
   bool setDataBlockIndex(size_t theIndex) {
     if(theIndex<numDataBlocks()) {
       current_offset_index_ = theIndex;
@@ -171,10 +191,8 @@ class mu2e::DetectorFragment {
 	// The first entry in the offset list is actually the second offset
 	// (since the first offset is always the end of the offset list) so
 	// it corresponds to theIndex=1
-	current_offset_ = 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + (theIndex-1))));
-	// The offset list is stored in units of 128-bit packets while
-	// current_offset_ is in units of 16-bit adc_t so a factor of
-	// 8 is required to convert between them
+	current_offset_ = (*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + (theIndex-1))));
+	// Note: The offset list is stored in units of 16-bit adc_t values
       }
       return true;
     } else {
