@@ -97,11 +97,13 @@ mu2e::DetectorFragmentWriter::DetectorFragmentWriter(artdaq::Fragment& f ) :
 
 inline mu2e::DetectorFragment::adc_t * mu2e::DetectorFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
-  return reinterpret_cast<adc_t *>(header_() + 1);
+  //  return reinterpret_cast<adc_t *>(header_() + 1);
+  return (reinterpret_cast<adc_t *>(header_() + 1)) + current_offset_;
 }
 
 inline mu2e::DetectorFragment::adc_t * mu2e::DetectorFragmentWriter::dataEnd() {
-  return dataBegin() + total_adc_values();
+  return dataBegin() + total_adc_values_in_data_block();
+  //  return dataBegin() + total_adc_values();
 }
 
 

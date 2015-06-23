@@ -82,6 +82,22 @@ mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::convertFromBinary(std::bit
   return retVal.to_ulong();
 }
 
+void mu2e::DetectorFragment::generateOffsetTable(const std::vector<size_t> dataBlockVec) {
+  initializeOffset();
+
+  // The first entry in the adc_t array after the DetectorFragment::Header
+  // is the number of offsets
+  *(dataBegin()) = (mu2e::DetectorFragment::adc_t)dataBlockVec.size();
+  for(size_t cur_index = 0, cur_offset = 0; cur_index < dataBlockVec.size(); cur_index++) {
+    // The first offset is always assumed to be 0
+    cur_offset += dataBlockVec[cur_index];
+    *(dataBegin()+1+cur_index) = (mu2e::DetectorFragment::adc_t)cur_offset;
+  }
+
+  return;
+}
+
+
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::byteCount() {
   return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-16,127-0);
 }

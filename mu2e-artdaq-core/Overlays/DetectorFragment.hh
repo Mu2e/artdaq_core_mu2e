@@ -101,14 +101,24 @@ class mu2e::DetectorFragment {
     return (hdr_event_size() - hdr_size_words()) * adcs_per_word_();
   }
 
+  size_t total_adc_values_in_data_block() const {
+    return = 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + current_offset_index_)));
+    // The offset list begins 1 adc_t length away from the end of the header_.
+    // Each entry in the list is the number of 128-bit packets in that DataBlock
+    // so we multiply by 8 to get the number of adc_t values in the DataBlock
+  }
+
   // Start of the ADC values, returned as a pointer to the ADC type
   adc_t const * dataBegin() const {
-    return reinterpret_cast<adc_t const *>(header_() + 1);
+    // dataBegin returns the start of the current DataBlock
+    // The current_offset_ is in units of adc_t (16 bits)
+    return (reinterpret_cast<adc_t const *>(header_() + 1)) + current_offset_;
   }
 
   // End of the ADC values, returned as a pointer to the ADC type
   adc_t const * dataEnd() const {
-    return dataBegin() + total_adc_values();
+    return dataBegin() + total_adc_values_in_data_block();
+    //    return dataBegin() + total_adc_values();
   }
 
   // Functions to check if any ADC values are corrupt
@@ -137,6 +147,38 @@ class mu2e::DetectorFragment {
     return (1ul << daq_adc_bits );
   }
 
+  void initializeOffset() {
+    current_offset_ = 0;
+    return;
+  }
+
+  size_t numDataBlocks() {
+    return *(reinterpret_cast<adc_t const *>(header_() + 1));
+  }
+
+  bool setDataBlockIndex(size_t theIndex) {
+    if(theIndex<numDataBlocks()) {
+      current_offset_index_ = theIndex;
+      if(theIndex==0) {
+	current_offset_ = 0;
+      } else {
+	// The offset list begins 1 position after the end of the header_
+	// The first entry in the offset list is actually the second offset
+	// (since the first is always 0) so it corresponds to theIndex=1
+	current_offset_ = 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + (theIndex-1))));
+	// The offset list is stored in units of 128-bit packets while
+	// current_offset_ is in units of 16-bit adc_t so a factor of
+	// 8 is required to convert between them
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  // Offset table generator
+  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
 
 
   // DTC Header Packet Methods
@@ -197,6 +239,9 @@ class mu2e::DetectorFragment {
 
 private:
 
+  // current_offset_ stores the offset of the DataBlock currently being accessed
+  size_t current_offset_;
+  size_t current_offset_index_;
   artdaq::Fragment const & artdaq_Fragment_;
 
 };
