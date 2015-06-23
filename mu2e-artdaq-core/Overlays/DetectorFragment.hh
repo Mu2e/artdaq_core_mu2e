@@ -150,6 +150,7 @@ class mu2e::DetectorFragment {
 
   void initializeOffset() {
     current_offset_ = 0;
+    current_offset_index_ = 0;
     return;
   }
 
@@ -161,11 +162,15 @@ class mu2e::DetectorFragment {
     if(theIndex<numDataBlocks()) {
       current_offset_index_ = theIndex;
       if(theIndex==0) {
-	current_offset_ = 0;
+	// The first DataBlock begins after numDataBlocks()+1 16-bit adc_t values
+	// following the header_(). The extra value is the one used to store the
+	// number of DataBlocks.
+	current_offset_ = numDataBlocks()+1;
       } else {
 	// The offset list begins 1 position after the end of the header_
 	// The first entry in the offset list is actually the second offset
-	// (since the first is always 0) so it corresponds to theIndex=1
+	// (since the first offset is always the end of the offset list) so
+	// it corresponds to theIndex=1
 	current_offset_ = 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + (theIndex-1))));
 	// The offset list is stored in units of 128-bit packets while
 	// current_offset_ is in units of 16-bit adc_t so a factor of
