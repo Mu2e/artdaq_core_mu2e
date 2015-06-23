@@ -238,11 +238,12 @@ class mu2e::DetectorFragment {
   // each other as no error-checking is performed at the moment).
   mu2e::DetectorFragment::adc_t convertFromBinary(std::bitset<128> theArray, int minIdx, int maxIdx);
 
-private:
-
   // current_offset_ stores the offset of the DataBlock currently being accessed
   size_t current_offset_;
   size_t current_offset_index_;
+
+private:
+
   artdaq::Fragment const & artdaq_Fragment_;
 
 };
