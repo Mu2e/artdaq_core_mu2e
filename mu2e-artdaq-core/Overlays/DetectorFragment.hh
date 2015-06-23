@@ -178,8 +178,8 @@ class mu2e::DetectorFragment {
   }
 
 
-  // Offset table generator
-  virtual void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+//  // Offset table generator
+//  virtual void generateOffsetTable(const std::vector<size_t> dataBlockVec);
 
 
   // DTC Header Packet Methods
