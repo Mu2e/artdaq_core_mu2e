@@ -54,6 +54,8 @@ public:
 
   virtual void printAll() {};
 
+  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+
 private:
   size_t calc_event_size_words_(size_t nAdcs);
 
