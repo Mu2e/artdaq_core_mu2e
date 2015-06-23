@@ -102,13 +102,14 @@ class mu2e::DetectorFragment {
   }
 
   size_t total_adc_values_in_data_block() const {
-    return = 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + current_offset_index_)));
     // The offset list begins 1 adc_t length away from the end of the header_.
     // Each entry in the list is the number of 128-bit packets in that DataBlock
     // so we multiply by 8 to get the number of adc_t values in the DataBlock
+    return 8*(*((reinterpret_cast<adc_t const *>(header_() + 1)) + (1 + current_offset_index_)));
   }
 
   // Start of the ADC values, returned as a pointer to the ADC type
+  //  adc_t const * dataBegin() const {
   adc_t const * dataBegin() const {
     // dataBegin returns the start of the current DataBlock
     // The current_offset_ is in units of adc_t (16 bits)
@@ -178,7 +179,7 @@ class mu2e::DetectorFragment {
 
 
   // Offset table generator
-  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+  virtual void generateOffsetTable(const std::vector<size_t> dataBlockVec);
 
 
   // DTC Header Packet Methods
