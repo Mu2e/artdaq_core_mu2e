@@ -166,7 +166,7 @@ class mu2e::DetectorFragment {
     return;
   }
 
-  size_t numDataBlocks() {
+  size_t numDataBlocks() const {
     return *(reinterpret_cast<adc_t const *>(header_() + 1));
   }
 
