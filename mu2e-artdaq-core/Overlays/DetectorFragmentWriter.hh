@@ -54,6 +54,8 @@ public:
 
   virtual void printAll() {};
 
+  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+
 private:
   size_t calc_event_size_words_(size_t nAdcs);
 
@@ -97,11 +99,13 @@ mu2e::DetectorFragmentWriter::DetectorFragmentWriter(artdaq::Fragment& f ) :
 
 inline mu2e::DetectorFragment::adc_t * mu2e::DetectorFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
-  return reinterpret_cast<adc_t *>(header_() + 1);
+  //  return reinterpret_cast<adc_t *>(header_() + 1);
+  return (reinterpret_cast<adc_t *>(header_() + 1)) + current_offset_;
 }
 
 inline mu2e::DetectorFragment::adc_t * mu2e::DetectorFragmentWriter::dataEnd() {
-  return dataBegin() + total_adc_values();
+  return dataBegin() + total_adc_values_in_data_block();
+  //  return dataBegin() + total_adc_values();
 }
 
 
@@ -127,6 +131,24 @@ inline size_t mu2e::DetectorFragmentWriter::words_to_frag_words_(size_t nWords) 
   return mod ?
     nWords / words_per_frag_word_() + 1 :
     nWords / words_per_frag_word_();
+}
+
+inline void mu2e::DetectorFragmentWriter::generateOffsetTable(const std::vector<size_t> dataBlockVec) {
+  initializeOffset();
+
+  // The first entry in the adc_t array after the DetectorFragment::Header
+  // is the number of offsets
+
+  *(dataBegin()) = (adc_t)dataBlockVec.size();
+  for(size_t cur_index = 0, cur_offset = dataBlockVec.size()+1; cur_index < dataBlockVec.size(); cur_index++) {
+    // The first offset is always the position of the end of the offset list (dataBlockVec.size()+1)
+    // Include a factor of 8 so that the offsets are in units of 16-bit adc_t values (8 per 128-bit packet)
+    cur_offset += 8*dataBlockVec[cur_index];
+    *(dataBegin()+1+cur_index) = (adc_t)cur_offset;
+  }
+  setDataBlockIndex(0);
+
+  return;
 }
 
 #endif /* mu2e_artdaq_Overlays_DetectorFragmentWriter_hh */
