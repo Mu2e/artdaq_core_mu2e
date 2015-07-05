@@ -40,22 +40,22 @@ mu2e::TrackerFragmentWriter::~TrackerFragmentWriter() {
 
 mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::strawIndex() {
   // The tracker data packets begin 8*16=128 bits after the beginning of the fragment data
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()+8),127-8*2,127-8*0);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*2,127-8*0);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::firstTDC() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()+8),127-8*4,127-8*2);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*4,127-8*2);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::secondTDC() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()+8),127-8*6,127-8*4);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*6,127-8*4);
 }
 
 std::vector<mu2e::DetectorFragment::adc_t> mu2e::TrackerFragmentWriter::trackerADC() {
 
   std::vector<adc_t> theVector;
   std::bitset<128> bitarray;
-  fillBitArray(bitarray,dataBegin()+8);
+  fillBitArray(bitarray,dataBlockBegin()+8);
 
   for(int i=0; i<8; i++) {
     theVector.push_back(convertFromBinary(bitarray,127-8*6-10*(1+i),127-8*6-10*(0+i)));

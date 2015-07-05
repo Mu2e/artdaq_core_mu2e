@@ -35,7 +35,8 @@ std::ostream & mu2e::operator << (std::ostream & os, DetectorFragment const & f)
   return os;
 }
 
-std::bitset<128> mu2e::DetectorFragment::bitArray(adc_t const * beginning) {
+//std::bitset<128> mu2e::DetectorFragment::bitArray(adc_t const * beginning) {
+std::bitset<128> mu2e::DetectorFragment::bitArray(mu2e::DetectorFragment::adc_t const *beginning) const {
   // Return 128 bit bitset filled with bits starting at the indicated position in the fragment
   std::bitset<128> theArray;
   for(int bitIdx=127, adcIdx = 0; adcIdx<8; adcIdx++) {
@@ -74,7 +75,7 @@ void mu2e::DetectorFragment::printBitArray(std::bitset<128> theArray) {
   std::cout << std::endl;
 }
 
-mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::convertFromBinary(std::bitset<128> theArray, int minIdx, int maxIdx) {
+mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::convertFromBinary(std::bitset<128> theArray, int minIdx, int maxIdx) const {
   std::bitset<16> retVal;
   for(int i=minIdx+1; i<=maxIdx; i++) {
     retVal.set(maxIdx-i,theArray[i]);
@@ -83,38 +84,38 @@ mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::convertFromBinary(std::bit
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::byteCount() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-16,127-0);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-16,127-0);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::rocID() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-20,127-16);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-20,127-16);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::packetType() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-24,127-20);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-24,127-20);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::ringID() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-28,127-24);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-28,127-24);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::valid() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-32,127-31);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-32,127-31);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::packetCount() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-43,127-32);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-43,127-32);
 }
 
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::status() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBegin()),127-104,127-96);
+  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-104,127-96);
 }
 
 std::vector<mu2e::DetectorFragment::adc_t> mu2e::DetectorFragment::timestampVector() {
 
   std::vector<adc_t> theVector;
   std::bitset<128> bitarray;
-  fillBitArray(bitarray,dataBegin());
+  fillBitArray(bitarray,dataBlockBegin());
 
   for(int i=0; i<6; i++) {
     theVector.push_back(convertFromBinary(bitarray,127-8*(6+i + 1),127-8*(6+i)));
@@ -127,7 +128,7 @@ std::vector<mu2e::DetectorFragment::adc_t> mu2e::DetectorFragment::dataVector() 
 
   std::vector<adc_t> theVector;
   std::bitset<128> bitarray;
-  fillBitArray(bitarray,dataBegin());
+  fillBitArray(bitarray,dataBlockBegin());
 
   for(int i=0; i<3; i++) {
     theVector.push_back(convertFromBinary(bitarray,127-8*(13+i + 1),127-8*(13+i)));
@@ -138,7 +139,7 @@ std::vector<mu2e::DetectorFragment::adc_t> mu2e::DetectorFragment::dataVector() 
 
 void mu2e::DetectorFragment::printDTCHeader() {
   //  std::cout << "\t\t" << "Binary Representation: ";
-  //  printBitArray(bitArray(dataBegin()));
+  //  printBitArray(bitArray(dataBlockBegin()));
   std::cout << "\t\t" << "Ring ID:        " << (int)ringID()      << std::endl;
   std::cout << "\t\t" << "ROC ID:         " << (int)rocID()       << std::endl;
   std::cout << "\t\t" << "Byte Count:     " << (int)byteCount()   << std::endl;
