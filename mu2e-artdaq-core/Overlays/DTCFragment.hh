@@ -37,20 +37,18 @@ class mu2e::DTCFragment {
   struct Metadata {
 
     typedef uint8_t data_t;
-    typedef char addr_t[64];
     typedef uint32_t run_number_t;
 
     data_t sim_mode : 4;
     data_t unused : 4; // 4 + 4 = 8 bits
 
-    data_t unused1;
+    data_t board_id;
     data_t unused2;
-    data_t unused3;   
+    data_t unused3;
     
-    addr_t hostname;
     run_number_t run_number;
 
-    static size_t const size_words = 72ul; // Units of Metadata::data_t
+    static size_t const size_words = 8ul; // Units of Metadata::data_t
   };
 
   static_assert (sizeof (Metadata) == Metadata::size_words * sizeof (Metadata::data_t), "DTCFragment::Metadata size changed");
