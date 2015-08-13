@@ -91,12 +91,12 @@ mu2e::DTCFragmentWriter::DTCFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline mu2e::DTCFragment::packet_t * mu2e::DTCFragmentWriter::dataBegin() {
+inline mu2e::packet_t * mu2e::DTCFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
   return reinterpret_cast<packet_t *>(header_() + 1);
 }
 
-inline mu2e::DTCFragment::packet_t * mu2e::DTCFragmentWriter::dataEnd() {
+inline mu2e::packet_t * mu2e::DTCFragmentWriter::dataEnd() {
   return dataBegin() + hdr_packet_count();
 }
 

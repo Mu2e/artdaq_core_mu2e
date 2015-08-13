@@ -14,7 +14,6 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <iterator>
 
 namespace mu2e {
 class DataBlock {
@@ -36,34 +35,6 @@ private:
   packet_t* data_;
 
 }; // class DataBlock
-
-class DataBlockIterator {
-  typedef std::ptrdiff_t difference_type;
-  typedef DataBlock value_type;
-  typedef typename DataBlock* pointer;
-  typedef typename DataBlock& reference;
-  typedef std::forward_iterator_tag iterator_category;
-  
-  DataBlockIterator(pointer x = nullptr) : p(x) { }
-  DataBlockIterator(const DataBlockIterator& i) 
-    : p(i.p) { }
-  reference operator*() const { return *p; }
-  pointer operator->() const { return p; }
-  DataBlockIterator& operator++() { 
-    DataBlock* pN = new DataBlock(p->dataEnd());
-    delete p;
-    p = pN;
-    return *this; 
-  }
-  DataBlockIterator& operator++(int) {
-    DataBlockIterator tmp(*this);
-    ++*this;
-    return tmp;
-  }
-  
-private:
-  pointer p;
-};
 
 } // namespace mu2e
 

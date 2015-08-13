@@ -1,7 +1,7 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_00_01
-defaultqual	e6:s7
+parent mu2e_artdaq_core 	v1_00_02
+defaultqual	e7:s11
 
 # These optional lines define the installed directories where
 # headers, libraries, and executables will be found
@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v1_04_11
+artdaq_core	v1_04_16
 TRACE           v3_05_00
-cetbuildtools	v4_09_02	-	only_for_build
+cetbuildtools	v4_12_05	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -33,10 +33,8 @@ end_product_list
 qualifier               artdaq_core	TRACE
 e6:s7:debug             e6:s7:debug     e6
 e6:s7:prof              e6:s7:prof      e6
-e7:s8:debug             e7:s8:debug	e7
-e7:s8:prof              e7:s8:prog	e7
-e7:s10:debug            e7:s10:debug	e7
-e7:s10:prof             e7:s10:prof	e7
+e7:s11:debug            e7:s11:debug	e7
+e7:s11:prof             e7:s11:prof	e7
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:

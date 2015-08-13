@@ -14,6 +14,7 @@
 namespace mu2e {
   class DTCFragment;
 
+  typedef uint8_t packet_t[16];
   // Let the "<<" operator dump the DTCFragment's data to stdout
   std::ostream & operator << (std::ostream &, DTCFragment const &);
 }
@@ -24,7 +25,7 @@ class mu2e::DTCFragment {
   // The DTCFragment represents its data through the adc_t type, which
   // is a typedef of an 16-member uint8_t array.
 
-  typedef uint8_t packet_t[16];
+  //typedef uint8_t packet_t[16];
 
   // The "Metadata" struct is used to store info primarily related to
   // the upstream hardware environment from where the fragment came
