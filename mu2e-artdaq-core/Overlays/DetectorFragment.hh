@@ -179,7 +179,7 @@ class mu2e::DetectorFragment {
 	//	mu2e::DetectorFragment::adc_t status = convertFromBinary(bitArray(curPos),127-104,127-96);
 	data_counter = packetCount;
 	// Increment number of data blocks
-	if(packetType==5) {
+	if(packetType==5 || packetType == 0x1 || packetType == 0x2) { // Type 0x1 and 0x2 correspond to debug header packets
 	  numDataBlocks++;
 	} else {
 	  //	  DTCLib::DTC_DataPacket errPacket((char*)curPos);

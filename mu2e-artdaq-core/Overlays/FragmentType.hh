@@ -13,6 +13,7 @@ namespace mu2e {
 	TRK, // Tracker fragment
 	CAL, // Calorimeter fragment
 	CRV, // Cosmic Ray Veto fragment
+	DBG, // Debug Packet Fragment
         INVALID // Should always be last.
         };
 
