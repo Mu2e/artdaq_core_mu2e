@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_00_02
+parent mu2e_artdaq_core 	v1_00_03
 defaultqual	e7:s15
 
 # These optional lines define the installed directories where
@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v1_04_17
-TRACE           v3_05_00
-cetbuildtools	v4_12_05	-	only_for_build
+artdaq_core	v1_04_23
+TRACE           v3_05_00a
+cetbuildtools	v4_17_02	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
