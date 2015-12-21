@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "artdaq-core/Data/Fragment.hh"
+#include "artdaq-core/Data/Fragments.hh"
 #include "mu2e-artdaq-core/Overlays/mu2eFragment.hh"
 
 #include <iostream>
@@ -50,6 +51,7 @@ public:
 
   void addDTCFragment(DTCFragment* frag);
   void addDTCFragments(DTCFragment* frags, int count);
+  void addDTCFragments(artdaq::FragmentPtrs* frags, int count);
 
 private:
   // Note that this non-const reference hides the const reference in the base class
@@ -109,21 +111,23 @@ inline void mu2e::mu2eFragmentWriter::addDTCFragment(DTCFragment* frag) {
 
 inline void mu2e::mu2eFragmentWriter::addDTCFragments(DTCFragment* frags, int count) {
   if(header_()->fragment_count + count <= mu2e::DTC_FRAGMENT_MAX) {
-    DTCFragment* lastPos = dataEnd();
+    size_t size = 0;
 	for(int i = 0; i < count; ++i) {
-	  header_()->fragments[header_()->fragment_count + i] = lastPos;
-      lastPos += sizeof(frags[i]);
+	  header_()->fragments[header_()->fragment_count + i] = dataEnd() + size;
+      size += sizeof(frags[i]);
     }
     artdaq_Fragment_.resizeBytes(sizeof(*this) + sizeof(frags));
-	memcpy(dataEnd(), frags, sizeof(frags));
+	memcpy(dataEnd(), frags, size);
     header_()->fragment_count += count;
   }
 }
 
-inline void mu2e::mu2eFragmentWriter::resize(size_t nPackets) {
-  auto es(calc_event_size_words_(nPackets));
-  artdaq_Fragment_.resize(words_to_frag_words_(es));
-  header_()->event_size = nPackets;
+void mu2e::mu2eFragmentWriter::addDTCFragments(artdaq::FragmentPtrs* frags, int count) {
+  if(header_()->fragment_count + count <= mu2e::DTC_FRAGMENT_MAX) {
+	for(int i = 0; i < count; ++i) {
+	  addDTCFragment((DTCFragment*)((*frags)[i].get()));
+    }
+  }
 }
 
 #endif /* mu2e_artdaq_core_Overlays_mu2eFragmentWriter_hh */
