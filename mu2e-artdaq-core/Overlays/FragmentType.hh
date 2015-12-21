@@ -7,15 +7,14 @@ namespace mu2e {
   namespace detail {
     enum FragmentType : artdaq::Fragment::type_t
     { MISSED = artdaq::Fragment::FirstUserFragmentType,
-        DTC,
-	TOY1,
-	TOY2,
-	TRK, // Tracker fragment
-	CAL, // Calorimeter fragment
-	CRV, // Cosmic Ray Veto fragment
-	DBG, // Debug Packet Fragment
-        INVALID // Should always be last.
-        };
+      DTC,
+      MU2E,
+	  TRK, // Tracker fragment
+	  CAL, // Calorimeter fragment
+	  CRV, // Cosmic Ray Veto fragment
+	  DBG, // Debug Packet Fragment
+      INVALID // Should always be last.
+    };
 
     // Safety check.
     static_assert(artdaq::Fragment::isUserFragmentType(FragmentType::INVALID - 1),
