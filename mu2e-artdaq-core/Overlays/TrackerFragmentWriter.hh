@@ -1,82 +1,147 @@
-#ifndef mu2e_artdaq_core_Overlays_TrackerFragmentWriter_hh
-#define mu2e_artdaq_core_Overlays_TrackerFragmentWriter_hh
+#ifndef mu2e_artdaq_Overlays_TrackerFragmentWriter_hh
+#define mu2e_artdaq_Overlays_TrackerFragmentWriter_hh
+
+////////////////////////////////////////////////////////////////////////
+// TrackerFragmentWriter
+//
+// Class derived from DetectorFragment which allows writes to the data (for
+// simulation purposes). Note that for this reason it contains
+// non-const members which hide the const members in its parent class,
+// DetectorFragment, including its reference to the artdaq::Fragment
+// object, artdaq_Fragment_, as well as its functions pointing to the
+// beginning and end of ADC values in the fragment, dataBegin() and
+// dataEnd()
+//
+////////////////////////////////////////////////////////////////////////
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "cetlib/exception.h"
-
-#include "mu2e-artdaq-core/Overlays/DetectorFragmentWriter.hh"
+#include "mu2e-artdaq-core/Overlays/TrackerFragmentReader.hh"
 
 #include <iostream>
-#include <ostream>
-#include <vector>
-#include <bitset>
 
 namespace mu2e {
   class TrackerFragmentWriter;
 }
 
-class mu2e::TrackerFragmentWriter: public mu2e::DetectorFragmentWriter {
 
-  public:
+class mu2e::TrackerFragmentWriter: public mu2e::TrackerFragmentReader {
+public:
+
 
   TrackerFragmentWriter(artdaq::Fragment & f); 
-  ~TrackerFragmentWriter(); 
 
-  // Tracker-specific methods:
-  mu2e::DetectorFragment::adc_t strawIndex();
-  mu2e::DetectorFragment::adc_t firstTDC();
-  mu2e::DetectorFragment::adc_t secondTDC();
-  std::vector<mu2e::DetectorFragment::adc_t> trackerADC();
-  void printAll();
+  virtual ~TrackerFragmentWriter() {};
 
+  // These functions form overload sets with const functions from
+  // mu2e::DetectorFragment
+
+  adc_t * dataBegin();
+  adc_t * dataEnd();
+
+  adc_t * dataBlockBegin();
+  adc_t * dataBlockEnd();
+
+
+  // We'll need to hide the const version of header in DetectorFragment in
+  // order to be able to perform writes
+
+  Header * header_() {
+    assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words ));
+    return reinterpret_cast<Header *>(&*artdaq_Fragment_.dataBegin());
+  }
+
+  void set_hdr_run_number(Header::run_number_t run_number) { 
+    header_()->run_number = run_number;
+  }
+
+  void resize(size_t nAdcs);
+
+  //  virtual void printAll() {};
+
+  //  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+
+private:
+  size_t calc_event_size_words_(size_t nAdcs);
+
+  static size_t adcs_to_words_(size_t nAdcs);
+  static size_t words_to_frag_words_(size_t nWords);
+
+  // Note that this non-const reference hides the const reference in the base class
+  artdaq::Fragment & artdaq_Fragment_;
 };
 
+// The constructor will expect the artdaq::Fragment object it's been
+// passed to contain the artdaq::Fragment header + the
+// DetectorFragment::Metadata object, otherwise it throws
+
 mu2e::TrackerFragmentWriter::TrackerFragmentWriter(artdaq::Fragment& f ) :
-  DetectorFragmentWriter(f) {
+  TrackerFragmentReader(f), artdaq_Fragment_(f) {
+  //  DetectorFragment(f), artdaq_Fragment_(f) {
+   
+    // If this assert doesn't hold, then can't call
+    // "words_to_frag_words_" below, translating between the
+    // DetectorFragment's standard data type size and the
+    // artdaq::Fragment's data type size, on the Metadata object
+
+    assert( sizeof(Metadata::data_t) == sizeof(Header::data_t) );
+
+ 
+    if (artdaq_Fragment_.size() != 
+	artdaq::detail::RawFragmentHeader::num_words() + 
+	words_to_frag_words_( Metadata::size_words ))
+      {
+	std::cerr << "artdaq_Fragment size: " << artdaq_Fragment_.size() << std::endl;
+	std::cerr << "Expected size: " << artdaq::detail::RawFragmentHeader::num_words() + 
+	  words_to_frag_words_( Metadata::size_words) << std::endl;
+
+	throw cet::exception("TrackerFragmentWriter: Raw artdaq::Fragment object size suggests it does not consist of its own header + the DetectorFragment::Metadata object");
+      }
+ 
+    // Allocate space for the header
+    artdaq_Fragment_.resize( words_to_frag_words_(Header::size_words) );
 }
 
-mu2e::TrackerFragmentWriter::~TrackerFragmentWriter() {
+
+inline mu2e::DetectorFragment::adc_t * mu2e::TrackerFragmentWriter::dataBegin() {
+  assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
+  return reinterpret_cast<adc_t *>(header_() + 1);
 }
 
-mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::strawIndex() {
-  // The tracker data packets begin 8*16=128 bits after the beginning of the fragment data
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*2,127-8*0);
+inline mu2e::DetectorFragment::adc_t * mu2e::TrackerFragmentWriter::dataEnd() {
+  return dataBegin() + total_adc_values();
 }
 
-mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::firstTDC() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*4,127-8*2);
+inline mu2e::DetectorFragment::adc_t * mu2e::TrackerFragmentWriter::dataBlockBegin() {
+  assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
+  return (reinterpret_cast<adc_t *>(header_() + 1)) + current_offset_;
 }
 
-mu2e::DetectorFragment::adc_t mu2e::TrackerFragmentWriter::secondTDC() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()+8),127-8*6,127-8*4);
+inline mu2e::DetectorFragment::adc_t * mu2e::TrackerFragmentWriter::dataBlockEnd() {
+  return dataBegin() + total_adc_values_in_data_block();
 }
 
-std::vector<mu2e::DetectorFragment::adc_t> mu2e::TrackerFragmentWriter::trackerADC() {
-
-  std::vector<adc_t> theVector;
-  std::bitset<128> bitarray;
-  fillBitArray(bitarray,dataBlockBegin()+8);
-
-  for(int i=0; i<8; i++) {
-    theVector.push_back(convertFromBinary(bitarray,127-8*6-10*(1+i),127-8*6-10*(0+i)));
-  }
-
-  return theVector;
+inline void mu2e::TrackerFragmentWriter::resize(size_t nAdcs) {
+  auto es(calc_event_size_words_(nAdcs));
+  artdaq_Fragment_.resize(words_to_frag_words_(es));
+  header_()->event_size = es;
 }
 
-void mu2e::TrackerFragmentWriter::printAll() {
-  std::cout << "\t\t" << "Straw Index: " << (int)strawIndex() << std::endl;
-  std::cout << "\t\t" << "First TDC:   " << (int)firstTDC()   << std::endl;
-  std::cout << "\t\t" << "Second TDC:  " << (int)secondTDC()  << std::endl;
-  std::cout << "\t\t" << "ADC:         {[";
-  std::vector<mu2e::DetectorFragment::adc_t> ADCarray = trackerADC();
-  for(int i=0; i<8; i++) {
-    std::cout << (int)ADCarray[i];
-    if(i<7) {
-      std::cout << ",";
-    }
-  }
-  std::cout << "]}" << std::endl;
+inline size_t mu2e::TrackerFragmentWriter::calc_event_size_words_(size_t nAdcs) {
+  return adcs_to_words_(nAdcs) + hdr_size_words();
 }
 
-#endif /* mu2e_artdaq_core_Overlays_TrackerFragmentWriter_hh */
+inline size_t mu2e::TrackerFragmentWriter::adcs_to_words_(size_t nAdcs) {
+  auto mod(nAdcs % adcs_per_word_());
+  return (mod == 0) ?
+    nAdcs / adcs_per_word_() :
+    nAdcs / adcs_per_word_() + 1;
+}
+
+inline size_t mu2e::TrackerFragmentWriter::words_to_frag_words_(size_t nWords) {
+  size_t mod = nWords % words_per_frag_word_();
+  return mod ?
+    nWords / words_per_frag_word_() + 1 :
+    nWords / words_per_frag_word_();
+}
+
+#endif /* mu2e_artdaq_Overlays_TrackerFragmentWriter_hh */

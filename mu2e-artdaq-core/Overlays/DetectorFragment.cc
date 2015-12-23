@@ -169,3 +169,8 @@ void mu2e::DetectorFragment::printDTCHeader() {
   std::cout << "]}" << std::endl;
 
 }
+
+
+void mu2e::DetectorFragment::printAll() {
+  printDTCHeader();
+}

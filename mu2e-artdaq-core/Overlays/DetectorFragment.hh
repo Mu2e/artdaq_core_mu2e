@@ -96,6 +96,8 @@ class mu2e::DetectorFragment {
     artdaq_Fragment_(f)
     {}
  
+  virtual ~DetectorFragment() {}
+
   // const getter functions for the data in the header
 
   Header::event_size_t hdr_event_size() const { return header_()->event_size; } 
@@ -167,15 +169,26 @@ class mu2e::DetectorFragment {
 	curPos != dataEnd();
 	curPos+=8) { 
       if(data_counter==0) {
+
+	//	std::cout << "ERR: data_counter==0" << std::endl << std::flush;
+	
+
 	// Verify that this is a header block
 	mu2e::DetectorFragment::adc_t packetType = convertFromBinary(bitArray(curPos),127-24,127-20);
 	mu2e::DetectorFragment::adc_t packetCount = convertFromBinary(bitArray(curPos),127-43,127-32);
 	//	mu2e::DetectorFragment::adc_t status = convertFromBinary(bitArray(curPos),127-104,127-96);
 	data_counter = packetCount;
 	// Increment number of data blocks
-	if(packetType==5) {
+	if(packetType==5 || packetType == 0x1 || packetType == 0x2) { // Type 0x1 and 0x2 correspond to debug header packets
 	  numDataBlocks++;
 	} else {
+	  //	  DTCLib::DTC_DataPacket errPacket((char*)curPos);
+//	  std::cout << "ERR: Packet Type: " << packetType << std::endl << std::flush;
+//	  std::cout << "ERR: Packet Conut: " << packetCount << std::endl << std::flush;
+//	  std::cout << "ERR: totalPacketsRead: " << totalPacketsRead << std::endl << std::flush;
+//	  std::cout << "ERR: BitArray: " << std::endl << std::flush;
+//	  printBitArray(bitArray(curPos));
+//	  std::cout << std::flush;
 	  throw cet::exception("Error in DetectorFragment: Non-dataheader packet found in dataheader packet location");
 	}
       } else {
@@ -199,7 +212,8 @@ class mu2e::DetectorFragment {
     size_t numDB = numDataBlocks();
     if(theIndex<numDB) {
       current_offset_index_ = theIndex;
-      
+      current_offset_ = 0;
+
       size_t blockNum = 0;
       mu2e::DetectorFragment::adc_t const *curPos = dataBegin();
       bool foundBlock = false;
@@ -212,6 +226,9 @@ class mu2e::DetectorFragment {
 	  // Jump to the next header packet:
 	  // (add 1 for the DTC header packet which is not included in the packet count)
 	  curPos += 8*(size_t(packetCount) + 1);
+
+	  current_offset_ += 8*(size_t(packetCount) + 1);
+
 	  blockNum++;
 	}
       }
@@ -232,6 +249,7 @@ class mu2e::DetectorFragment {
   std::vector<adc_t> timestampVector();
   std::vector<adc_t> dataVector();
   void printDTCHeader();
+  virtual void printAll();
 
   protected:
 

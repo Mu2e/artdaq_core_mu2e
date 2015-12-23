@@ -1,13 +1,13 @@
-#ifndef mu2e_artdaq_core_Overlays_ToyFragmentWriter_hh
-#define mu2e_artdaq_core_Overlays_ToyFragmentWriter_hh
+#ifndef mu2e_artdaq_Overlays_DebugFragmentWriter_hh
+#define mu2e_artdaq_Overlays_DebugFragmentWriter_hh
 
 ////////////////////////////////////////////////////////////////////////
-// ToyFragmentWriter
+// DebugFragmentWriter
 //
-// Class derived from ToyFragment which allows writes to the data (for
+// Class derived from DetectorFragment which allows writes to the data (for
 // simulation purposes). Note that for this reason it contains
 // non-const members which hide the const members in its parent class,
-// ToyFragment, including its reference to the artdaq::Fragment
+// DetectorFragment, including its reference to the artdaq::Fragment
 // object, artdaq_Fragment_, as well as its functions pointing to the
 // beginning and end of ADC values in the fragment, dataBegin() and
 // dataEnd()
@@ -15,28 +15,34 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "mu2e-artdaq-core/Overlays/ToyFragment.hh"
+#include "mu2e-artdaq-core/Overlays/DebugFragmentReader.hh"
 
 #include <iostream>
 
 namespace mu2e {
-  class ToyFragmentWriter;
+  class DebugFragmentWriter;
 }
 
 
-class mu2e::ToyFragmentWriter: public mu2e::ToyFragment {
+class mu2e::DebugFragmentWriter: public mu2e::DebugFragmentReader {
 public:
 
 
-  ToyFragmentWriter(artdaq::Fragment & f); 
+  DebugFragmentWriter(artdaq::Fragment & f); 
+
+  virtual ~DebugFragmentWriter() {};
 
   // These functions form overload sets with const functions from
-  // mu2e::ToyFragment
+  // mu2e::DetectorFragment
 
   adc_t * dataBegin();
   adc_t * dataEnd();
 
-  // We'll need to hide the const version of header in ToyFragment in
+  adc_t * dataBlockBegin();
+  adc_t * dataBlockEnd();
+
+
+  // We'll need to hide the const version of header in DetectorFragment in
   // order to be able to perform writes
 
   Header * header_() {
@@ -50,6 +56,10 @@ public:
 
   void resize(size_t nAdcs);
 
+  //  virtual void printAll() {};
+
+  //  void generateOffsetTable(const std::vector<size_t> dataBlockVec);
+
 private:
   size_t calc_event_size_words_(size_t nAdcs);
 
@@ -62,14 +72,15 @@ private:
 
 // The constructor will expect the artdaq::Fragment object it's been
 // passed to contain the artdaq::Fragment header + the
-// ToyFragment::Metadata object, otherwise it throws
+// DetectorFragment::Metadata object, otherwise it throws
 
-mu2e::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
-  ToyFragment(f), artdaq_Fragment_(f) {
+mu2e::DebugFragmentWriter::DebugFragmentWriter(artdaq::Fragment& f ) :
+  DebugFragmentReader(f), artdaq_Fragment_(f) {
+  //  DetectorFragment(f), artdaq_Fragment_(f) {
    
     // If this assert doesn't hold, then can't call
     // "words_to_frag_words_" below, translating between the
-    // ToyFragment's standard data type size and the
+    // DetectorFragment's standard data type size and the
     // artdaq::Fragment's data type size, on the Metadata object
 
     assert( sizeof(Metadata::data_t) == sizeof(Header::data_t) );
@@ -83,7 +94,7 @@ mu2e::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
 	std::cerr << "Expected size: " << artdaq::detail::RawFragmentHeader::num_words() + 
 	  words_to_frag_words_( Metadata::size_words) << std::endl;
 
-	throw cet::exception("ToyFragmentWriter: Raw artdaq::Fragment object size suggests it does not consist of its own header + the ToyFragment::Metadata object");
+	throw cet::exception("DebugFragmentWriter: Raw artdaq::Fragment object size suggests it does not consist of its own header + the DetectorFragment::Metadata object");
       }
  
     // Allocate space for the header
@@ -91,38 +102,46 @@ mu2e::ToyFragmentWriter::ToyFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline mu2e::ToyFragment::adc_t * mu2e::ToyFragmentWriter::dataBegin() {
+inline mu2e::DetectorFragment::adc_t * mu2e::DebugFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
   return reinterpret_cast<adc_t *>(header_() + 1);
 }
 
-inline mu2e::ToyFragment::adc_t * mu2e::ToyFragmentWriter::dataEnd() {
+inline mu2e::DetectorFragment::adc_t * mu2e::DebugFragmentWriter::dataEnd() {
   return dataBegin() + total_adc_values();
 }
 
+inline mu2e::DetectorFragment::adc_t * mu2e::DebugFragmentWriter::dataBlockBegin() {
+  assert(artdaq_Fragment_.dataSize() > words_to_frag_words_(Header::size_words));
+  return (reinterpret_cast<adc_t *>(header_() + 1)) + current_offset_;
+}
 
-inline void mu2e::ToyFragmentWriter::resize(size_t nAdcs) {
+inline mu2e::DetectorFragment::adc_t * mu2e::DebugFragmentWriter::dataBlockEnd() {
+  return dataBegin() + total_adc_values_in_data_block();
+}
+
+inline void mu2e::DebugFragmentWriter::resize(size_t nAdcs) {
   auto es(calc_event_size_words_(nAdcs));
   artdaq_Fragment_.resize(words_to_frag_words_(es));
   header_()->event_size = es;
 }
 
-inline size_t mu2e::ToyFragmentWriter::calc_event_size_words_(size_t nAdcs) {
+inline size_t mu2e::DebugFragmentWriter::calc_event_size_words_(size_t nAdcs) {
   return adcs_to_words_(nAdcs) + hdr_size_words();
 }
 
-inline size_t mu2e::ToyFragmentWriter::adcs_to_words_(size_t nAdcs) {
+inline size_t mu2e::DebugFragmentWriter::adcs_to_words_(size_t nAdcs) {
   auto mod(nAdcs % adcs_per_word_());
   return (mod == 0) ?
     nAdcs / adcs_per_word_() :
     nAdcs / adcs_per_word_() + 1;
 }
 
-inline size_t mu2e::ToyFragmentWriter::words_to_frag_words_(size_t nWords) {
+inline size_t mu2e::DebugFragmentWriter::words_to_frag_words_(size_t nWords) {
   size_t mod = nWords % words_per_frag_word_();
   return mod ?
     nWords / words_per_frag_word_() + 1 :
     nWords / words_per_frag_word_();
 }
 
-#endif /* mu2e_artdaq_core_Overlays_ToyFragmentWriter_hh */
+#endif /* mu2e_artdaq_Overlays_DebugFragmentWriter_hh */

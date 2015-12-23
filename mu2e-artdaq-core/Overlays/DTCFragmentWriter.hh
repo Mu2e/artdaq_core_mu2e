@@ -50,6 +50,8 @@ public:
 
   void resize(size_t nPackets);
 
+  size_t size() { return artdaq_Fragment_.size(); }
+
 private:
   size_t calc_event_size_words_(size_t nPackets);
 
