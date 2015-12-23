@@ -77,12 +77,12 @@ class mu2e::mu2eFragment {
     data_t      fragment_type : 4;
     data_t      unused : 4;
 
-    DTCFragment* fragments[DTC_FRAGMENTS_PER_MU2E_FRAGMENT];
+    size_t offsets[DTC_FRAGMENTS_PER_MU2E_FRAGMENT];
 
-    static size_t const size_words = 8ul + DTC_FRAGMENTS_PER_MU2E_FRAGMENT * sizeof(DTCFragment*); // Units of Header::data_t
+    static size_t const size_words = 8ul + DTC_FRAGMENTS_PER_MU2E_FRAGMENT * sizeof(size_t); // Units of Header::data_t
   };
 
-  static_assert (sizeof (Header) == Header::size_words, "mu2eFragment::Header: incorrect size");
+  static_assert (sizeof (Header) == sizeof(Header::data_t) * Header::size_words, "mu2eFragment::Header: incorrect size");
 
   // The constructor simply sets its const private member "artdaq_Fragment_"
   // to refer to the artdaq::Fragment object
@@ -96,16 +96,26 @@ class mu2e::mu2eFragment {
   static constexpr size_t hdr_size_words() { return Header::size_words; }
  
   // Start of the DTC packets, returned as a pointer to the packet type
-  DTCFragment const * dataBegin() const {
-    return reinterpret_cast<DTCFragment const *>(header_() + 1);
+  artdaq::Fragment const * dataBegin() const {
+    return reinterpret_cast<artdaq::Fragment const *>(header_() + 1);
   }
 
-  DTCFragment const * dataEnd() const {
-    return reinterpret_cast<DTCFragment const *>(header_()->fragments[hdr_fragment_count() - 1] 
-												 + sizeof(header_()->fragments[hdr_fragment_count() - 1]));
+  artdaq::Fragment const * dataEnd() const {
+    if(hdr_fragment_count() == 0) { return dataBegin(); }
+    auto frag = header_()->offsets[ hdr_fragment_count() - 1];
+    return reinterpret_cast<artdaq::Fragment const *>((uint8_t*)dataBegin() + frag);
+  }
+
+  size_t dataSize() const {
+    if(hdr_fragment_count() == 0) { return 0; }
+    return header_()->offsets[ hdr_fragment_count() - 1];
   }
 
   protected:
+
+  static constexpr size_t words_per_frag_word_() {
+    return sizeof(artdaq::Fragment::value_type) / sizeof(Header::data_t);
+  }
 
   // header_() simply takes the address of the start of this overlay's
   // data (i.e., where the mu2eFragment::Header object begins) and
