@@ -5,7 +5,7 @@
 #  source .../path/to/mu2e_artdaq-core/ups/setup_for_development
 #  buildtool
 # ======================================================================
-
+project(mu2e_artdaq_core)
 
 # use cmake 2.8 or later
 cmake_minimum_required (VERSION 2.8)

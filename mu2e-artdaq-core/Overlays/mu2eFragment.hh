@@ -6,6 +6,7 @@
 #include "cetlib/exception.h"
 
 #include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
+#include "trace.h"
 
 #include <ostream>
 #include <vector>
@@ -73,7 +74,7 @@ class mu2e::mu2eFragment {
   struct Header {
     typedef uint8_t data_t;
     
-    data_t       fragment_count = 0;    
+    data_t       fragment_count;    
     data_t      fragment_type : 4;
     data_t      unused : 4;
 
@@ -107,6 +108,7 @@ class mu2e::mu2eFragment {
   }
 
   size_t dataSize() const {
+    TRACE(4, "hdr_fragment_count() == %d", hdr_fragment_count());
     if(hdr_fragment_count() == 0) { return 0; }
     return header_()->offsets[ hdr_fragment_count() - 1];
   }

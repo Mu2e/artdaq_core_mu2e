@@ -92,6 +92,7 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
     // Allocate space for the header
 	// No conversion needed since the basic unit of data is one byte
     artdaq_Fragment_.resize(words_to_frag_words_( Header::size_words ) );
+    header_()->fragment_count = 0;
 }
 
 
