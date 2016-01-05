@@ -98,14 +98,14 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline packet_t * mu2e::mu2eFragmentWriter::dataBegin() {
+inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words));
   return reinterpret_cast<packet_t *>(header_() + 1);
 }
 
-inline packet_t * mu2e::mu2eFragmentWriter::dataEnd() {
+inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataEnd() {
   if(hdr_block_count() == 0) { return dataBegin(); }
-  auto frag = header_()->offsets[hdr_block_count() - 1];
+  auto frag = header_()->index[hdr_block_count() - 1];
   return reinterpret_cast<packet_t *>((uint8_t*)dataBegin() + frag);
 }
 

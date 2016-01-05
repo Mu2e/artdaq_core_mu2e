@@ -14,7 +14,7 @@
 // Implementation of "mu2eFragment", an artdaq::Fragment overlay class
 
 // The "packing factor": How many DataBlocks are stored in each mu2eFragment
-#define DATA_BLOCKS_PER_MU2E_FRAGMENT 10000
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 1000
 
 namespace mu2e {
   class mu2eFragment;
@@ -73,7 +73,7 @@ class mu2e::mu2eFragment {
 
   struct Header {
     typedef uint8_t data_t;
-    typedef uint64_t count_t
+    typedef uint64_t count_t;
     
     count_t     block_count : 60;    
     count_t     fragment_type : 4;
@@ -108,10 +108,12 @@ class mu2e::mu2eFragment {
   }
 
   size_t dataSize() const {
-    TRACE(4, "hdr_block_count() == %d", hdr_block_count());
+    TRACE(4, "hdr_block_count() == %lu", hdr_block_count());
     if(hdr_block_count() == 0) { return 0; }
-    return header_()->offsets[ hdr_block_count() - 1];
+    return header_()->index[ hdr_block_count() - 1];
   }
+
+  size_t fragSize() const { return artdaq_Fragment_.size(); }
 
   protected:
 
