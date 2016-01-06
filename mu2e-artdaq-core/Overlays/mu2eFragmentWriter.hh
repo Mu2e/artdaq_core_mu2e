@@ -4,10 +4,10 @@
 ////////////////////////////////////////////////////////////////////////
 // mu2eFragmentWriter
 //
-// Class derived from DTCFragment which allows writes to the data (for
+// Class derived from mu2eFragment which allows writes to the data (for
 // simulation purposes). Note that for this reason it contains
 // non-const members which hide the const members in its parent class,
-// DTCFragment, including its reference to the artdaq::Fragment
+// mu2eFragment, including its reference to the artdaq::Fragment
 // object, artdaq_Fragment_, as well as its functions pointing to the
 // beginning and end of ADC values in the fragment, dataBegin() and
 // dataEnd()
@@ -35,8 +35,8 @@ public:
   // These functions form overload sets with const functions from
   // mu2e::DTCFragment
 
-  artdaq::Fragment * dataBegin();
-  artdaq::Fragment * dataEnd();
+  packet_t * dataBegin();
+  packet_t * dataEnd();
 
   // We'll need to hide the const version of header in DTCFragment in
   // order to be able to perform writes
@@ -54,6 +54,8 @@ public:
 
   void addFragment(artdaq::Fragment* frag);
   void addFragments(artdaq::FragmentPtrs & frags);
+  void addSpace(size_t bytes);
+  void endSubEvt(size_t bytes);
 
 private:
   // Note that this non-const reference hides the const reference in the base class
@@ -92,19 +94,19 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
     // Allocate space for the header
 	// No conversion needed since the basic unit of data is one byte
     artdaq_Fragment_.resize(words_to_frag_words_( Header::size_words ) );
-    header_()->fragment_count = 0;
+    header_()->block_count = 0;
 }
 
 
-inline artdaq::Fragment * mu2e::mu2eFragmentWriter::dataBegin() {
+inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words));
-  return reinterpret_cast<artdaq::Fragment *>(header_() + 1);
+  return reinterpret_cast<packet_t *>(header_() + 1);
 }
 
-inline artdaq::Fragment * mu2e::mu2eFragmentWriter::dataEnd() {
-  if(hdr_fragment_count() == 0) { return dataBegin(); }
-  auto frag = header_()->offsets[hdr_fragment_count() - 1];
-  return reinterpret_cast<artdaq::Fragment *>((uint8_t*)dataBegin() + frag);
+inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataEnd() {
+  if(hdr_block_count() == 0) { return dataBegin(); }
+  auto frag = header_()->index[hdr_block_count() - 1];
+  return reinterpret_cast<packet_t *>((uint8_t*)dataBegin() + frag);
 }
 
 
@@ -115,50 +117,18 @@ inline size_t mu2e::mu2eFragmentWriter::words_to_frag_words_(size_t nWords) {
     nWords / words_per_frag_word_();
 }
 
-inline void mu2e::mu2eFragmentWriter::addFragment(artdaq::Fragment* frag) {
-  TRACE(2, "mu2eFragmentWriter::addDTCFragment START");
-  if(hdr_fragment_count() < mu2e::DTC_FRAGMENT_MAX) {
-    TRACE(2, "Room in fragment. Setting offset");
-    header_()->offsets[hdr_fragment_count()] = dataSize();
-    auto fragSize = frag->size() * sizeof(artdaq::Fragment::value_type);
+void mu2e::mu2eFragmentWriter::addSpace(size_t bytes) {
+  TRACE(2, "mu2eFragmentWriter::addSpace START bytes=%lu", bytes);
     auto currSize = sizeof(artdaq::Fragment::value_type) * artdaq_Fragment_.size();
-    TRACE(2, "Resizing fragment: fragment byte size: %lu, size of fragment: %lu", fragSize, currSize );
-    artdaq_Fragment_.resizeBytes( fragSize + currSize );
-    TRACE(2,"Copying in fragment: size of fragment: %lu", sizeof(artdaq::Fragment::value_type) * artdaq_Fragment_.size() );
-    memcpy((void*)((uint8_t*)dataBegin() + header_()->offsets[hdr_fragment_count()]), frag, fragSize);
-    TRACE(2,"Incrementing counter");
-    header_()->fragment_count++;
-  }
-  TRACE(2, "addDTCFragment END");
+    TRACE(2, "Resizing fragment: additional bytes requested: %lu, size of fragment: %lu", bytes, currSize );
+    artdaq_Fragment_.resizeBytes( bytes + currSize );
 }
 
-void mu2e::mu2eFragmentWriter::addFragments(artdaq::FragmentPtrs & frags) {
-  TRACE(2, "mu2eFragmentWriter::addFragments START");
-  if(header_()->fragment_count + frags.size() <= mu2e::DTC_FRAGMENT_MAX) {
-    size_t size_bytes = 0;
-    size_t initial_offset = dataSize();
-    for(size_t i = 0; i < frags.size(); ++i) {
-      TRACE(2, "Setting offset for fragment #%lu to %lu", i, initial_offset + size_bytes);
-      header_()->offsets[hdr_fragment_count() + i] = initial_offset + size_bytes;
-      auto sizeBytes = frags[i].get()->size() * sizeof(artdaq::Fragment::value_type);
-      TRACE(2, "Size of fragment #%lu: %lu, total: %lu",i, sizeBytes, size_bytes + sizeBytes);
-      size_bytes += sizeBytes;
-    }
-  
-    auto oldSize = artdaq_Fragment_.size() * sizeof(artdaq::Fragment::value_type);
-    auto newSize = oldSize + size_bytes;
-    TRACE(2, "Resizing artdaq_Fragment_ from %lu to %lu", oldSize, newSize);
-    artdaq_Fragment_.resizeBytes(newSize);
-
-    for(size_t i = 0; i < frags.size(); ++i) {
-      auto offset = header_()->offsets[hdr_fragment_count() + i];
-      auto size = frags[i].get()->size() * sizeof(artdaq::Fragment::value_type);
-      TRACE(2,"Copying in fragment %lu: src: %p, dest: %p, size of fragment: %lu, offset: %lu", i,(void*)frags[i].get(), (void*)((uint8_t*)dataBegin() + offset), size, offset );
-      memcpy((void*)((uint8_t*)dataBegin() + offset), frags[i].get(), size);
-    }
-    header_()->fragment_count += frags.size();
-  }
-  TRACE(2, "mu2eFragmentWriter::addFragments END");
+void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes) {
+  TRACE(2, "mu2eFragmentWriter::endSubEvt START bytes=%lu", bytes);
+    header_()->index[hdr_block_count()] = dataSize() + bytes;
+    header_()->block_count++;
+  TRACE(2, "endSubEvt END");
 }
 
 #endif /* mu2e_artdaq_core_Overlays_mu2eFragmentWriter_hh */
