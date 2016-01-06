@@ -54,6 +54,10 @@ public:
 
   void addFragment(artdaq::Fragment* frag);
   void addFragments(artdaq::FragmentPtrs & frags);
+  void addSpace(size_t bytes);
+  void endSubEvt(size_t bytes);
+
+  int subEvtCount() { return hdr_fragment_count(); }
 
 private:
   // Note that this non-const reference hides the const reference in the base class
@@ -159,6 +163,20 @@ void mu2e::mu2eFragmentWriter::addFragments(artdaq::FragmentPtrs & frags) {
     header_()->fragment_count += frags.size();
   }
   TRACE(2, "mu2eFragmentWriter::addFragments END");
+}
+
+void mu2e::mu2eFragmentWriter::addSpace(size_t bytes) {
+  TRACE(2, "mu2eFragmentWriter::addSpace START bytes=%lu", bytes);
+    auto currSize = sizeof(artdaq::Fragment::value_type) * artdaq_Fragment_.size();
+    TRACE(2, "Resizing fragment: additional bytes requested: %lu, size of fragment: %lu", bytes, currSize );
+    artdaq_Fragment_.resizeBytes( bytes + currSize );
+}
+
+void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes) {
+  TRACE(2, "mu2eFragmentWriter::endSubEvt START bytes=%lu", bytes);
+    header_()->offsets[hdr_fragment_count()] = dataSize() + bytes;
+    header_()->fragment_count++;
+  TRACE(2, "endSubEvt END");
 }
 
 #endif /* mu2e_artdaq_core_Overlays_mu2eFragmentWriter_hh */
