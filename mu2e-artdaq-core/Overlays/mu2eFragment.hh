@@ -13,13 +13,13 @@
 
 // Implementation of "mu2eFragment", an artdaq::Fragment overlay class
 
-// The "packing factor": How many DTCFragments are stored in each mu2eFragment
-#define DTC_FRAGMENTS_PER_MU2E_FRAGMENT 100
+// The "packing factor": How many DataBlocks are stored in each mu2eFragment
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 10000
 
 namespace mu2e {
   class mu2eFragment;
 
-  static const int DTC_FRAGMENT_MAX = DTC_FRAGMENTS_PER_MU2E_FRAGMENT;
+  static const int BLOCK_COUNT_MAX = DATA_BLOCKS_PER_MU2E_FRAGMENT;
 
   // Let the "<<" operator dump the mu2eFragment's data to stdout
   std::ostream & operator << (std::ostream &, mu2eFragment const &);
@@ -73,14 +73,14 @@ class mu2e::mu2eFragment {
 
   struct Header {
     typedef uint8_t data_t;
+    typedef uint64_t count_t;
     
-    data_t       fragment_count;    
-    data_t      fragment_type : 4;
-    data_t      unused : 4;
+    count_t     block_count : 60;    
+    count_t     fragment_type : 4;
 
-    size_t offsets[DTC_FRAGMENTS_PER_MU2E_FRAGMENT];
+	size_t index[DATA_BLOCKS_PER_MU2E_FRAGMENT];
 
-    static size_t const size_words = 8ul + DTC_FRAGMENTS_PER_MU2E_FRAGMENT * sizeof(size_t); // Units of Header::data_t
+    static size_t const size_words = 8ul + DATA_BLOCKS_PER_MU2E_FRAGMENT * sizeof(size_t); // Units of Header::data_t
   };
 
   static_assert (sizeof (Header) == sizeof(Header::data_t) * Header::size_words, "mu2eFragment::Header: incorrect size");
@@ -91,27 +91,29 @@ class mu2e::mu2eFragment {
   mu2eFragment(artdaq::Fragment const & f ) : artdaq_Fragment_(f) {}
 
   // const getter functions for the data in the header
-  Header::data_t hdr_fragment_count() const { return header_()->fragment_count; }
-  Header::data_t hdr_fragment_type() const { return header_()->fragment_type; }
+  Header::count_t hdr_block_count() const { return header_()->block_count; }
+  Header::data_t hdr_fragment_type() const { return (Header::data_t)header_()->fragment_type; }
 
   static constexpr size_t hdr_size_words() { return Header::size_words; }
  
   // Start of the DTC packets, returned as a pointer to the packet type
-  artdaq::Fragment const * dataBegin() const {
-    return reinterpret_cast<artdaq::Fragment const *>(header_() + 1);
+  packet_t const * dataBegin() const {
+    return reinterpret_cast<packet_t const *>(header_() + 1);
   }
 
-  artdaq::Fragment const * dataEnd() const {
-    if(hdr_fragment_count() == 0) { return dataBegin(); }
-    auto frag = header_()->offsets[ hdr_fragment_count() - 1];
-    return reinterpret_cast<artdaq::Fragment const *>((uint8_t*)dataBegin() + frag);
+  packet_t const * dataEnd() const {
+    if(hdr_block_count() == 0) { return dataBegin(); }
+    auto frag = header_()->index[ hdr_block_count() - 1];
+    return reinterpret_cast<packet_t const *>((uint8_t*)dataBegin() + frag);
   }
 
   size_t dataSize() const {
-    TRACE(4, "hdr_fragment_count() == %d", hdr_fragment_count());
-    if(hdr_fragment_count() == 0) { return 0; }
-    return header_()->offsets[ hdr_fragment_count() - 1];
+    TRACE(4, "hdr_block_count() == %lu", hdr_block_count());
+    if(hdr_block_count() == 0) { return 0; }
+    return header_()->index[ hdr_block_count() - 1];
   }
+
+  size_t fragSize() const { return artdaq_Fragment_.size(); }
 
   protected:
 
