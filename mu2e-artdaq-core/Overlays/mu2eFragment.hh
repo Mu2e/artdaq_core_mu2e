@@ -14,7 +14,7 @@
 // Implementation of "mu2eFragment", an artdaq::Fragment overlay class
 
 // The "packing factor": How many DataBlocks are stored in each mu2eFragment
-#define DATA_BLOCKS_PER_MU2E_FRAGMENT 1000
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 10000
 
 namespace mu2e {
   class mu2eFragment;
