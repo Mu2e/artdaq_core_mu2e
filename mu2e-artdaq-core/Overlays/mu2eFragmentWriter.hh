@@ -42,8 +42,7 @@ public:
   // order to be able to perform writes
 
   Header * header_() {
-    TRACE(10, ("dataSize(): " + std::to_string(artdaq_Fragment_.dataSize()) 
-	      + ", Header size: " + std::to_string( words_to_frag_words_(Header::size_words))).c_str());
+	TRACE(10, "dataSize(): %lu, Header size: %lu", artdaq_Fragment_.dataSize(),  words_to_frag_words_(Header::size_words));
     assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words) );
     return reinterpret_cast<Header *>(&*artdaq_Fragment_.dataBegin());
   }
@@ -92,9 +91,11 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
       }
  
     // Allocate space for the header
-	// No conversion needed since the basic unit of data is one byte
     artdaq_Fragment_.resize(words_to_frag_words_( Header::size_words ) );
     header_()->block_count = 0;
+	for(size_t ii = 0; ii < mu2e::BLOCK_COUNT_MAX; ++ii) {
+	  header_()->index[ii] = 0;
+	}
 }
 
 
@@ -106,7 +107,7 @@ inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataBegin() {
 inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataEnd() {
   if(hdr_block_count() == 0) { return dataBegin(); }
   auto frag = header_()->index[hdr_block_count() - 1];
-  return reinterpret_cast<packet_t *>((uint8_t*)dataBegin() + frag);
+  return reinterpret_cast<packet_t *>(reinterpret_cast<uint8_t*>(dataBegin()) + frag);
 }
 
 
@@ -126,7 +127,7 @@ void mu2e::mu2eFragmentWriter::addSpace(size_t bytes) {
 
 void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes) {
   TRACE(2, "mu2eFragmentWriter::endSubEvt START bytes=%lu", bytes);
-    header_()->index[hdr_block_count()] = dataSize() + bytes;
+    header_()->index[hdr_block_count()] = blockSizeBytes() + bytes;
     header_()->block_count++;
   TRACE(2, "endSubEvt END");
 }
