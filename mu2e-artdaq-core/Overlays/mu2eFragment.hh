@@ -107,13 +107,13 @@ class mu2e::mu2eFragment {
     return reinterpret_cast<packet_t const *>((uint8_t*)dataBegin() + frag);
   }
 
-  size_t dataSize() const {
+  size_t blockSizeBytes() const {
     TRACE(4, "hdr_block_count() == %lu", hdr_block_count());
     if(hdr_block_count() == 0) { return 0; }
     return header_()->index[ hdr_block_count() - 1];
   }
 
-  size_t fragSize() const { return artdaq_Fragment_.size(); }
+  size_t dataSize() const { return artdaq_Fragment_.dataSize() * sizeof(artdaq::Fragment::value_type) - sizeof(Header) - sizeof(Metadata); }
 
   protected:
 
