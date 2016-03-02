@@ -5,7 +5,6 @@
 //#include "artdaq/DAQdata/features.hh"
 #include "cetlib/exception.h"
 
-#include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
 #include "trace.h"
 
 #include <ostream>
