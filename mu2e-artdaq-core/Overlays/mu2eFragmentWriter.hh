@@ -35,8 +35,8 @@ public:
   // These functions form overload sets with const functions from
   // mu2e::DTCFragment
 
-  packet_t * dataBegin();
-  packet_t * dataEnd();
+  uint8_t * dataBegin();
+  uint8_t * dataEnd();
 
   // We'll need to hide the const version of header in DTCFragment in
   // order to be able to perform writes
@@ -99,15 +99,15 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataBegin() {
+inline uint8_t * mu2e::mu2eFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words));
-  return reinterpret_cast<packet_t *>(header_() + 1);
+  return reinterpret_cast<uint8_t *>(header_() + 1);
 }
 
-inline mu2e::packet_t * mu2e::mu2eFragmentWriter::dataEnd() {
+inline uint8_t * mu2e::mu2eFragmentWriter::dataEnd() {
   if(hdr_block_count() == 0) { return dataBegin(); }
   auto frag = header_()->index[hdr_block_count() - 1];
-  return reinterpret_cast<packet_t *>(reinterpret_cast<uint8_t*>(dataBegin()) + frag);
+  return reinterpret_cast<uint8_t*>(dataBegin()) + frag;
 }
 
 

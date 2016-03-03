@@ -5,7 +5,6 @@
 //#include "artdaq/DAQdata/features.hh"
 #include "cetlib/exception.h"
 
-#include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
 #include "trace.h"
 
 #include <ostream>
@@ -14,7 +13,7 @@
 // Implementation of "mu2eFragment", an artdaq::Fragment overlay class
 
 // The "packing factor": How many DataBlocks are stored in each mu2eFragment
-#define DATA_BLOCKS_PER_MU2E_FRAGMENT 10000
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 1000
 
 namespace mu2e {
   class mu2eFragment;
@@ -97,19 +96,19 @@ class mu2e::mu2eFragment {
   static constexpr size_t hdr_size_words() { return Header::size_words; }
  
   // Start of the DTC packets, returned as a pointer to the packet type
-  packet_t const * dataBegin() const {
-    return reinterpret_cast<packet_t const *>(header_() + 1);
+  uint8_t const * dataBegin() const {
+    return reinterpret_cast<uint8_t const *>(header_() + 1);
   }
 
-  packet_t const * dataEnd() const {
+  uint8_t const * dataEnd() const {
     if(hdr_block_count() == 0) { return dataBegin(); }
     auto frag = header_()->index[ hdr_block_count() - 1];
-    return reinterpret_cast<packet_t const *>((uint8_t*)dataBegin() + frag);
+    return reinterpret_cast<uint8_t const *>(dataBegin() + frag);
   }
 
   size_t blockSizeBytes() const {
-    TRACE(4, "hdr_block_count() == %lu", hdr_block_count());
     if(hdr_block_count() == 0) { return 0; }
+    TRACE(4, "blockSizeBytes for block %lu is %zu", hdr_block_count(), header_()->index[ hdr_block_count() - 1]);
     return header_()->index[ hdr_block_count() - 1];
   }
 
