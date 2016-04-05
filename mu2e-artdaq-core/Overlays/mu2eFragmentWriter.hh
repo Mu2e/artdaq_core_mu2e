@@ -35,8 +35,9 @@ public:
   // These functions form overload sets with const functions from
   // mu2e::DTCFragment
 
-  uint8_t * dataBegin();
-  uint8_t * dataEnd();
+  Header::data_t * dataBegin();
+  Header::data_t * dataEnd();
+  Header::data_t * dataAtBytes(size_t offset);
 
   // We'll need to hide the const version of header in DTCFragment in
   // order to be able to perform writes
@@ -99,17 +100,19 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
 }
 
 
-inline uint8_t * mu2e::mu2eFragmentWriter::dataBegin() {
+inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataBegin() {
   assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words));
-  return reinterpret_cast<uint8_t *>(header_() + 1);
+  return reinterpret_cast<Header::data_t *>(header_() + 1);
 }
 
-inline uint8_t * mu2e::mu2eFragmentWriter::dataEnd() {
-  if(hdr_block_count() == 0) { return dataBegin(); }
-  auto frag = header_()->index[hdr_block_count() - 1];
-  return reinterpret_cast<uint8_t*>(dataBegin()) + frag;
+inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataEnd() {
+  auto frag = blockSizeBytes() / sizeof(Header::data_t);
+  return reinterpret_cast<Header::data_t*>(dataBegin() + frag);
 }
 
+inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataAtBytes(size_t offset) {
+  return dataBegin() + (offset / sizeof(Header::data_t));
+}
 
 inline size_t mu2e::mu2eFragmentWriter::words_to_frag_words_(size_t nWords) {
   size_t mod = nWords % words_per_frag_word_();

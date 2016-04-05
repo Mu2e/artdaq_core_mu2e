@@ -13,7 +13,7 @@
 // Implementation of "mu2eFragment", an artdaq::Fragment overlay class
 
 // The "packing factor": How many DataBlocks are stored in each mu2eFragment
-#define DATA_BLOCKS_PER_MU2E_FRAGMENT 1000
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 2500
 
 namespace mu2e {
   class mu2eFragment;
@@ -42,19 +42,17 @@ class mu2e::mu2eFragment {
 
   struct Metadata {
 
-    typedef uint8_t data_t;
-    typedef uint32_t run_number_t;
+    typedef uint64_t data_t;
 
     data_t sim_mode : 4;
     data_t unused : 4; // 4 + 4 = 8 bits
 
-    data_t board_id;
-    data_t unused2;
-    data_t unused3;
+    data_t board_id : 8;
+    data_t unused2 : 16;
     
-    run_number_t run_number;
+    data_t run_number : 32;
 
-    static size_t const size_words = 8ul; // Units of Metadata::data_t
+    static size_t const size_words = 1ul; // Units of Metadata::data_t
   };
 
   static_assert (sizeof (Metadata) == Metadata::size_words * sizeof (Metadata::data_t), "mu2eFragment::Metadata size changed");
@@ -71,7 +69,7 @@ class mu2e::mu2eFragment {
   // Header::data_t is given by "event_size"
 
   struct Header {
-    typedef uint8_t data_t;
+    typedef uint64_t data_t;
     typedef uint64_t count_t;
     
     count_t     block_count : 60;    
@@ -79,7 +77,7 @@ class mu2e::mu2eFragment {
 
 	size_t index[DATA_BLOCKS_PER_MU2E_FRAGMENT];
 
-    static size_t const size_words = 8ul + DATA_BLOCKS_PER_MU2E_FRAGMENT * sizeof(size_t); // Units of Header::data_t
+    static size_t const size_words = 1ul + (DATA_BLOCKS_PER_MU2E_FRAGMENT * sizeof(size_t)) / sizeof(uint64_t); // Units of Header::data_t
   };
 
   static_assert (sizeof (Header) == sizeof(Header::data_t) * Header::size_words, "mu2eFragment::Header: incorrect size");
@@ -96,14 +94,13 @@ class mu2e::mu2eFragment {
   static constexpr size_t hdr_size_words() { return Header::size_words; }
  
   // Start of the DTC packets, returned as a pointer to the packet type
-  uint8_t const * dataBegin() const {
-    return reinterpret_cast<uint8_t const *>(header_() + 1);
+  Header::data_t const * dataBegin() const {
+    return reinterpret_cast<uint64_t const *>(header_() + 1);
   }
 
-  uint8_t const * dataEnd() const {
-    if(hdr_block_count() == 0) { return dataBegin(); }
-    auto frag = header_()->index[ hdr_block_count() - 1];
-    return reinterpret_cast<uint8_t const *>(dataBegin() + frag);
+  Header::data_t const * dataEnd() const {
+    auto frag = blockSizeBytes() / sizeof(Header::data_t);
+    return reinterpret_cast<Header::data_t const *>(dataBegin() + frag);
   }
 
   size_t blockSizeBytes() const {
