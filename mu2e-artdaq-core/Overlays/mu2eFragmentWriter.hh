@@ -43,7 +43,7 @@ public:
   // order to be able to perform writes
 
   Header * header_() {
-	TRACE(10, "dataSize(): %lu, Header size: %lu", artdaq_Fragment_.dataSize(),  words_to_frag_words_(Header::size_words));
+	//TRACE(10, "dataSize(): %lu, Header size: %lu", artdaq_Fragment_.dataSize(),  words_to_frag_words_(Header::size_words));
     assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words) );
     return reinterpret_cast<Header *>(&*artdaq_Fragment_.dataBegin());
   }
@@ -94,9 +94,7 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
     // Allocate space for the header
     artdaq_Fragment_.resize(words_to_frag_words_( Header::size_words ) );
     header_()->block_count = 0;
-	for(size_t ii = 0; ii < mu2e::BLOCK_COUNT_MAX; ++ii) {
-	  header_()->index[ii] = 0;
-	}
+	memset((void*)&(header_()->index[0]), 0, sizeof(size_t) * mu2e::BLOCK_COUNT_MAX);
 }
 
 
