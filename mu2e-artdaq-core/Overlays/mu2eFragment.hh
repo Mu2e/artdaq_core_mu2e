@@ -105,7 +105,7 @@ class mu2e::mu2eFragment {
 
   size_t blockSizeBytes() const {
     if(hdr_block_count() == 0) { return 0; }
-    TRACE(4, "blockSizeBytes for block %lu is %zu", hdr_block_count(), header_()->index[ hdr_block_count() - 1]);
+    //TRACE(4, "blockSizeBytes for block %lu is %zu", hdr_block_count(), header_()->index[ hdr_block_count() - 1]);
     return header_()->index[ hdr_block_count() - 1];
   }
 
