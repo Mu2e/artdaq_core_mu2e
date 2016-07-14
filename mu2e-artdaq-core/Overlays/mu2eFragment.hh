@@ -95,12 +95,17 @@ class mu2e::mu2eFragment {
  
   // Start of the DTC packets, returned as a pointer to the packet type
   Header::data_t const * dataBegin() const {
-    return reinterpret_cast<uint64_t const *>(header_() + 1);
+    return reinterpret_cast<Header::data_t const *>(header_() + 1);
   }
 
   Header::data_t const * dataEnd() const {
     auto frag = blockSizeBytes() / sizeof(Header::data_t);
     return reinterpret_cast<Header::data_t const *>(dataBegin() + frag);
+  }
+
+  Header::data_t const * dataAt(size_t index) const {
+    if(index == 0) return dataBegin();
+    return reinterpret_cast<Header::data_t const *>(dataBegin() + header_()->index[ index - 1]);
   }
 
   size_t blockSizeBytes() const {
