@@ -36,6 +36,7 @@ public:
   // mu2e::DTCFragment
 
   Header::data_t * dataBegin();
+  Header::data_t * dataAt(size_t index);
   Header::data_t * dataEnd();
   Header::data_t * dataAtBytes(size_t offset);
 
@@ -52,8 +53,6 @@ public:
     header_()->fragment_type = type;
   }
 
-  void addFragment(artdaq::Fragment* frag);
-  void addFragments(artdaq::FragmentPtrs & frags);
   void addSpace(size_t bytes);
   void endSubEvt(size_t bytes);
 
@@ -103,10 +102,16 @@ inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::data
   return reinterpret_cast<Header::data_t *>(header_() + 1);
 }
 
-inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataEnd() {
-  auto frag = blockSizeBytes() / sizeof(Header::data_t);
-  return reinterpret_cast<Header::data_t*>(dataBegin() + frag);
+inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataAt(size_t index) {
+  if(index == 0) return dataBegin();
+  auto block = header_()->index[ index - 1 ] / sizeof(Header::data_t);
+  return reinterpret_cast<Header::data_t*>(dataBegin() + block);
 }
+
+inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataEnd() {
+  return dataAt(hdr_block_count());
+}
+
 
 inline mu2e::mu2eFragmentWriter::Header::data_t * mu2e::mu2eFragmentWriter::dataAtBytes(size_t offset) {
   return dataBegin() + (offset / sizeof(Header::data_t));
@@ -128,7 +133,7 @@ void mu2e::mu2eFragmentWriter::addSpace(size_t bytes) {
 
 void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes) {
   TRACE(2, "mu2eFragmentWriter::endSubEvt START bytes=%lu", bytes);
-    header_()->index[hdr_block_count()] = blockSizeBytes() + bytes;
+  header_()->index[hdr_block_count()] = blockOffset(hdr_block_count()) + bytes;
     header_()->block_count++;
   TRACE(2, "endSubEvt END");
 }
