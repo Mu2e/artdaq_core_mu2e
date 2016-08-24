@@ -73,7 +73,7 @@ inline size_t mu2e::mu2eFragmentReader::blockIndexBytes(size_t offset) const {
 
 // Return size of all blocks
 inline size_t mu2e::mu2eFragmentReader::blockSizeBytes() const {
-  return mu2eFragment::blockSizeBytes();
+  return mu2eFragment::dataEndBytes();
 }
 
 // Return size of block at given DataBlock index

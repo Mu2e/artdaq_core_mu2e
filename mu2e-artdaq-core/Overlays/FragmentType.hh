@@ -6,7 +6,8 @@ namespace mu2e {
 
   namespace detail {
     enum FragmentType : artdaq::Fragment::type_t
-    { MISSED = artdaq::Fragment::FirstUserFragmentType,
+      { EMPTY = artdaq::Fragment::EmptyFragmentType,
+      MISSED = artdaq::Fragment::FirstUserFragmentType,
       DTC,
       MU2E,
 	  TRK, // Tracker fragment

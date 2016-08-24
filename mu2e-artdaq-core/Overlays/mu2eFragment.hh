@@ -75,7 +75,7 @@ class mu2e::mu2eFragment {
     count_t     block_count : 60;    
     count_t     fragment_type : 4;
 
-	size_t index[DATA_BLOCKS_PER_MU2E_FRAGMENT];
+    size_t index[DATA_BLOCKS_PER_MU2E_FRAGMENT];
 
     static size_t const size_words = 1ul + (DATA_BLOCKS_PER_MU2E_FRAGMENT * sizeof(size_t)) / sizeof(uint64_t); // Units of Header::data_t
   };
@@ -95,18 +95,35 @@ class mu2e::mu2eFragment {
  
   // Start of the DTC packets, returned as a pointer to the packet type
   Header::data_t const * dataBegin() const {
-    return reinterpret_cast<uint64_t const *>(header_() + 1);
+    return reinterpret_cast<Header::data_t const *>(header_() + 1);
   }
 
   Header::data_t const * dataEnd() const {
-    auto frag = blockSizeBytes() / sizeof(Header::data_t);
-    return reinterpret_cast<Header::data_t const *>(dataBegin() + frag);
+    return dataAt(hdr_block_count());
   }
 
-  size_t blockSizeBytes() const {
-    if(hdr_block_count() == 0) { return 0; }
-    TRACE(4, "blockSizeBytes for block %lu is %zu", hdr_block_count(), header_()->index[ hdr_block_count() - 1]);
-    return header_()->index[ hdr_block_count() - 1];
+  Header::data_t const * dataAt(const size_t index) const {
+    if(index == 0) return dataBegin();
+    auto block = header_()->index[ index - 1] / sizeof(Header::data_t);
+    return reinterpret_cast<Header::data_t const *>(dataBegin() + block);
+  }
+
+  size_t blockSize(const size_t index) const {
+    auto start = blockOffset(index);
+    auto end = dataSize();
+    if(index < hdr_block_count() - 1) {
+      end = blockOffset(index + 1);
+    }
+    return end - start;
+  }
+
+  size_t blockOffset(const size_t index) const {
+    if(index == 0) { return 0; }
+    return header_()->index[ index - 1 ];
+  }
+
+  size_t dataEndBytes() const {
+    return blockOffset(hdr_block_count());
   }
 
   size_t dataSize() const { return artdaq_Fragment_.dataSize() * sizeof(artdaq::Fragment::value_type) - sizeof(Header) - sizeof(Metadata); }
