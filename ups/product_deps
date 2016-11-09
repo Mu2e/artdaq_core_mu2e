@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_00_05
+parent mu2e_artdaq_core 	v1_00_06
 defaultqual	e10:s35
 
 # These optional lines define the installed directories where
@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v1_05_00
+artdaq_core	v1_05_09
 TRACE           v3_06_07
-cetbuildtools	v5_04_01	-	only_for_build
+cetbuildtools	v5_04_03	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -30,11 +30,13 @@ end_product_list
 # -nq- means there is no qualifier
 # a "-" means the dependent product is not required by the parent and will not be setup
 
-qualifier               artdaq_core	TRACE	    notes
-e10:s35:debug            e10:s35:debug    e10:debug    -std=c++14
-e10:s35:prof             e10:s35:prof     e10:prof	    -std=c++14
-e9:s21:debug            e9:s21:debug    e9:debug    -std=c++14
-e9:s21:prof             e9:s21:prof     e9:prof	    -std=c++14
+qualifier     artdaq_core   TRACE      notes
+e10:s43:debug e10:s43:debug e10:debug  -std=c++14
+e10:s43:prof  e10:s43:prof  e10:prof   -std=c++14
+e10:s41:debug e10:s41:debug e10:debug  -std=c++14
+e10:s41:prof  e10:s41:prof  e10:prof   -std=c++14
+e10:s35:debug e10:s35:debug e10:debug  -std=c++14
+e10:s35:prof  e10:s35:prof  e10:prof   -std=c++14
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:
