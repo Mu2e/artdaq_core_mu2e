@@ -116,10 +116,6 @@ public:
     return end - start;
   }
 
-  size_t nBlocks() const {
-    return (dataEnd() - dataBegin())/sizeof(Header::data_t);
-  }
-
   size_t blockOffset(const size_t index) const {
     if(index == 0) { return 0; }
     return header_()->index[ index - 1 ];
