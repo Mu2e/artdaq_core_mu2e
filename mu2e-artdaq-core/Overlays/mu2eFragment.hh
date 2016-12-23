@@ -109,7 +109,7 @@ public:
 
   size_t blockSize(const size_t index) const {
     auto start = blockOffset(index);
-    auto end = dataSize();
+    auto end = dataEndBytes();
     if(index < hdr_block_count() - 1) {
       end = blockOffset(index + 1);
     }
