@@ -5,11 +5,6 @@
 #include <string>
 #include <vector>
 
-namespace {
-  static std::vector<std::string> const
-  names { "MISSED", "DTC", "MU2E", "TRK", "CAL", "CRV", "DBG", "UNKNOWN" };
-}
-
 mu2e::FragmentType
 mu2e::toFragmentType(std::string t_string)
 {

@@ -3,6 +3,7 @@
 #include "artdaq-core/Data/Fragment.hh"
 
 namespace mu2e {
+	static std::vector<std::string> const names{ "MISSED", "DTC", "MU2E", "TRK", "CAL", "CRV", "DBG", "UNKNOWN" };
 
   namespace detail {
     enum FragmentType : artdaq::Fragment::type_t
