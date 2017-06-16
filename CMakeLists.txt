@@ -66,6 +66,9 @@ add_subdirectory(mu2e-artdaq-core)
 # testing
 # add_subdirectory(test)
 
+# documentation
+add_subdirectory(doc)
+
 # ups - table and config files
 add_subdirectory(ups)
 
