@@ -10,7 +10,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "artdaq-core/Data/Fragments.hh"
 #include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
 
 #include <iostream>
