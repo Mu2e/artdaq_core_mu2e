@@ -10,7 +10,7 @@ if(DOXYGEN_FOUND)
 
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/latex/refman.tex 
-				  COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+				  COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile > doxygen.log 2>&1 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 					  COMMENT "Generating ${project} API documentation using Doxygen" VERBATIM)
 	add_custom_target(${product}_doc ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/latex/refman.tex)
 	add_custom_command(TARGET ${product}_doc POST_BUILD
@@ -20,7 +20,7 @@ if(DOXYGEN_FOUND)
 	find_package(LATEX COMPONENTS PDFLATEX PS2PDF MAKEINDEX)
 	if(LATEX_FOUND)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/latex/API_Documentation.pdf
-						   COMMAND make WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/latex 
+						   COMMAND make > pdflatex.log 2>&1 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/latex 
 					   COMMAND mv refman.pdf API_Documentation.pdf
 				   DEPENDS ${product}_doc
 				   COMMENT "Generating PDF API Documentation file" VERBATIM)
