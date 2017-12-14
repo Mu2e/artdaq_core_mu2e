@@ -45,6 +45,9 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
   adc_t DBT_StrawIndex(adc_t const *pos);
   uint32_t DBT_TDC0(adc_t const *pos);
   uint32_t DBT_TDC1(adc_t const *pos);
+  uint32_t DBT_TOT0(adc_t const *pos);
+  uint32_t DBT_TOT1(adc_t const *pos);
+
   std::vector<adc_t> DBT_Waveform(adc_t const *pos);
 
   // CAL DataBlock Payload Accessor Methods (by block address)
@@ -128,18 +131,40 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_StrawIndex(adc_t con
 }
 
 uint32_t mu2e::ArtFragmentReader::DBT_TDC0(adc_t const *pos) {
-  return ((uint32_t(*(pos+8+2)) & 0x00FF) << 16) + uint32_t(*(pos+8+1));
+  return (uint32_t(*(pos+8+1)) & 0xFFFF);
 }
 
 uint32_t mu2e::ArtFragmentReader::DBT_TDC1(adc_t const *pos) {
-  return (uint32_t(*(pos+8+3)) << 8) + uint32_t(*(pos+8+2) >> 8);
+  return (uint32_t(*(pos+8+2)) & 0xFFFF);
+}
+
+
+uint32_t mu2e::ArtFragmentReader::DBT_TOT0(adc_t const *pos) {
+  return (uint32_t(*(pos+8+3)) & 0x00FF) ;
+}
+
+uint32_t mu2e::ArtFragmentReader::DBT_TOT1(adc_t const *pos) {
+  return ( (uint32_t(*(pos+8+3)) >> 8) & 0x00FF) ;
 }
 
 std::vector<mu2e::ArtFragmentReader::adc_t> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos) {
   std::vector<adc_t>  waveform;
-  for(size_t i=0; i<12; i++) {
-    waveform.push_back(*(pos+8+4+i));
+
+  // Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)                                                                                                                       
+  // when we pack them tightly                                                                                                                                                                      
+  for (size_t i = 0; i < 12; i+=4){
+    waveform.push_back(*(pos+8+4+i) & 0x0FFF				       );
+    waveform.push_back(((*(pos+8+4+i+1) & 0x00FF) << 4) | (*(pos+8+4+i) >> 12) );
+    waveform.push_back(((*(pos+8+4+i+2) & 0x000F) << 8) | (*(pos+8+4+i+1) >> 8));
+    waveform.push_back((*(pos+8+4+i+2) >> 4)                                   );
   }
+
+  // Loosely packed ADC samples:
+  //  std::vector<adc_t>  waveform;
+  //  for(size_t i=0; i<12; i++) {
+  //    waveform.push_back(*(pos+8+4+i));
+  //  }
+
   return waveform;
 }
 
