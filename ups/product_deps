@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_02_01b
+parent mu2e_artdaq_core 	v1_02_01c
 defaultqual	e14:s50:online
 
 # These optional lines define the installed directories where
@@ -17,7 +17,7 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v3_00_06        offline
+artdaq_core	v3_00_07        offline
 artdaq_core     v3_00_00        online
 cetbuildtools	v5_08_01	-	only_for_build
 end_product_list
@@ -31,6 +31,10 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier     	  	    artdaq_core   notes
+e15:s61:offline:debug 	    e15:s61:debug -std=c++14
+e15:s61:offline:prof  	    e15:s61:prof  -std=c++14
+e14:s61:offline:debug 	    e14:s61:debug -std=c++14
+e14:s61:offline:prof  	    e14:s61:prof  -std=c++14
 e15:s60:offline:debug 	    e15:s60:debug -std=c++14
 e15:s60:offline:prof  	    e15:s60:prof  -std=c++14
 e14:s60:offline:debug 	    e14:s60:debug -std=c++14
