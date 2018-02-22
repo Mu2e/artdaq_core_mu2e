@@ -27,5 +27,11 @@ namespace mu2e {
 
   FragmentType toFragmentType(std::string t_string);
   std::string fragmentTypeToString(FragmentType val);
+
+	/**
+	 * \brief Create a list of all Fragment types defined by this package, in the format that RawInput expects
+	 * \return A list of all Fragment types defined by this package, in the format that RawInput expects
+	 */
+	std::map<artdaq::Fragment::type_t, std::string> makeFragmentTypeMap();
 }
 #endif /* mu2e_artdaq_Overlays_FragmentType_hh */

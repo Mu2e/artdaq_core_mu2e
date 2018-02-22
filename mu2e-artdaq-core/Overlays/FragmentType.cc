@@ -29,3 +29,13 @@ mu2e::fragmentTypeToString(FragmentType val)
     return "INVALID/UNKNOWN";
   }
 }
+
+std::map<artdaq::Fragment::type_t, std::string> mu2e::makeFragmentTypeMap()
+{
+	auto output = artdaq::Fragment::MakeSystemTypeMap();
+	for (auto name : names)
+	{
+		output[toFragmentType(name)] = name;
+	}
+	return output;
+}
