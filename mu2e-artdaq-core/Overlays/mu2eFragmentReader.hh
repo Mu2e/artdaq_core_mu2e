@@ -16,7 +16,6 @@
 #include <bitset>
 
 #include <iostream>
-#include "trace.h"
 
 namespace mu2e {
   class mu2eFragmentReader;

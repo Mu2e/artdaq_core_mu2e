@@ -13,7 +13,6 @@
 #include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
 
 #include <iostream>
-#include "trace.h"
 
 namespace mu2e {
   class ArtFragmentReader;
