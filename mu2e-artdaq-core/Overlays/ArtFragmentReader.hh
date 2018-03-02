@@ -13,7 +13,6 @@
 #include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
 
 #include <iostream>
-#include "trace.h"
 
 namespace mu2e {
   class ArtFragmentReader;
@@ -152,11 +151,11 @@ std::vector<mu2e::ArtFragmentReader::adc_t> mu2e::ArtFragmentReader::DBT_Wavefor
 
   // Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)                                                                                                                       
   // when we pack them tightly                                                                                                                                                                      
-  for (size_t i = 0; i < 12; i+=4){
-    waveform.push_back(*(pos+8+4+i) & 0x0FFF				       );
-    waveform.push_back(((*(pos+8+4+i+1) & 0x00FF) << 4) | (*(pos+8+4+i) >> 12) );
-    waveform.push_back(((*(pos+8+4+i+2) & 0x000F) << 8) | (*(pos+8+4+i+1) >> 8));
-    waveform.push_back((*(pos+8+4+i+2) >> 4)                                   );
+  for (size_t i = 0; i < 4; i+=1){
+    waveform.push_back(*(pos+8+4+i*3) & 0x0FFF				           );
+    waveform.push_back(((*(pos+8+4+i*3+1) & 0x00FF) << 4) | (*(pos+8+4+i*3) >> 12) );
+    waveform.push_back(((*(pos+8+4+i*3+2) & 0x000F) << 8) | (*(pos+8+4+i*3+1) >> 8));
+    waveform.push_back((*(pos+8+4+i*3+2) >> 4)                                     );
   }
 
   // Loosely packed ADC samples:

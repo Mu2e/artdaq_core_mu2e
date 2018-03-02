@@ -4,8 +4,6 @@
 #include "artdaq-core/Data/Fragment.hh"
 #include "cetlib/exception.h"
 
-#include "trace.h"
-
 #include <iostream>
 
 #include <ostream>

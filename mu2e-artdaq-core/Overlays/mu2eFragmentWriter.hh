@@ -18,7 +18,8 @@
 #include "mu2e-artdaq-core/Overlays/mu2eFragment.hh"
 
 #include <iostream>
-#include "trace.h"
+
+#include "tracemf.h"
 
 namespace mu2e {
   class mu2eFragmentWriter;
@@ -43,7 +44,6 @@ public:
   // order to be able to perform writes
 
   Header * header_() {
-	//TRACE(10, "dataSize(): %lu, Header size: %lu", artdaq_Fragment_.dataSize(),  words_to_frag_words_(Header::size_words));
     assert(artdaq_Fragment_.dataSize() >= words_to_frag_words_(Header::size_words) );
     return reinterpret_cast<Header *>(&*artdaq_Fragment_.dataBegin());
   }
@@ -73,7 +73,7 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment& f ) :
     // DTCFragment's standard data type size and the
     // artdaq::Fragment's data type size, on the Metadata object
 
-  TRACE(2, "mu2eFragmentWriter Constructor");
+  TLOG_ARB(TLVL_DEBUG, "mu2eFragmentWriter") << "mu2eFragmentWriter Constructor";
 
     assert( sizeof(Metadata::data_t) == sizeof(Header::data_t) );
 
@@ -124,17 +124,17 @@ inline size_t mu2e::mu2eFragmentWriter::words_to_frag_words_(size_t nWords) {
 }
 
 void mu2e::mu2eFragmentWriter::addSpace(size_t bytes) {
-  TRACE(2, "mu2eFragmentWriter::addSpace START bytes=%lu", bytes);
+	TLOG_ARB(10, "mu2eFragmentWriter") << "addSpace: START bytes=" << bytes;
     auto currSize = sizeof(artdaq::Fragment::value_type) * artdaq_Fragment_.size();
-    TRACE(2, "Resizing fragment: additional bytes requested: %lu, size of fragment: %lu", bytes, currSize );
+    TLOG_ARB(10, "mu2eFragmentWriter") << "addSpace: Resizing fragment: additional bytes requested: " << bytes << ", size of fragment: " << currSize;
     artdaq_Fragment_.resizeBytes( bytes + currSize );
 }
 
 void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes) {
-  TRACE(2, "mu2eFragmentWriter::endSubEvt START bytes=%lu", bytes);
+  TLOG_ARB(11, "mu2eFragmentWriter") << "endSubEvt START bytes=" << bytes;
   header_()->index[hdr_block_count()] = blockOffset(hdr_block_count()) + bytes;
     header_()->block_count++;
-  TRACE(2, "endSubEvt END");
+  TLOG_ARB(11, "mu2eFragmentWriter") << "endSubEvt END";
 }
 
 #endif /* mu2e_artdaq_core_Overlays_mu2eFragmentWriter_hh */
