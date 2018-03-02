@@ -1,7 +1,7 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_02_01e
-defaultqual	e15:s64:online
+parent mu2e_artdaq_core 	v1_02_02
+defaultqual	e15:s65:offline
 
 # These optional lines define the installed directories where
 # headers, libraries, and executables will be found
