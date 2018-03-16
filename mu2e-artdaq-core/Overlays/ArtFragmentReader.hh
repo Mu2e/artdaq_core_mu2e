@@ -54,6 +54,7 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
   adc_t DBC_apdID(adc_t const *pos);
   adc_t DBC_Time(adc_t const *pos);
   adc_t DBC_NumSamples(adc_t const *pos);
+  adc_t DBC_PeakSampleIdx(adc_t const *pos);
   std::vector<adc_t> DBC_Waveform(adc_t const *pos);
 
 };
@@ -184,7 +185,11 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_Time(adc_t const *po
 }
 
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumSamples(adc_t const *pos) {
-  return *(pos+8+2);
+  return *(pos+8+2) & 0x00FF;
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t const *pos) {
+  return *(pos+8+2) >> 8;
 }
 
 std::vector<mu2e::ArtFragmentReader::adc_t> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos) {
