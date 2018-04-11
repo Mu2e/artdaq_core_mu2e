@@ -42,12 +42,11 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
 
   // TRK DataBlock Payload Accessor Methods (by block address)
   adc_t DBT_StrawIndex(adc_t const *pos);
-  uint32_t DBT_TDC0(adc_t const *pos);
-  uint32_t DBT_TDC1(adc_t const *pos);
-  uint32_t DBT_TOT0(adc_t const *pos);
-  uint32_t DBT_TOT1(adc_t const *pos);
-
-  std::vector<adc_t> DBT_Waveform(adc_t const *pos);
+  adc_t DBT_TDC0(adc_t const *pos);
+  adc_t DBT_TDC1(adc_t const *pos);
+  adc_t DBT_TOT0(adc_t const *pos);
+  adc_t DBT_TOT1(adc_t const *pos);
+  std::array<adc_t,16> DBT_Waveform(adc_t const *pos);
 
   // CAL DataBlock Payload Accessor Methods (by block address)
   adc_t DBC_CrystalID(adc_t const *pos);
@@ -55,7 +54,7 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
   adc_t DBC_Time(adc_t const *pos);
   adc_t DBC_NumSamples(adc_t const *pos);
   adc_t DBC_PeakSampleIdx(adc_t const *pos);
-  std::vector<adc_t> DBC_Waveform(adc_t const *pos);
+  std::vector<int> DBC_Waveform(adc_t const *pos);
 
 };
 
@@ -130,40 +129,35 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_StrawIndex(adc_t con
   return *(pos+8+0);
 }
 
-uint32_t mu2e::ArtFragmentReader::DBT_TDC0(adc_t const *pos) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TDC0(adc_t const *pos) {
   return (uint32_t(*(pos+8+1)) & 0xFFFF);
 }
 
-uint32_t mu2e::ArtFragmentReader::DBT_TDC1(adc_t const *pos) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TDC1(adc_t const *pos) {
   return (uint32_t(*(pos+8+2)) & 0xFFFF);
 }
 
 
-uint32_t mu2e::ArtFragmentReader::DBT_TOT0(adc_t const *pos) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TOT0(adc_t const *pos) {
   return (uint32_t(*(pos+8+3)) & 0x00FF) ;
 }
 
-uint32_t mu2e::ArtFragmentReader::DBT_TOT1(adc_t const *pos) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TOT1(adc_t const *pos) {
   return ( (uint32_t(*(pos+8+3)) >> 8) & 0x00FF) ;
 }
 
-std::vector<mu2e::ArtFragmentReader::adc_t> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos) {
-  std::vector<adc_t>  waveform;
+std::array<mu2e::ArtFragmentReader::adc_t,16> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos) {
+  std::array<adc_t,16> waveform;
 
-  // Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)                                                                                                                       
-  // when we pack them tightly                                                                                                                                                                      
+  // Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)
+  // when we pack them tightly
+
   for (size_t i = 0; i < 4; i+=1){
-    waveform.push_back(*(pos+8+4+i*3) & 0x0FFF				           );
-    waveform.push_back(((*(pos+8+4+i*3+1) & 0x00FF) << 4) | (*(pos+8+4+i*3) >> 12) );
-    waveform.push_back(((*(pos+8+4+i*3+2) & 0x000F) << 8) | (*(pos+8+4+i*3+1) >> 8));
-    waveform.push_back((*(pos+8+4+i*3+2) >> 4)                                     );
+    waveform[0 + i*4] = *(pos+8+4+i*3) & 0x0FFF				            ;
+    waveform[1 + i*4] = ((*(pos+8+4+i*3+1) & 0x00FF) << 4) | (*(pos+8+4+i*3) >> 12) ;
+    waveform[2 + i*4] = ((*(pos+8+4+i*3+2) & 0x000F) << 8) | (*(pos+8+4+i*3+1) >> 8);
+    waveform[3 + i*4] = (*(pos+8+4+i*3+2) >> 4)                                     ;
   }
-
-  // Loosely packed ADC samples:
-  //  std::vector<adc_t>  waveform;
-  //  for(size_t i=0; i<12; i++) {
-  //    waveform.push_back(*(pos+8+4+i));
-  //  }
 
   return waveform;
 }
@@ -192,8 +186,8 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t 
   return *(pos+8+2) >> 8;
 }
 
-std::vector<mu2e::ArtFragmentReader::adc_t> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos) {
-  std::vector<adc_t>  waveform;
+std::vector<int> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos) {
+  std::vector<int>  waveform;
   for(size_t i=0; i<DBC_NumSamples(pos); i++) {
     waveform.push_back(*(pos+8+3+i));
   }
