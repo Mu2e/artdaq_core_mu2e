@@ -18,7 +18,7 @@ bindir      fq_dir      bin
 #
 product		version		optional
 artdaq_core	v3_01_06        offline
-artdaq_core     v3_02_00        online
+artdaq_core     v3_03_00        online
 cetbuildtools	v7_02_01	-	only_for_build
 end_product_list
 
@@ -37,6 +37,10 @@ e15:s65:offline:debug       e15:s65:debug -std=c++14
 e15:s65:offline:prof        e15:s65:prof  -std=c++14
 e15:s64:offline:debug       e15:s64:debug -std=c++14
 e15:s64:offline:prof        e15:s64:prof  -std=c++14
+c2:s65:online:debug        c2:s65:debug  -std=c++17
+c2:s65:online:prof         c2:s65:prof   -std=c++17
+e15:s65:online:debug       e15:s65:debug -std=c++14
+e15:s65:online:prof        e15:s65:prof  -std=c++14
 e15:s64:online:debug        e15:s64:debug -std=c++14
 e15:s64:online:prof         e15:s64:prof  -std=c++14
 e15:s60:offline:debug 	    e15:s60:debug -std=c++14
