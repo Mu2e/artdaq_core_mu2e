@@ -95,10 +95,6 @@ mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::packetType() {
   return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-24,127-20);
 }
 
-mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::ringID() {
-  return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-28,127-24);
-}
-
 mu2e::DetectorFragment::adc_t mu2e::DetectorFragment::valid() {
   return mu2e::DetectorFragment::convertFromBinary(bitArray(dataBlockBegin()),127-32,127-31);
 }
@@ -140,7 +136,6 @@ std::vector<mu2e::DetectorFragment::adc_t> mu2e::DetectorFragment::dataVector() 
 void mu2e::DetectorFragment::printDTCHeader() {
   //  std::cout << "\t\t" << "Binary Representation: ";
   //  printBitArray(bitArray(dataBlockBegin()));
-  std::cout << "\t\t" << "Ring ID:        " << (int)ringID()      << std::endl;
   std::cout << "\t\t" << "ROC ID:         " << (int)rocID()       << std::endl;
   std::cout << "\t\t" << "Byte Count:     " << (int)byteCount()   << std::endl;
   std::cout << "\t\t" << "Packet Type:    " << (int)packetType()  << std::endl;
