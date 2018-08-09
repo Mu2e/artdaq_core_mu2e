@@ -74,10 +74,6 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_ROCID(adc_t const *p
   return *(pos+1) & 0x000F; // 0x000F = 0b1111
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_RingID(adc_t const *pos) {
-  return (*(pos+1) >> 8) & 0x0007; // 0x0007 = 0b0111
-}
-
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_PacketType(adc_t const *pos) {
   return (*(pos+1) >> 4) & 0x000F; // 0x000F = 0b1111
 }
