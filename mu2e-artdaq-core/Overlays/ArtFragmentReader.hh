@@ -27,7 +27,6 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
   adc_t DBH_ByteCount(adc_t const *pos);
   bool DBH_Valid(adc_t const *pos);
   adc_t DBH_ROCID(adc_t const *pos);
-  adc_t DBH_RingID(adc_t const *pos);
   adc_t DBH_PacketType(adc_t const *pos);
   adc_t DBH_PacketCount(adc_t const *pos);
   uint64_t DBH_Timestamp(adc_t const *pos);
@@ -46,7 +45,8 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
   adc_t DBT_TDC1(adc_t const *pos);
   adc_t DBT_TOT0(adc_t const *pos);
   adc_t DBT_TOT1(adc_t const *pos);
-  std::array<adc_t,16> DBT_Waveform(adc_t const *pos);
+  std::array<adc_t,15> DBT_Waveform(adc_t const *pos);
+  adc_t DBT_Flags(adc_t const *pos);
 
   // CAL DataBlock Payload Accessor Methods (by block address)
   adc_t DBC_CrystalID(adc_t const *pos);
@@ -72,10 +72,6 @@ bool mu2e::ArtFragmentReader::DBH_Valid(adc_t const *pos) {
 
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_ROCID(adc_t const *pos) {
   return *(pos+1) & 0x000F; // 0x000F = 0b1111
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_RingID(adc_t const *pos) {
-  return (*(pos+1) >> 8) & 0x0007; // 0x0007 = 0b0111
 }
 
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_PacketType(adc_t const *pos) {
@@ -146,21 +142,29 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TOT1(adc_t const *po
   return ( (uint32_t(*(pos+8+3)) >> 8) & 0x00FF) ;
 }
 
-std::array<mu2e::ArtFragmentReader::adc_t,16> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos) {
-  std::array<adc_t,16> waveform;
+std::array<mu2e::ArtFragmentReader::adc_t,15> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos) {
+  std::array<adc_t,15> waveform;
 
   // Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)
   // when we pack them tightly
 
   for (size_t i = 0; i < 4; i+=1){
-    waveform[0 + i*4] = *(pos+8+4+i*3) & 0x0FFF				            ;
-    waveform[1 + i*4] = ((*(pos+8+4+i*3+1) & 0x00FF) << 4) | (*(pos+8+4+i*3) >> 12) ;
-    waveform[2 + i*4] = ((*(pos+8+4+i*3+2) & 0x000F) << 8) | (*(pos+8+4+i*3+1) >> 8);
-    waveform[3 + i*4] = (*(pos+8+4+i*3+2) >> 4)                                     ;
+    waveform[0 + i*4]   = *(pos+8+4+i*3) & 0x0FFF				       ;
+    waveform[1 + i*4]   = ((*(pos+8+4+i*3+1) & 0x00FF) << 4) | (*(pos+8+4+i*3) >> 12)  ;
+    waveform[2 + i*4]   = ((*(pos+8+4+i*3+2) & 0x000F) << 8) | (*(pos+8+4+i*3+1) >> 8) ;
+    if(i<3) {
+      waveform[3 + i*4] = (*(pos+8+4+i*3+2) >> 4)                                      ;
+    }
   }
 
   return waveform;
 }
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_Flags(adc_t const *pos) {
+  
+  return (*(pos+8+15) >> 8);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // CAL DataBlock Payload Accessor Methods (by block address)

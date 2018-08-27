@@ -2,7 +2,7 @@
 #define mu2e_artdaq_Overlays_DetectorFragment_hh
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "cetlib/exception.h"
+#include "cetlib_except/exception.h"
 
 #include <iostream>
 
@@ -242,7 +242,6 @@ class mu2e::DetectorFragment {
   adc_t byteCount();
   adc_t rocID();
   adc_t packetType();
-  adc_t ringID();
   adc_t valid();
   adc_t packetCount();
   adc_t status();
