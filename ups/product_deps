@@ -41,6 +41,11 @@ c2:s67:online:prof         c2:s67:prof   -std=c++17
 c2:s67:offline:debug        c2:s67:debug  -std=c++17
 c2:s67:offline:prof         c2:s67:prof   -std=c++17
 
+e15:s67:offline:debug       e15:s67:debug -std=c++14
+e15:s67:offline:prof        e15:s67:prof  -std=c++14
+e15:s67:online:debug       e15:s67:debug -std=c++14
+e15:s67:online:prof        e15:s67:prof  -std=c++14
+
 c2:s65:offline:debug        c2:s65:debug  -std=c++17
 c2:s65:offline:prof         c2:s65:prof   -std=c++17
 c2:s65:online:debug        c2:s65:debug  -std=c++17
