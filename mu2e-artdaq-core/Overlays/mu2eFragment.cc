@@ -1,7 +1,6 @@
 #include "mu2e-artdaq-core/Overlays/mu2eFragment.hh"
 
 #include <iomanip>
-#include "cetlib/exception.h"
 
 std::ostream & mu2e::operator << (std::ostream & os, mu2eFragment const & f) {
   os << "mu2eFragment " << std::dec

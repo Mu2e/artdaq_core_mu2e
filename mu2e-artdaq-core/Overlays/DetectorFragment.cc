@@ -1,7 +1,5 @@
 #include "mu2e-artdaq-core/Overlays/DetectorFragment.hh"
 
-#include "cetlib/exception.h"
-
 #if 0
 namespace {
   unsigned int pop_count (unsigned int n) {
