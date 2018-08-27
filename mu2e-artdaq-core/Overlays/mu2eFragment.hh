@@ -2,7 +2,7 @@
 #define mu2e_artdaq_core_Overlays_mu2eFragment_hh
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "cetlib/exception.h"
+#include "cetlib_except/exception.h"
 
 
 #include <ostream>
