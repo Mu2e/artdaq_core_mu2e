@@ -191,9 +191,9 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t 
 }
 
 std::vector<int> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos) {
-  std::vector<int>  waveform;
-  for(size_t i=0; i<DBC_NumSamples(pos); i++) {
-    waveform.push_back(*(pos+8+3+i));
+  std::vector<int>  waveform(DBC_NumSamples(pos));
+  for(size_t i=0; i<waveform.size(); i++) {
+    waveform[i] = *(pos+8+3+i);
   }
   return waveform;
 }
