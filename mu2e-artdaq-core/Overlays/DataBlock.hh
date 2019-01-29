@@ -12,16 +12,16 @@
 
 #include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 namespace mu2e {
 class DataBlock {
-public:
+ public:
   DataBlock();
   DataBlock(packet_t* ptr);
   virtual ~DataBlock() {}
- 
+
   packet_t* headerPacket() { return header_; }
   packet_t* dataBegin() { return data_; }
   packet_t* dataEnd() { return data_ + getPacketCount(); }
@@ -30,12 +30,12 @@ public:
   uint16_t getPacketCount();
   uint8_t getROCID();
 
-private:
+ private:
   packet_t* header_;
   packet_t* data_;
 
-}; // class DataBlock
+};  // class DataBlock
 
-} // namespace mu2e
+}  // namespace mu2e
 
 #endif
