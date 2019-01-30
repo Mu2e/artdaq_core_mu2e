@@ -11,8 +11,8 @@
 #include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
 #include "mu2e-artdaq-core/Overlays/DataBlock.hh"
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <iterator>
 
 namespace mu2e {
@@ -22,28 +22,27 @@ class DataBlockIterator {
   typedef typename DataBlock* pointer;
   typedef typename DataBlock& reference;
   typedef std::forward_iterator_tag iterator_category;
-  
-  DataBlockIterator(pointer x = nullptr) : p(x) { }
-  DataBlockIterator(const DataBlockIterator& i) 
-    : p(i.p) { }
+
+  DataBlockIterator(pointer x = nullptr) : p(x) {}
+  DataBlockIterator(const DataBlockIterator& i) : p(i.p) {}
   reference operator*() const { return *p; }
   pointer operator->() const { return p; }
-  DataBlockIterator& operator++() { 
+  DataBlockIterator& operator++() {
     DataBlock* pN = new DataBlock(p->dataEnd());
     delete p;
     p = pN;
-    return *this; 
+    return *this;
   }
   DataBlockIterator& operator++(int) {
     DataBlockIterator tmp(*this);
     ++*this;
     return tmp;
   }
-  
-private:
+
+ private:
   pointer p;
 };
 
-} // namespace mu2e
+}  // namespace mu2e
 
 #endif
