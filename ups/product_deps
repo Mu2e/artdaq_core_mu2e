@@ -1,7 +1,7 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
 parent mu2e_artdaq_core 	v1_02_12
-defaultqual	e17:s73:online
+defaultqual	e17:s74:online
 
 # These optional lines define the installed directories where
 # headers, libraries, and executables will be found
@@ -17,8 +17,8 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v3_04_07        offline
-artdaq_core     v3_04_02        online
+artdaq_core	v3_04_09        offline
+artdaq_core     v3_04_09        online
 cetbuildtools	v7_02_01	-	only_for_build
 end_product_list
 
@@ -37,8 +37,10 @@ e17:s73:offline:debug       e17:s73:debug -std=c++17
 e17:s73:offline:prof        e17:s73:prof -std=c++17
 e17:s72:offline:debug       e17:s72:debug -std=c++17
 e17:s72:offline:prof        e17:s72:prof -std=c++17
-e17:s70:online:debug        e17:s70:debug -std=c++17
-e17:s70:online:prof         e17:s70:prof -std=c++17
+e17:s74:online:debug        e17:s74:debug -std=c++17
+e17:s74:online:prof         e17:s74:prof -std=c++17
+e17:s73:online:debug        e17:s73:debug -std=c++17
+e17:s73:online:prof         e17:s73:prof -std=c++17
 e17:s70:offline:debug       e17:s70:debug -std=c++17
 e17:s70:offline:prof        e17:s70:prof -std=c++17
 e17:s67:online:debug        e17:s67:debug -std=c++17
