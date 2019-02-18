@@ -11,11 +11,14 @@
 
 #include "artdaq-core/Data/Fragment.hh"
 #include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
+//#include "RecoDataProducts/CrvDigi.hh"
 
 #include <iostream>
 
 namespace mu2e {
   class ArtFragmentReader;
+
+  std::ostream &operator<<(std::ostream &, ArtFragmentReader const &);
 }
 
 class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
@@ -71,9 +74,9 @@ class mu2e::ArtFragmentReader: public mu2e::ArtFragment {
 
   // CRV DataBlock Payload Accessor Methods (by block address and hit index)
   adc_t DBV_sipmID(adc_t const *pos, size_t hitIdx);
-  std::array<unsigned int, mu2e::CrvDigi::NSamples> DBV_ADCs(adc_t const *pos, size_t hitIdx);
+  //  std::array<unsigned int, mu2e::CrvDigi::NSamples> DBV_ADCs(adc_t const *pos, size_t hitIdx);
+  std::array<unsigned int, 8> DBV_ADCs(adc_t const *pos, size_t hitIdx);
   adc_t DBV_startTDC(adc_t const *pos, size_t hitIdx);
-  adc_t DBV_sipmID(adc_t const *pos, size_t hitIdx); 
 
 };
 
@@ -269,20 +272,25 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_NumHits(adc_t const
 // Note: The following accessor methods are hardcoded to assume 6 16-bit values
 // per CRV hit (corresponding to 8 samples per hit)
 
-mu2e::ArtFragmentReader::adc_t DBV_sipmID(adc_t const *pos, size_t hitIdx) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBV_sipmID(adc_t const *pos, size_t hitIdx) {
   return *(pos+16 + hitIdx*6 + 0) & 0x00FF;
 }
 
-std::array<unsigned int, mu2e::CrvDigi::NSamples> ADCs(adc_t const *pos, size_t hitIdx) {
-  std::array<unsigned int, mu2e::CrvDigi::NSamples> ADCs;
-  for(size_t i=0; i<mu2e::CrvDigi::NSamples; i+=2) {
+//std::array<unsigned int, mu2e::CrvDigi::NSamples> mu2e::ArtFragmentReader::DBV_ADCs(adc_t const *pos, size_t hitIdx) {
+//  std::array<unsigned int, mu2e::CrvDigi::NSamples> ADCs;
+//  for(size_t i=0; i<mu2e::CrvDigi::NSamples; i+=2) {
+
+// Hardcoding the number of samples per CRV hit to 8
+std::array<unsigned int, 8> mu2e::ArtFragmentReader::DBV_ADCs(adc_t const *pos, size_t hitIdx) {
+  std::array<unsigned int, 8> ADCs;
+  for(size_t i=0; i<8; i+=2) {
     ADCs[i]   = *(pos+16 + hitIdx*6 + 2 + i/2) & 0x00FF;
     ADCs[i+1] = *(pos+16 + hitIdx*6 + 2 + i/2) >> 8;
   }
   return ADCs;
 }
 
-mu2e::ArtFragmentReader::adc_t DBV_startTDC(adc_t const *pos, size_t hitIdx) {
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBV_startTDC(adc_t const *pos, size_t hitIdx) {
   return *(pos+16 + hitIdx*6 + 1) & 0x00FF;
 }
 
