@@ -4,16 +4,15 @@
 
 namespace mu2e {
 
-  artdaq::PackageBuildInfo GetPackageBuildInfo::getPackageBuildInfo() {
+artdaq::PackageBuildInfo GetPackageBuildInfo::getPackageBuildInfo()
+{
+	artdaq::PackageBuildInfo pkg;
 
-    artdaq::PackageBuildInfo pkg;
+	pkg.setPackageName("mu2e-artdaq-core");
+	pkg.setPackageVersion("@version@");
+	pkg.setBuildTimestamp("@utcDateTime@");
 
-    pkg.setPackageName("mu2e-artdaq-core");
-    pkg.setPackageVersion("@version@");
-    pkg.setBuildTimestamp("@utcDateTime@");
-
-    return pkg;
-  }
-
+	return pkg;
 }
 
+}  // namespace mu2e

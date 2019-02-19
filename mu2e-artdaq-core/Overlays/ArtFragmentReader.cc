@@ -2,7 +2,8 @@
 
 #include <iomanip>
 
-std::ostream& mu2e::operator<<(std::ostream& os, ArtFragmentReader const& f) {
-  os << "ArtFragmentReader " << std::dec << ", block count: " << f.block_count() << "\n";
-  return os;
+std::ostream& mu2e::operator<<(std::ostream& os, ArtFragmentReader const& f)
+{
+	os << "ArtFragmentReader " << std::dec << ", block count: " << f.block_count() << "\n";
+	return os;
 }

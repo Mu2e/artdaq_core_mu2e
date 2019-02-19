@@ -16,23 +16,24 @@
 #include <cstdint>
 
 namespace mu2e {
-class DataBlock {
- public:
-  DataBlock();
-  DataBlock(packet_t* ptr);
-  virtual ~DataBlock() {}
+class DataBlock
+{
+public:
+	DataBlock();
+	DataBlock(packet_t* ptr);
+	virtual ~DataBlock() {}
 
-  packet_t* headerPacket() { return header_; }
-  packet_t* dataBegin() { return data_; }
-  packet_t* dataEnd() { return data_ + getPacketCount(); }
-  packet_t* dataPacket(uint16_t index);
+	packet_t* headerPacket() { return header_; }
+	packet_t* dataBegin() { return data_; }
+	packet_t* dataEnd() { return data_ + getPacketCount(); }
+	packet_t* dataPacket(uint16_t index);
 
-  uint16_t getPacketCount();
-  uint8_t getROCID();
+	uint16_t getPacketCount();
+	uint8_t getROCID();
 
- private:
-  packet_t* header_;
-  packet_t* data_;
+private:
+	packet_t* header_;
+	packet_t* data_;
 
 };  // class DataBlock
 

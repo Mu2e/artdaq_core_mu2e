@@ -6,16 +6,17 @@ namespace mu2e {
 static std::vector<std::string> const names{"MISSED", "DTC", "MU2E", "TRK", "CAL", "CRV", "DBG", "UNKNOWN"};
 
 namespace detail {
-enum FragmentType : artdaq::Fragment::type_t {
-  EMPTY = artdaq::Fragment::EmptyFragmentType,
-  MISSED = artdaq::Fragment::FirstUserFragmentType,
-  DTC,
-  MU2E,
-  TRK,     // Tracker fragment
-  CAL,     // Calorimeter fragment
-  CRV,     // Cosmic Ray Veto fragment
-  DBG,     // Debug Packet Fragment
-  INVALID  // Should always be last.
+enum FragmentType : artdaq::Fragment::type_t
+{
+	EMPTY = artdaq::Fragment::EmptyFragmentType,
+	MISSED = artdaq::Fragment::FirstUserFragmentType,
+	DTC,
+	MU2E,
+	TRK,     // Tracker fragment
+	CAL,     // Calorimeter fragment
+	CRV,     // Cosmic Ray Veto fragment
+	DBG,     // Debug Packet Fragment
+	INVALID  // Should always be last.
 };
 
 // Safety check.

@@ -2,9 +2,10 @@
 
 #include <iomanip>
 
-std::ostream& mu2e::operator<<(std::ostream& os, DTCFragment const& f) {
-  os << "DTCFragment " << std::hex << ", packet count: " << f.hdr_packet_count() << ", timestamp: " << f.hdr_timestamp()
-     << "\n";
+std::ostream& mu2e::operator<<(std::ostream& os, DTCFragment const& f)
+{
+	os << "DTCFragment " << std::hex << ", packet count: " << f.hdr_packet_count() << ", timestamp: " << f.hdr_timestamp()
+	   << "\n";
 
-  return os;
+	return os;
 }
