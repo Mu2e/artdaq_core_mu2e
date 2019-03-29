@@ -308,7 +308,7 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_NumHits(adc_t const
 
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBV_sipmID(adc_t const *pos, size_t hitIdx)
 {
-	return *(pos + 16 + hitIdx * 6 + 0) & 0x00FF;
+	return *(pos + 16 + hitIdx * 6 + 0);
 }
 
 //std::array<unsigned int, mu2e::CrvDigi::NSamples> mu2e::ArtFragmentReader::DBV_ADCs(adc_t const *pos, size_t hitIdx) {
