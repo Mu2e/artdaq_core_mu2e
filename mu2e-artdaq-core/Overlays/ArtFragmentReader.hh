@@ -296,7 +296,16 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ErrorFlags(adc_t co
 mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_NumHits(adc_t const *pos)
 {
 	// Currently hardcoded to assume 12 bytes per hit (corresponding to 8 samples)
-	return *(pos + 8 + 1) / 12;
+        adc_t numHits = (*(pos + 8 + 1) - 16) / 12; // Subtract 16 for the ROC header packet
+
+	// Check whether the last hit is actually just empty filler in the last packet
+	if(numHits>0) {
+	  if(*(pos + 8 + 8 + 6*(numHits-1) + 1) == 0) {
+	    numHits = numHits - 1;
+	  }
+	}
+
+	return numHits;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
