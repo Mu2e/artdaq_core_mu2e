@@ -19,7 +19,7 @@ bindir      fq_dir      bin
 product		version		optional
 artdaq_core	v3_04_14        offline
 artdaq_core     v3_04_09        online
-cetbuildtools	v7_02_01	-	only_for_build
+cetbuildtools	v7_12_01	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
