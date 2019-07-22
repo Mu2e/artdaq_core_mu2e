@@ -55,7 +55,7 @@ public:
 	// CAL DataBlock Payload Accessor Method (by block address)
 	bool  DBC_ChannelHasHit(adc_t const *pos, size_t channelId);
 
-	adc_t DBC_BoardID(adc_t const *pos, size_t channelId);
+	adc_t DBC_BoardID(adc_t const *pos);
 
 	adc_t DBC_DIRACOutputA(adc_t const *pos, size_t channelId);
 	adc_t DBC_DIRACOutputB(adc_t const *pos, size_t channelId);
@@ -222,7 +222,7 @@ bool mu2e::ArtFragmentReader::DBC_ChannelHasHit(adc_t const *pos, size_t channel
         return *(pos + 8 + *(pos + 8 + channelId) + 0) != 0xFFFF;
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_BoardID(adc_t const *pos, size_t channelId)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_BoardID(adc_t const *pos)
 {
 	return *(pos + 8 + 20);
 }
