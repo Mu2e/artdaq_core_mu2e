@@ -1,4 +1,5 @@
 cet_make(LIBRARIES
+  artdaq-core_Utilities
   ${ARTDAQ_DAQDATA}
   ${CETLIB}
   ${CETLIB_EXCEPT}
