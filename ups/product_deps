@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_02_31
+parent mu2e_artdaq_core 	v1_02_32
 defaultqual	e17:s74:offline
 
 # These optional lines define the installed directories where
@@ -31,17 +31,32 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier     	  	    artdaq_core   notes
-e17:s87:online:debug        e17:s87:debug -std=c++17
-e17:s87:online:prof         e17:s87:prof  -std=c++17
-e19:s84:online:debug        e19:s84:debug -std=c++17
-e19:s84:online:prof         e19:s84:prof  -std=c++17
-e17:s84:online:debug        e17:s84:debug -std=c++17
-e17:s84:online:prof         e17:s84:prof  -std=c++17
 
-e19:s87:offline:debug       e19:s87:debug -std=c++17
-e19:s87:offline:prof        e19:s87:prof  -std=c++17
-e17:s87:offline:debug       e17:s87:debug -std=c++17
-e17:s87:offline:prof        e17:s87:prof  -std=c++17
+e19:s87:online:debug       e19:s87:debug -std=c++17
+e19:s87:online:prof        e19:s87:prof  -std=c++17
+e17:s87:online:debug       e17:s87:debug -std=c++17
+e17:s87:online:prof        e17:s87:prof  -std=c++17
+
+e17:s85:online:debug        e17:s85:debug -std=c++17
+e17:s85:online:prof         e17:s85:prof -std=c++17
+
+e19:s83:online:debug        e19:s83:debug -std=c++17
+e19:s83:online:prof         e19:s83:prof -std=c++17
+e17:s83:online:debug        e17:s83:debug -std=c++17
+e17:s83:online:prof         e17:s83:prof -std=c++17
+
+e19:s82:online:debug        e19:s82:debug -std=c++17
+e19:s82:online:prof         e19:s82:prof -std=c++17
+e17:s82:online:debug        e17:s82:debug -std=c++17
+e17:s82:online:prof         e17:s82:prof -std=c++17
+
+e17:s73:online:debug        e17:s73:debug -std=c++17
+e17:s73:online:prof         e17:s73:prof -std=c++17
+
+e17:s67:online:debug        e17:s67:debug -std=c++17
+e17:s67:online:prof         e17:s67:prof  -std=c++17
+e15:s67:online:debug        e15:s67:debug  -std=c++17
+e15:s67:online:prof         e15:s67:prof  -std=c++17
 
 e19:s89:offline:debug       e19:s89:debug     -std=c++17
 e19:s89:offline:prof        e19:s89:prof      -std=c++17
@@ -49,6 +64,11 @@ e17:s89:offline:debug       e17:s89:debug     -std=c++17
 e17:s89:offline:prof        e17:s89:prof      -std=c++17
 e17:s89:offline:debug:py3   e17:s89:debug:py3 -std=c++17
 e17:s89:offline:prof:py3    e17:s89:prof:py3  -std=c++17
+
+e19:s87:offline:debug       e19:s87:debug -std=c++17
+e19:s87:offline:prof        e19:s87:prof  -std=c++17
+e17:s87:offline:debug       e17:s87:debug -std=c++17
+e17:s87:offline:prof        e17:s87:prof  -std=c++17
 
 e19:s84:offline:debug       e19:s84:debug -std=c++17
 e19:s84:offline:prof        e19:s84:prof  -std=c++17
@@ -84,20 +104,6 @@ e17:s67:offline:debug       e17:s67:debug -std=c++17
 e17:s67:offline:prof        e17:s67:prof  -std=c++17
 
 e15:s67:offline:prof        e15:s67:prof  -std=c++17
-
-e19:s82:online:debug        e19:s82:debug -std=c++17
-e19:s82:online:prof         e19:s82:prof -std=c++17
-e17:s82:online:debug        e17:s82:debug -std=c++17
-e17:s82:online:prof         e17:s82:prof -std=c++17
-
-e17:s73:online:debug        e17:s73:debug -std=c++17
-e17:s73:online:prof         e17:s73:prof -std=c++17
-
-e17:s67:online:debug        e17:s67:debug -std=c++17
-e17:s67:online:prof         e17:s67:prof  -std=c++17
-e15:s67:online:debug        e15:s67:debug  -std=c++17
-e15:s67:online:prof         e15:s67:prof  -std=c++17
-
 
 end_qualifier_list
 
