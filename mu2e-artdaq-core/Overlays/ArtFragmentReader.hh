@@ -52,15 +52,24 @@ public:
 	std::array<adc_t, 15> DBT_Waveform(adc_t const *pos);
 	adc_t DBT_Flags(adc_t const *pos);
 
-	// CAL DataBlock Payload Accessor Methods (by block address)
-	adc_t DBC_CrystalID(adc_t const *pos);
-	adc_t DBC_apdID(adc_t const *pos);
-	adc_t DBC_Time(adc_t const *pos);
-	adc_t DBC_NumSamples(adc_t const *pos);
-	adc_t DBC_PeakSampleIdx(adc_t const *pos);
-	std::vector<int> DBC_Waveform(adc_t const *pos);
+	// CAL DataBlock Payload Accessor Method (by block address)
+        adc_t DBC_NumHits(adc_t const *pos);
+	adc_t DBC_BoardID(adc_t const *pos);
+	adc_t DBC_ChannelStatusFlagsA(adc_t const *pos);
+        adc_t DBC_ChannelStatusFlagsB(adc_t const *pos);
 
-	// CRV ROC Status Accessor Methods
+	adc_t DBC_ChannelNum(adc_t const *pos, size_t hitIdx);
+	adc_t DBC_DIRACOutputA(adc_t const *pos, size_t hitIdx);
+	adc_t DBC_DIRACOutputB(adc_t const *pos, size_t hitIdx);
+	adc_t DBC_ErrorFlags(adc_t const *pos, size_t hitIdx);
+
+	adc_t DBC_Time(adc_t const *pos, size_t hitIdx);
+	adc_t DBC_NumSamples(adc_t const *pos, size_t hitIdx);
+	adc_t DBC_PeakSampleIdx(adc_t const *pos, size_t hitIdx);
+        std::vector<int> DBC_Waveform(adc_t const *pos, size_t hitIdx);
+
+
+	// CRV ROC Status Accessor Methods (by block address)
 	adc_t DBVR_ControllerID(adc_t const *pos);
 	adc_t DBVR_PacketType(adc_t const *pos);
 	adc_t DBVR_EventWordCount(adc_t const *pos);
@@ -210,36 +219,66 @@ mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_Flags(adc_t const *p
 // CAL DataBlock Payload Accessor Methods (by block address)
 ////////////////////////////////////////////////////////////////////////////////
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_CrystalID(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumHits(adc_t const *pos)
 {
-	return *(pos + 8 + 0) & 0x0FFF;  // 0x0FFF = 0b1111 1111 1111
+	return *(pos + 8);
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_apdID(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_BoardID(adc_t const *pos)
 {
-	return *(pos + 8 + 0) >> 12;
+        return *(pos + 8 + 1 + DBC_NumHits(pos)) & 0x03FF;
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_Time(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelStatusFlagsA(adc_t const *pos)
 {
-	return *(pos + 8 + 1);
+        return *(pos + 8 + 1 + DBC_NumHits(pos)) >> 10;
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumSamples(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelStatusFlagsB(adc_t const *pos)
 {
-	return *(pos + 8 + 2) & 0x00FF;
+        return *(pos + 8 + 1 + DBC_NumHits(pos) + 1);
 }
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelNum(adc_t const *pos, size_t hitIdx)
 {
-	return *(pos + 8 + 2) >> 8;
+	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 0) & 0x003F;
 }
 
-std::vector<int> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos)
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_DIRACOutputA(adc_t const *pos, size_t hitIdx)
 {
-	std::vector<int> waveform(DBC_NumSamples(pos));
+        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 0) >> 6;
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_DIRACOutputB(adc_t const *pos, size_t hitIdx)
+{
+        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 1);
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ErrorFlags(adc_t const *pos, size_t hitIdx)
+{
+	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 2);
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_Time(adc_t const *pos, size_t hitIdx)
+{
+	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 3);
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumSamples(adc_t const *pos, size_t hitIdx)
+{
+	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 4) & 0x00FF;
+}
+
+mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t const *pos, size_t hitIdx)
+{
+        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 4) >> 8;
+}
+
+std::vector<int> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos, size_t hitIdx)
+{
+	std::vector<int> waveform(DBC_NumSamples(pos,hitIdx));
 	for (size_t i = 0; i < waveform.size(); i++) {
-		waveform[i] = *(pos + 8 + 3 + i);
+		waveform[i] = *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 5 + i);
 	}
 	return waveform;
 }
