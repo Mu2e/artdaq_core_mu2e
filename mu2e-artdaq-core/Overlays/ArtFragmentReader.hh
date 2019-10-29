@@ -169,6 +169,19 @@ public:
 		uint8_t WaveformSample5;
 		uint8_t WaveformSample6;
 		uint8_t WaveformSample7;
+
+		std::array<unsigned int, 8> Waveform() {
+			std::array<unsigned int, 8> output;
+			output[0] = WaveformSample0;
+			output[1] = WaveformSample1;
+			output[2] = WaveformSample2;
+			output[3] = WaveformSample3;
+			output[4] = WaveformSample4;
+			output[5] = WaveformSample5;
+			output[6] = WaveformSample6;
+			output[7] = WaveformSample7;
+			return output;
+		}
 	};
 
 	/**************************************************************************
