@@ -14,6 +14,8 @@
 //#include "RecoDataProducts/CrvDigi.hh"
 
 #include <iostream>
+#include <deque>
+#include <unordered_map>
 
 namespace mu2e {
 class ArtFragmentReader;
@@ -27,356 +29,270 @@ public:
 	ArtFragmentReader(artdaq::Fragment const &f)
 		: ArtFragment(f){};
 
-	// DataBlock Header Accessor Methods (by block address)
-	adc_t DBH_ByteCount(adc_t const *pos);
-	bool DBH_Valid(adc_t const *pos);
-	adc_t DBH_ROCID(adc_t const *pos);
-	adc_t DBH_PacketType(adc_t const *pos);
-	adc_t DBH_PacketCount(adc_t const *pos);
-	uint64_t DBH_Timestamp(adc_t const *pos);
-	adc_t DBH_TimestampLow(adc_t const *pos);
-	adc_t DBH_TimestampMedium(adc_t const *pos);
-	adc_t DBH_TimestampHigh(adc_t const *pos);
-	adc_t DBH_Status(adc_t const *pos);
-	adc_t DBH_FormatVersion(adc_t const *pos);
-	adc_t DBH_EVBMode(adc_t const *pos);
-	adc_t DBH_SubsystemID(adc_t const *pos);
-	adc_t DBH_DTCID(adc_t const *pos);
+	struct DataBlockHeader
+	{
+		// Word 0
+		uint16_t ByteCount;
+		// Word 1
+		uint8_t unused2 : 4;
+		uint8_t PacketType : 4;
+		uint8_t ROCID : 4;
+		uint8_t unused1 : 3;
+		uint8_t Valid : 1;
+		// Word 2
+		uint16_t unused3 : 5;
+		uint16_t PacketCount : 11;
+		// Word 3
+		uint16_t TimestampLow;
+		// Word 4
+		uint16_t TimestampMed;
+		// Word 5
+		uint16_t TimestampHigh;
+		// Word 6
+		uint8_t Status;
+		uint8_t FormatVersion;
+		// Word 7
+		uint8_t DTCID : 6;
+		uint8_t SubsystemID : 2;
+		uint8_t EVBMode;
 
-	// TRK DataBlock Payload Accessor Methods (by block address)
-	adc_t DBT_StrawIndex(adc_t const *pos);
-	adc_t DBT_TDC0(adc_t const *pos);
-	adc_t DBT_TDC1(adc_t const *pos);
-	adc_t DBT_TOT0(adc_t const *pos);
-	adc_t DBT_TOT1(adc_t const *pos);
-	std::array<adc_t, 15> DBT_Waveform(adc_t const *pos);
-	adc_t DBT_Flags(adc_t const *pos);
+		uint64_t GetTimestamp() const { return static_cast<uint64_t>(TimestampLow) + (static_cast<uint64_t>(TimestampMed) << 16) + (static_cast<uint64_t>(TimestampHigh) << 32); }
+	};
 
-	// CAL DataBlock Payload Accessor Method (by block address)
-        adc_t DBC_NumHits(adc_t const *pos);
-	adc_t DBC_BoardID(adc_t const *pos);
-	adc_t DBC_ChannelStatusFlagsA(adc_t const *pos);
-        adc_t DBC_ChannelStatusFlagsB(adc_t const *pos);
-
-	adc_t DBC_ChannelNum(adc_t const *pos, size_t hitIdx);
-	adc_t DBC_DIRACOutputA(adc_t const *pos, size_t hitIdx);
-	adc_t DBC_DIRACOutputB(adc_t const *pos, size_t hitIdx);
-	adc_t DBC_ErrorFlags(adc_t const *pos, size_t hitIdx);
-
-	adc_t DBC_Time(adc_t const *pos, size_t hitIdx);
-	adc_t DBC_NumSamples(adc_t const *pos, size_t hitIdx);
-	adc_t DBC_PeakSampleIdx(adc_t const *pos, size_t hitIdx);
-        std::vector<int> DBC_Waveform(adc_t const *pos, size_t hitIdx);
-
-
-	// CRV ROC Status Accessor Methods (by block address)
-	adc_t DBVR_ControllerID(adc_t const *pos);
-	adc_t DBVR_PacketType(adc_t const *pos);
-	adc_t DBVR_EventWordCount(adc_t const *pos);
-	adc_t DBVR_ActiveFEBFlags0(adc_t const *pos);
-	adc_t DBVR_ActiveFEBFlags1(adc_t const *pos);
-	adc_t DBVR_ActiveFEBFlags2(adc_t const *pos);
-	adc_t DBVR_TriggerCount(adc_t const *pos);
-	adc_t DBVR_EventType(adc_t const *pos);
-	adc_t DBVR_ErrorFlags(adc_t const *pos);
-
-	adc_t DBVR_NumHits(adc_t const *pos);
-
-	// CRV DataBlock Payload Accessor Methods (by block address and hit index)
-	adc_t DBV_sipmID(adc_t const *pos, size_t hitIdx);
-	//  std::array<unsigned int, mu2e::CrvDigi::NSamples> DBV_ADCs(adc_t const *pos, size_t hitIdx);
-	std::array<unsigned int, 8> DBV_ADCs(adc_t const *pos, size_t hitIdx);
-	adc_t DBV_startTDC(adc_t const *pos, size_t hitIdx);
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// DataBlock Header Accessor Methods (by block address)
-////////////////////////////////////////////////////////////////////////////////
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_ByteCount(adc_t const *pos)
-{
-	return *(pos + 0);
-}
-
-bool mu2e::ArtFragmentReader::DBH_Valid(adc_t const *pos)
-{
-	return (*(pos + 1) >> 15) & 0x0001;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_ROCID(adc_t const *pos)
-{
-	return *(pos + 1) & 0x000F;  // 0x000F = 0b1111
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_PacketType(adc_t const *pos)
-{
-	return (*(pos + 1) >> 4) & 0x000F;  // 0x000F = 0b1111
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_PacketCount(adc_t const *pos)
-{
-	return *(pos + 2) & 0x07FF;  // 0x07FF = 0b0111 1111 1111
-}
-
-uint64_t mu2e::ArtFragmentReader::DBH_Timestamp(adc_t const *pos)
-{
-	return uint64_t(*(pos + 3)) + (uint64_t(*(pos + 4)) << 16) + (uint64_t(*(pos + 5)) << 32);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_TimestampLow(adc_t const *pos)
-{
-	return *(pos + 3);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_TimestampMedium(adc_t const *pos)
-{
-	return *(pos + 4);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_TimestampHigh(adc_t const *pos)
-{
-	return *(pos + 5);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_Status(adc_t const *pos)
-{
-	return *(pos + 6) & 0x00FF;  // 0x00FF = 0b1111 1111
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_FormatVersion(adc_t const *pos)
-{
-	return *(pos + 6) >> 8;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_EVBMode(adc_t const *pos)
-{
-	return *(pos + 7) >> 8;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_SubsystemID(adc_t const *pos)
-{
-	return (*(pos + 7) >> 6) & 0x0003;  //0x0003 = 0b0011
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBH_DTCID(adc_t const *pos)
-{
-	return *(pos + 7) & 0x003F;  // 0x003F = 0b0011 1111
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TRK DataBlock Payload Accessor Methods (by block address)
-////////////////////////////////////////////////////////////////////////////////
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_StrawIndex(adc_t const *pos)
-{
-	return *(pos + 8 + 0);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TDC0(adc_t const *pos)
-{
-	return (uint32_t(*(pos + 8 + 1)) & 0xFFFF);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TDC1(adc_t const *pos)
-{
-	return (uint32_t(*(pos + 8 + 2)) & 0xFFFF);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TOT0(adc_t const *pos)
-{
-	return (uint32_t(*(pos + 8 + 3)) & 0x00FF);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_TOT1(adc_t const *pos)
-{
-	return ((uint32_t(*(pos + 8 + 3)) >> 8) & 0x00FF);
-}
-
-std::array<mu2e::ArtFragmentReader::adc_t, 15> mu2e::ArtFragmentReader::DBT_Waveform(adc_t const *pos)
-{
-	std::array<adc_t, 15> waveform;
-
-	// Four 12-bit tracker ADC samples fit into every three slots (16 bits * 3)
-	// when we pack them tightly
-
-	for (size_t i = 0; i < 4; i += 1) {
-		waveform[0 + i * 4] = *(pos + 8 + 4 + i * 3) & 0x0FFF;
-		waveform[1 + i * 4] = ((*(pos + 8 + 4 + i * 3 + 1) & 0x00FF) << 4) | (*(pos + 8 + 4 + i * 3) >> 12);
-		waveform[2 + i * 4] = ((*(pos + 8 + 4 + i * 3 + 2) & 0x000F) << 8) | (*(pos + 8 + 4 + i * 3 + 1) >> 8);
-		if (i < 3) {
-			waveform[3 + i * 4] = (*(pos + 8 + 4 + i * 3 + 2) >> 4);
+	const DataBlockHeader *GetHeader(size_t block_num)
+	{
+		if (block_num >= block_count())
+		{
+			TLOG(TLVL_ERROR) << "Requested block " << block_num << " is outside the allowed range! (" << block_count() << ")";
+			return nullptr;
 		}
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader))
+		{
+			TLOG(TLVL_ERROR) << "Data block size indicates that it does not contain a complete DataBlockHeader! This data is probably corrupt!";
+			return nullptr;
+		}
+		return reinterpret_cast<const DataBlockHeader *>(dataAtBlockIndex(block_num));
 	}
 
-	return waveform;
-}
+	struct TrackerDataPacket
+	{
+		uint16_t StrawIndex;
+		uint16_t TDC0;
+		uint16_t TDC1;
+		uint8_t TOT0;
+		uint8_t TOT1;
+		uint64_t ADC00 : 12;  // 12b
+		uint64_t ADC01 : 12;  // 24b
+		uint64_t ADC02 : 12;  // 36b
+		uint64_t ADC03 : 12;  // 48b
+		uint64_t ADC04 : 12;  // 60b
+		uint64_t ADC05A : 4;  // 64b
+		uint64_t ADC05B : 8;  // 8b
+		uint16_t ADC05() { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
+		uint64_t ADC06 : 12;  // 20b
+		uint64_t ADC07 : 12;  // 32b
+		uint64_t ADC08 : 12;  // 44b
+		uint64_t ADC09 : 12;  // 56b
+		uint64_t ADC10A : 8;  // 64b
+		uint64_t ADC10B : 4;  // 4b
+		uint16_t ADC10() { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
+		uint64_t ADC11 : 12;  // 16b
+		uint64_t ADC12 : 12;  // 28b
+		uint64_t ADC13 : 12;  // 40b
+		uint64_t ADC14 : 12;  // 52b
+		uint64_t unused1 : 4;
+		uint64_t PreprocessingFlags : 8;
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBT_Flags(adc_t const *pos)
-{
-	return (*(pos + 8 + 15) >> 8);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// CAL DataBlock Payload Accessor Methods (by block address)
-////////////////////////////////////////////////////////////////////////////////
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumHits(adc_t const *pos)
-{
-	return *(pos + 8);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_BoardID(adc_t const *pos)
-{
-        return *(pos + 8 + 1 + DBC_NumHits(pos)) & 0x03FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelStatusFlagsA(adc_t const *pos)
-{
-        return *(pos + 8 + 1 + DBC_NumHits(pos)) >> 10;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelStatusFlagsB(adc_t const *pos)
-{
-        return *(pos + 8 + 1 + DBC_NumHits(pos) + 1);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ChannelNum(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 0) & 0x003F;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_DIRACOutputA(adc_t const *pos, size_t hitIdx)
-{
-        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 0) >> 6;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_DIRACOutputB(adc_t const *pos, size_t hitIdx)
-{
-        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 1);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_ErrorFlags(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 2);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_Time(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 3);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_NumSamples(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 4) & 0x00FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBC_PeakSampleIdx(adc_t const *pos, size_t hitIdx)
-{
-        return *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 4) >> 8;
-}
-
-std::vector<int> mu2e::ArtFragmentReader::DBC_Waveform(adc_t const *pos, size_t hitIdx)
-{
-	std::vector<int> waveform(DBC_NumSamples(pos,hitIdx));
-	for (size_t i = 0; i < waveform.size(); i++) {
-		waveform[i] = *(pos + 8 + *(pos + 8 + 1 + hitIdx) + 5 + i);
-	}
-	return waveform;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// CRV ROC Status Accessor Methods
-////////////////////////////////////////////////////////////////////////////////
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ControllerID(adc_t const *pos)
-{
-	return *(pos + 8 + 0) >> 8;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_PacketType(adc_t const *pos)
-{
-	return *(pos + 8 + 0) & 0x00FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_EventWordCount(adc_t const *pos)
-{
-	return *(pos + 8 + 1);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ActiveFEBFlags0(adc_t const *pos)
-{
-	return *(pos + 8 + 3) & 0x00FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ActiveFEBFlags1(adc_t const *pos)
-{
-	return *(pos + 8 + 3) >> 8;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ActiveFEBFlags2(adc_t const *pos)
-{
-	return *(pos + 8 + 2) & 0x00FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_TriggerCount(adc_t const *pos)
-{
-	return *(pos + 8 + 5);
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_EventType(adc_t const *pos)
-{
-	return *(pos + 8 + 7) >> 8;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_ErrorFlags(adc_t const *pos)
-{
-	return *(pos + 8 + 7) & 0x00FF;
-}
-
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBVR_NumHits(adc_t const *pos)
-{
-	// Currently hardcoded to assume 12 bytes per hit (corresponding to 8 samples)
-        adc_t numHits = (*(pos + 8 + 1) - 16) / 12; // Subtract 16 for the ROC header packet
-
-	// Check whether the last hit is actually just empty filler in the last packet
-	if(numHits>0) {
-	  if(*(pos + 8 + 8 + 6*(numHits-1) + 1) == 0) {
-	    numHits = numHits - 1;
-	  }
+		std::array<adc_t, 15> Waveform()
+		{
+			std::array<adc_t, 15> output;
+			output[0] = ADC00;
+			output[1] = ADC01;
+			output[2] = ADC02;
+			output[3] = ADC03;
+			output[4] = ADC04;
+			output[5] = ADC05();
+			output[6] = ADC06;
+			output[7] = ADC07;
+			output[8] = ADC08;
+			output[9] = ADC09;
+			output[10] = ADC10();
+			output[11] = ADC11;
+			output[12] = ADC12;
+			output[13] = ADC13;
+			output[14] = ADC14;
+			return output;
+		}
+	};
+	const TrackerDataPacket *GetTrackerData(size_t block_num)
+	{
+		auto hdr = GetHeader(block_num);
+		if (hdr == nullptr) return nullptr;
+		if (hdr->SubsystemID != 0)
+		{
+			TLOG(TLVL_ERROR) << "Trying to get Tracker data packet from non-Tracker DataBlock!";
+			return nullptr;
+		}
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader) + sizeof(TrackerDataPacket))
+		{
+			TLOG(TLVL_ERROR) << "Data Block size indicates that Tracker Data is not present! This event is probably corrupt!";
+			return nullptr;
+		}
+		return reinterpret_cast<const TrackerDataPacket *>(hdr + 1);
 	}
 
-	return numHits;
-}
+	struct CalorimeterDataPacket
+	{
+		uint16_t NumberOfHits;
+	};
 
-////////////////////////////////////////////////////////////////////////////////
-// CRV DataBlock Payload Accessor Methods (by block address)
-////////////////////////////////////////////////////////////////////////////////
+	const CalorimeterDataPacket *GetCalorimeterData(size_t block_num)
+	{
+		auto hdr = GetHeader(block_num);
+		if (hdr == nullptr) return nullptr;
+		if (hdr->SubsystemID != 1)
+		{
+			TLOG(TLVL_ERROR) << "Trying to get Calorimeter data packet from non-Calorimeter DataBlock!";
+			return nullptr;
+		}
+		auto pkt = reinterpret_cast<const CalorimeterDataPacket *>(hdr + 1);
 
-// Note: The following accessor methods are hardcoded to assume 6 16-bit values
-// per CRV hit (corresponding to 8 samples per hit)
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader) + sizeof(CalorimeterDataPacket) + sizeof(CalorimeterBoardID) + sizeof(uint16_t) * (pkt->NumberOfHits + sizeof(CalorimeterHitReadoutPacket)))
+		{
+			TLOG(TLVL_ERROR) << "DataBlock size and Calorimeter header indicate that this DataBlock does not contain a complete Calorimeter event! This data is probably corrupt!";
+			return nullptr;
+		}
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBV_sipmID(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 16 + hitIdx * 6 + 0);
-}
-
-//std::array<unsigned int, mu2e::CrvDigi::NSamples> mu2e::ArtFragmentReader::DBV_ADCs(adc_t const *pos, size_t hitIdx) {
-//  std::array<unsigned int, mu2e::CrvDigi::NSamples> ADCs;
-//  for(size_t i=0; i<mu2e::CrvDigi::NSamples; i+=2) {
-
-// Hardcoding the number of samples per CRV hit to 8
-std::array<unsigned int, 8> mu2e::ArtFragmentReader::DBV_ADCs(adc_t const *pos, size_t hitIdx)
-{
-	std::array<unsigned int, 8> ADCs;
-	for (size_t i = 0; i < 8; i += 2) {
-		ADCs[i] = *(pos + 16 + hitIdx * 6 + 2 + i / 2) & 0x00FF;
-		ADCs[i + 1] = *(pos + 16 + hitIdx * 6 + 2 + i / 2) >> 8;
+		return pkt;
 	}
-	return ADCs;
-}
+	const uint16_t *GetCalorimeterHitIndex(size_t block_num, size_t hit_num)
+	{
+		auto data_pkt = GetCalorimeterData(block_num);
+		if (data_pkt == nullptr) return nullptr;
+		if (hit_num >= data_pkt->NumberOfHits)
+		{
+			TLOG(TLVL_ERROR) << "Requested hit index " << hit_num << " is greater than the maximum (" << (data_pkt->NumberOfHits - 1) << ")!";
+			return nullptr;
+		}
 
-mu2e::ArtFragmentReader::adc_t mu2e::ArtFragmentReader::DBV_startTDC(adc_t const *pos, size_t hitIdx)
-{
-	return *(pos + 16 + hitIdx * 6 + 1) & 0x00FF;
-}
+		return reinterpret_cast<const uint16_t *>(data_pkt + 1) + hit_num;
+	}
+
+	struct CalorimeterBoardID
+	{
+		uint16_t BoardID : 10;
+		uint16_t ChannelStatusFlagsA : 6;
+		uint16_t ChannelStatusFlagsB : 14;
+		uint16_t unused : 2;
+	};
+	const CalorimeterBoardID *GetCalorimeterBoardID(size_t block_num)
+	{
+		auto data_pkt = GetCalorimeterData(block_num);
+		if (data_pkt == nullptr) return nullptr;
+
+		return reinterpret_cast<const CalorimeterBoardID *>(reinterpret_cast<const uint16_t *>(data_pkt + 1) + data_pkt->NumberOfHits);
+	}
+
+	struct CalorimeterHitReadoutPacket
+	{
+		uint16_t ChannelNumber : 6;
+		uint16_t DIRACA : 10;
+		uint16_t DIRACB;
+		uint16_t ErrorFlags;
+		uint16_t Time;
+		uint8_t NumberOfSamples;
+		uint8_t IndexOfMaxDigitizerSample;
+	};
+
+	const CalorimeterHitReadoutPacket *GetCalorimeterReadoutPacket(size_t block_num, size_t hit_num)
+	{
+		auto end_ptr = reinterpret_cast<const uint8_t *>(dataAtBlockIndex(block_num)) + blockSizeBytes(block_num);
+
+		auto data_pkt = GetCalorimeterData(block_num);
+		if (data_pkt == nullptr) return nullptr;
+		if (hit_num >= data_pkt->NumberOfHits)
+		{
+			TLOG(TLVL_ERROR) << "Requested Hit Readout Packet at index " << hit_num << ", but maximum index is " << (data_pkt->NumberOfHits - 1) << "!";
+			return nullptr;
+		}
+
+		if (ReadoutPacketPointerCache[block_num].size() == 0)
+		{
+			auto ptr = reinterpret_cast<const CalorimeterHitReadoutPacket *>(GetCalorimeterBoardID(block_num) + 1);
+			if (ptr == nullptr) return nullptr;
+			if (reinterpret_cast<const uint8_t *>(ptr) > end_ptr)
+			{
+				TLOG(TLVL_ERROR) << "Fell off the end of the DataBlock while processing CalorimeterHitReadoutPackets!";
+				return nullptr;
+			}
+			ReadoutPacketPointerCache[block_num].push_back(ptr);
+		}
+
+		while (ReadoutPacketPointerCache[block_num].size() < hit_num + 1)
+		{
+			auto last_ptr = ReadoutPacketPointerCache[block_num].back();
+			auto ptr = reinterpret_cast<const CalorimeterHitReadoutPacket *>(reinterpret_cast<const uint16_t *>(last_ptr + 1) + last_ptr->NumberOfSamples);
+			if (reinterpret_cast<const uint8_t *>(ptr) > end_ptr)
+			{
+				TLOG(TLVL_ERROR) << "Fell off the end of the DataBlock while processing CalorimeterHitReadoutPackets!";
+				return nullptr;
+			}
+			ReadoutPacketPointerCache[block_num].push_back(ptr);
+		}
+		return ReadoutPacketPointerCache[block_num][hit_num + 1];
+	}
+	const uint16_t *GetCalorimeterReadoutSample(size_t block_num, size_t hit_num, size_t sample_num)
+	{
+		auto pkt = GetCalorimeterReadoutPacket(block_num, hit_num);
+		if (pkt == nullptr) return nullptr;
+		if (sample_num >= pkt->NumberOfSamples)
+		{
+			TLOG(TLVL_ERROR) << "Requested sample index " << sample_num << " is greater than the maximum allowed (" << (pkt->NumberOfSamples - 1) << ")!";
+			return nullptr;
+		}
+		return reinterpret_cast<const uint16_t *>(pkt + 1) + sample_num;
+	}
+
+	struct CRVROCStatusPacket
+	{
+		uint8_t unused1 : 4;
+		uint8_t PacketType : 4;  // == 0x06
+		uint8_t ControllerID;
+		uint16_t ControllerEventWordCount;
+		uint8_t ActiveFEBFlags2;
+		uint8_t unused2;
+		uint8_t ActiveFEBFlags0;
+		uint8_t ActiveFEBFlags1;
+		uint8_t unused3;
+		uint8_t unused4;
+		uint16_t TriggerCount;
+		uint8_t unused5;
+		uint8_t unused6;
+		uint8_t Errors;
+		uint8_t EventType;
+	};
+
+	// TODO: Write GetCRVROCStatusPacket(size_t block_num)
+
+	struct CRVHitReadoutPacket
+	{
+		uint16_t SiPMID;
+		uint16_t HitTime : 10;
+		uint16_t NumSamples : 6;
+		uint8_t WaveformSample0;
+		uint8_t WaveformSample1;
+		uint8_t WaveformSample2;
+		uint8_t WaveformSample3;
+		uint8_t WaveformSample4;
+		uint8_t WaveformSample5;
+		uint8_t WaveformSample6;
+		uint8_t WaveformSample7;
+	};
+
+	// TODO: Write GetCRVHitReadoutPacket(size_t block_num, size_t hit_idx);
+
+private:
+	std::unordered_map<size_t, std::deque<const CalorimeterHitReadoutPacket *>> ReadoutPacketPointerCache;
+};
 
 #endif /* mu2e_artdaq_Overlays_ArtFragmentReader_hh */
