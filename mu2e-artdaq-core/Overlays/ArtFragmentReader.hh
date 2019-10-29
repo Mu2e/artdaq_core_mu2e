@@ -37,14 +37,14 @@ public:
 		// Word 0
 		uint16_t ByteCount;
 		// Word 1
-		uint8_t unused2 : 4;
-		uint8_t PacketType : 4;
 		uint8_t ROCID : 4;
-		uint8_t unused1 : 3;
+		uint8_t PacketType : 4;
+		uint8_t SubsystemID : 3;
+		uint8_t unused1 : 4;
 		uint8_t Valid : 1;
 		// Word 2
-		uint16_t unused3 : 5;
 		uint16_t PacketCount : 11;
+		uint16_t unused2 : 5;
 		// Word 3
 		uint16_t TimestampLow;
 		// Word 4
@@ -55,8 +55,7 @@ public:
 		uint8_t Status;
 		uint8_t FormatVersion;
 		// Word 7
-		uint8_t DTCID : 6;
-		uint8_t SubsystemID : 2;
+		uint8_t DTCID;
 		uint8_t EVBMode;
 
 		uint64_t GetTimestamp() const { return static_cast<uint64_t>(TimestampLow) + (static_cast<uint64_t>(TimestampMed) << 16) + (static_cast<uint64_t>(TimestampHigh) << 32); }
