@@ -76,14 +76,14 @@ public:
 		uint64_t ADC04 : 12;  // 60b
 		uint64_t ADC05A : 4;  // 64b
 		uint64_t ADC05B : 8;  // 8b
-		uint16_t ADC05() { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
+		uint16_t ADC05() const { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
 		uint64_t ADC06 : 12;  // 20b
 		uint64_t ADC07 : 12;  // 32b
 		uint64_t ADC08 : 12;  // 44b
 		uint64_t ADC09 : 12;  // 56b
 		uint64_t ADC10A : 8;  // 64b
 		uint64_t ADC10B : 4;  // 4b
-		uint16_t ADC10() { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
+		uint16_t ADC10() const { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
 		uint64_t ADC11 : 12;  // 16b
 		uint64_t ADC12 : 12;  // 28b
 		uint64_t ADC13 : 12;  // 40b
@@ -91,7 +91,7 @@ public:
 		uint64_t unused1 : 4;
 		uint64_t PreprocessingFlags : 8;
 
-		std::array<adc_t, 15> Waveform()
+		std::array<adc_t, 15> Waveform() const
 		{
 			std::array<adc_t, 15> output;
 			output[0] = ADC00;
@@ -170,7 +170,7 @@ public:
 		uint8_t WaveformSample6;
 		uint8_t WaveformSample7;
 
-		std::array<unsigned int, 8> Waveform() {
+		std::array<unsigned int, 8> Waveform() const {
 			std::array<unsigned int, 8> output;
 			output[0] = WaveformSample0;
 			output[1] = WaveformSample1;
