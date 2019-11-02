@@ -27,34 +27,6 @@ public:
 
 	// typedef uint8_t packet_t[16];
 
-	// The "Metadata" struct is used to store info primarily related to
-	// the upstream hardware environment from where the fragment came
-
-	// "data_t" is a typedef of the fundamental unit of data the
-	// metadata structure thinks of itself as consisting of; it can give
-	// its size via the static "size_words" variable (
-	// DTCFragment::Metadata::size_words )
-
-	struct Metadata
-	{
-		typedef uint8_t data_t;
-		typedef uint32_t run_number_t;
-
-		data_t sim_mode : 4;
-		data_t unused : 4;  // 4 + 4 = 8 bits
-
-		data_t board_id;
-		data_t unused2;
-		data_t unused3;
-
-		run_number_t run_number;
-
-		static size_t const size_words = 8ul;  // Units of Metadata::data_t
-	};
-
-	static_assert(sizeof(Metadata) == Metadata::size_words * sizeof(Metadata::data_t),
-				  "DTCFragment::Metadata size changed");
-
 	// The "Header" struct contains "metadata" specific to the fragment
 	// which is not hardware-related
 
@@ -64,20 +36,35 @@ public:
 	// header in units of Header::data_t is given by "size_words", and
 	// the size of the fragment beyond the header in units of
 	// Header::data_t is given by "event_size"
-
 	struct Header
 	{
 		typedef uint8_t data_t;
-
+		typedef uint16_t data_size_t;
 		typedef uint64_t timestamp_t;
-		typedef uint32_t data_size_t;
 
-		data_size_t event_size;
+		// Word 0
+		data_size_t BlockByteCount;
+		// Word 1
+		data_t SubsystemID : 4;
+		data_t PacketType : 4;
+		data_t ROCID : 3;
+		data_t unused1 : 4;
+		data_t Valid : 1;
+		// Word 2
+		data_size_t PacketCount : 11;
+		data_size_t unused2 : 5;
+		// Word 3-5
+		data_size_t TimestampLow;
+		data_size_t TimestampMed;
+		data_size_t TimestampHigh;
+		// Word 6
+		data_t Status;
+		data_t FormatVersion;
+		// Word 7
+		data_t DTCID;
+		data_t EVBMode;
 
-		timestamp_t timestamp : 48;
-		timestamp_t unused : 16;
-
-		static size_t const size_words = 16ul;  // Units of Header::data_t
+		static size_t const size_words = 16ul;
 	};
 
 	static_assert(sizeof(Header) == Header::size_words * sizeof(Header::data_t), "DTCFragment::Header size changed");
@@ -89,8 +76,22 @@ public:
 		: artdaq_Fragment_(f) {}
 
 	// const getter functions for the data in the header
-	Header::data_size_t hdr_packet_count() const { return header_()->event_size; }
-	Header::timestamp_t hdr_timestamp() const { return header_()->timestamp; }
+	Header::data_size_t hdr_byte_count() const { return header_()->BlockByteCount; }
+	Header::data_t hdr_subsystem_id() const { return header_()->SubsystemID; }
+	Header::data_t hdr_packet_type() const { return header_()->PacketType; }
+	Header::data_t hdr_roc_id() const { return header_()->ROCID; }
+	bool hdr_is_valid() const { return header_()->Valid; }
+	Header::data_t hdr_status() const { return header_()->Status; }
+	Header::data_t hdr_data_format_version() const { return header_()->FormatVersion; }
+	Header::data_t hdr_dtc_id() const { return header_()->DTCID; }
+	Header::data_t hdr_evb_mode() const { return header_()->EVBMode; }
+	Header::data_size_t hdr_packet_count() const { return header_()->PacketCount; }
+	Header::timestamp_t hdr_timestamp() const
+	{
+		return static_cast<Header::timestamp_t>(header_()->TimestampLow) 
+			+ (static_cast<Header::timestamp_t>(header_()->TimestampMed) << 16) 
+			+ (static_cast<Header::timestamp_t>(header_()->TimestampHigh) << 32);
+	}
 
 	static constexpr size_t hdr_size_words() { return Header::size_words; }
 
