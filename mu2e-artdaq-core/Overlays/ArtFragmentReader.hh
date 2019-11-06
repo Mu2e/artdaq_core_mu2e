@@ -29,19 +29,23 @@ public:
 	ArtFragmentReader(artdaq::Fragment const &f)
 		: ArtFragment(f){};
 
+	/**************************************************************************
+	 ***************          DATA STRUCTURES                   ***************
+	 **************************************************************************/
 	struct DataBlockHeader
 	{
 		// Word 0
 		uint16_t ByteCount;
 		// Word 1
-		uint8_t unused2 : 4;
+		uint8_t Hopcount : 4;
 		uint8_t PacketType : 4;
-		uint8_t ROCID : 4;
-		uint8_t unused1 : 3;
+		uint8_t ROCID : 3;
+		uint8_t unused1 : 1;
+		uint8_t SubsystemID : 3;
 		uint8_t Valid : 1;
 		// Word 2
-		uint16_t unused3 : 5;
 		uint16_t PacketCount : 11;
+		uint16_t unused2 : 5;
 		// Word 3
 		uint16_t TimestampLow;
 		// Word 4
@@ -52,27 +56,11 @@ public:
 		uint8_t Status;
 		uint8_t FormatVersion;
 		// Word 7
-		uint8_t DTCID : 6;
-		uint8_t SubsystemID : 2;
+		uint8_t DTCID;
 		uint8_t EVBMode;
 
 		uint64_t GetTimestamp() const { return static_cast<uint64_t>(TimestampLow) + (static_cast<uint64_t>(TimestampMed) << 16) + (static_cast<uint64_t>(TimestampHigh) << 32); }
 	};
-
-	const DataBlockHeader *GetHeader(size_t block_num)
-	{
-		if (block_num >= block_count())
-		{
-			TLOG(TLVL_ERROR) << "Requested block " << block_num << " is outside the allowed range! (" << block_count() << ")";
-			return nullptr;
-		}
-		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader))
-		{
-			TLOG(TLVL_ERROR) << "Data block size indicates that it does not contain a complete DataBlockHeader! This data is probably corrupt!";
-			return nullptr;
-		}
-		return reinterpret_cast<const DataBlockHeader *>(dataAtBlockIndex(block_num));
-	}
 
 	struct TrackerDataPacket
 	{
@@ -88,14 +76,14 @@ public:
 		uint64_t ADC04 : 12;  // 60b
 		uint64_t ADC05A : 4;  // 64b
 		uint64_t ADC05B : 8;  // 8b
-		uint16_t ADC05() { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
+		uint16_t ADC05() const { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
 		uint64_t ADC06 : 12;  // 20b
 		uint64_t ADC07 : 12;  // 32b
 		uint64_t ADC08 : 12;  // 44b
 		uint64_t ADC09 : 12;  // 56b
 		uint64_t ADC10A : 8;  // 64b
 		uint64_t ADC10B : 4;  // 4b
-		uint16_t ADC10() { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
+		uint16_t ADC10() const { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
 		uint64_t ADC11 : 12;  // 16b
 		uint64_t ADC12 : 12;  // 28b
 		uint64_t ADC13 : 12;  // 40b
@@ -103,7 +91,7 @@ public:
 		uint64_t unused1 : 4;
 		uint64_t PreprocessingFlags : 8;
 
-		std::array<adc_t, 15> Waveform()
+		std::array<adc_t, 15> Waveform() const
 		{
 			std::array<adc_t, 15> output;
 			output[0] = ADC00;
@@ -124,6 +112,97 @@ public:
 			return output;
 		}
 	};
+
+	struct CalorimeterDataPacket
+	{
+		uint16_t NumberOfHits;
+	};
+
+	struct CalorimeterBoardID
+	{
+		uint16_t BoardID : 10;
+		uint16_t ChannelStatusFlagsA : 6;
+		uint16_t ChannelStatusFlagsB : 14;
+		uint16_t unused : 2;
+	};
+
+	struct CalorimeterHitReadoutPacket
+	{
+		uint16_t ChannelNumber : 6;
+		uint16_t DIRACA : 10;
+		uint16_t DIRACB;
+		uint16_t ErrorFlags;
+		uint16_t Time;
+		uint8_t NumberOfSamples;
+		uint8_t IndexOfMaxDigitizerSample;
+	};
+
+	struct CRVROCStatusPacket
+	{
+		uint8_t unused1 : 4;
+		uint8_t PacketType : 4;  // == 0x06
+		uint8_t ControllerID;
+		uint16_t ControllerEventWordCount;
+		uint8_t ActiveFEBFlags2;
+		uint8_t unused2;
+		uint8_t ActiveFEBFlags0;
+		uint8_t ActiveFEBFlags1;
+		uint8_t unused3;
+		uint8_t unused4;
+		uint16_t TriggerCount;
+		uint8_t unused5;
+		uint8_t unused6;
+		uint8_t Errors;
+		uint8_t EventType;
+	};
+
+	struct CRVHitReadoutPacket
+	{
+		uint16_t SiPMID;
+		uint16_t HitTime : 10;
+		uint16_t NumSamples : 6;
+		uint8_t WaveformSample0;
+		uint8_t WaveformSample1;
+		uint8_t WaveformSample2;
+		uint8_t WaveformSample3;
+		uint8_t WaveformSample4;
+		uint8_t WaveformSample5;
+		uint8_t WaveformSample6;
+		uint8_t WaveformSample7;
+
+		std::array<unsigned int, 8> Waveform() const {
+			std::array<unsigned int, 8> output;
+			output[0] = WaveformSample0;
+			output[1] = WaveformSample1;
+			output[2] = WaveformSample2;
+			output[3] = WaveformSample3;
+			output[4] = WaveformSample4;
+			output[5] = WaveformSample5;
+			output[6] = WaveformSample6;
+			output[7] = WaveformSample7;
+			return output;
+		}
+	};
+
+	/**************************************************************************
+	 ***************         RETRIEVAL METHODS                  ***************
+	 **************************************************************************/
+
+	const DataBlockHeader *GetHeader(size_t block_num)
+	{
+		if (block_num >= block_count())
+		{
+			TLOG(TLVL_ERROR) << "Requested block " << block_num << " is outside the allowed range! (" << block_count() << ")";
+			return nullptr;
+		}
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader))
+		{
+			TLOG(TLVL_ERROR) << "Data block size indicates that it does not contain a complete DataBlockHeader! This data is probably corrupt!";
+			return nullptr;
+		}
+		return reinterpret_cast<const DataBlockHeader *>(dataAtBlockIndex(block_num));
+	}
+
 	const TrackerDataPacket *GetTrackerData(size_t block_num)
 	{
 		auto hdr = GetHeader(block_num);
@@ -140,11 +219,6 @@ public:
 		}
 		return reinterpret_cast<const TrackerDataPacket *>(hdr + 1);
 	}
-
-	struct CalorimeterDataPacket
-	{
-		uint16_t NumberOfHits;
-	};
 
 	const CalorimeterDataPacket *GetCalorimeterData(size_t block_num)
 	{
@@ -165,6 +239,7 @@ public:
 
 		return pkt;
 	}
+
 	const uint16_t *GetCalorimeterHitIndex(size_t block_num, size_t hit_num)
 	{
 		auto data_pkt = GetCalorimeterData(block_num);
@@ -178,13 +253,6 @@ public:
 		return reinterpret_cast<const uint16_t *>(data_pkt + 1) + hit_num;
 	}
 
-	struct CalorimeterBoardID
-	{
-		uint16_t BoardID : 10;
-		uint16_t ChannelStatusFlagsA : 6;
-		uint16_t ChannelStatusFlagsB : 14;
-		uint16_t unused : 2;
-	};
 	const CalorimeterBoardID *GetCalorimeterBoardID(size_t block_num)
 	{
 		auto data_pkt = GetCalorimeterData(block_num);
@@ -192,17 +260,6 @@ public:
 
 		return reinterpret_cast<const CalorimeterBoardID *>(reinterpret_cast<const uint16_t *>(data_pkt + 1) + data_pkt->NumberOfHits);
 	}
-
-	struct CalorimeterHitReadoutPacket
-	{
-		uint16_t ChannelNumber : 6;
-		uint16_t DIRACA : 10;
-		uint16_t DIRACB;
-		uint16_t ErrorFlags;
-		uint16_t Time;
-		uint8_t NumberOfSamples;
-		uint8_t IndexOfMaxDigitizerSample;
-	};
 
 	const CalorimeterHitReadoutPacket *GetCalorimeterReadoutPacket(size_t block_num, size_t hit_num)
 	{
@@ -241,6 +298,7 @@ public:
 		}
 		return ReadoutPacketPointerCache[block_num][hit_num + 1];
 	}
+
 	const uint16_t *GetCalorimeterReadoutSample(size_t block_num, size_t hit_num, size_t sample_num)
 	{
 		auto pkt = GetCalorimeterReadoutPacket(block_num, hit_num);
@@ -253,43 +311,63 @@ public:
 		return reinterpret_cast<const uint16_t *>(pkt + 1) + sample_num;
 	}
 
-	struct CRVROCStatusPacket
+	const CRVROCStatusPacket *GetCRVROCStatusPacket(size_t block_num)
 	{
-		uint8_t unused1 : 4;
-		uint8_t PacketType : 4;  // == 0x06
-		uint8_t ControllerID;
-		uint16_t ControllerEventWordCount;
-		uint8_t ActiveFEBFlags2;
-		uint8_t unused2;
-		uint8_t ActiveFEBFlags0;
-		uint8_t ActiveFEBFlags1;
-		uint8_t unused3;
-		uint8_t unused4;
-		uint16_t TriggerCount;
-		uint8_t unused5;
-		uint8_t unused6;
-		uint8_t Errors;
-		uint8_t EventType;
-	};
+		auto hdr = GetHeader(block_num);
+		if (hdr == nullptr) return nullptr;
+		if (hdr->SubsystemID != 2)
+		{
+			TLOG(TLVL_ERROR) << "Trying to get CRV data packet from non-CRV DataBlock!";
+			return nullptr;
+		}
 
-	// TODO: Write GetCRVROCStatusPacket(size_t block_num)
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader) + sizeof(CRVROCStatusPacket))
+		{
+			TLOG(TLVL_ERROR) << "Data Block size indicates that CRV ROC Status Packet is not present! This event is probably corrupt!";
+			return nullptr;
+		}
 
-	struct CRVHitReadoutPacket
+		auto crv_hdr = reinterpret_cast<const CRVROCStatusPacket *>(hdr + 1);
+		if (blockSizeBytes(block_num) < sizeof(DataBlockHeader) + crv_hdr->ControllerEventWordCount)
+		{
+			TLOG(TLVL_ERROR) << "Inconsistency detected between Data Block Size (" << blockSizeBytes(block_num) << ") and CRV header's declared size (" << (sizeof(DataBlockHeader) + crv_hdr->ControllerEventWordCount) << ")! This event is probably corrupt!";
+			return nullptr;
+		}
+
+		return crv_hdr;
+	}
+
+	size_t GetCRVHitCount(size_t block_num)
 	{
-		uint16_t SiPMID;
-		uint16_t HitTime : 10;
-		uint16_t NumSamples : 6;
-		uint8_t WaveformSample0;
-		uint8_t WaveformSample1;
-		uint8_t WaveformSample2;
-		uint8_t WaveformSample3;
-		uint8_t WaveformSample4;
-		uint8_t WaveformSample5;
-		uint8_t WaveformSample6;
-		uint8_t WaveformSample7;
-	};
+		auto hdr = GetCRVROCStatusPacket(block_num);
+		if (hdr == nullptr) return 0;
 
-	// TODO: Write GetCRVHitReadoutPacket(size_t block_num, size_t hit_idx);
+		size_t hit_bytes = hdr->ControllerEventWordCount - sizeof(CRVROCStatusPacket);
+
+		size_t packet_count = hit_bytes / sizeof(CRVHitReadoutPacket);
+
+		auto hit_packet = reinterpret_cast<const CRVHitReadoutPacket *>(hdr + 1);
+		if (*reinterpret_cast<const uint8_t *>(hit_packet + (packet_count - 1)) == 0)
+		{
+			packet_count--;
+		}
+
+		return packet_count;
+	}
+
+	const CRVHitReadoutPacket *GetCRVHitReadoutPacket(size_t block_num, size_t hit_idx)
+	{
+		auto hdr = GetCRVROCStatusPacket(block_num);
+		if (hdr == nullptr) return nullptr;
+
+		auto hit_count = GetCRVHitCount(block_num);
+		if (hit_idx >= hit_count) {
+			TLOG(TLVL_ERROR) << "Requested hit index " << hit_idx << " is greater than the last hit index in this DataBlock (" << (hit_count - 1) << ")!";
+			return nullptr;
+		}
+
+		return reinterpret_cast<const CRVHitReadoutPacket *>(hdr + 1) + hit_idx;
+	}
 
 private:
 	std::unordered_map<size_t, std::deque<const CalorimeterHitReadoutPacket *>> ReadoutPacketPointerCache;

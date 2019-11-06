@@ -115,7 +115,7 @@ public:
 				{
 					std::cout << "0";
 				}
-				if (offset == 7) {
+				if (offset == 8) {
 					std::cout << " ";
 				}
 				else if (offset == 0)
