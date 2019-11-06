@@ -37,10 +37,11 @@ public:
 		// Word 0
 		uint16_t ByteCount;
 		// Word 1
-		uint8_t SubsystemID : 4;
+		uint8_t Hopcount : 4;
 		uint8_t PacketType : 4;
 		uint8_t ROCID : 3;
-		uint8_t unused1 : 4;
+		uint8_t unused1 : 1;
+		uint8_t SubsystemID : 3;
 		uint8_t Valid : 1;
 		// Word 2
 		uint16_t PacketCount : 11;
