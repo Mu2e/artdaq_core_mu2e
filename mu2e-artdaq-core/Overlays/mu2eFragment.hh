@@ -11,7 +11,8 @@
 
 // The "packing factor": How many DataBlocks are stored in each mu2eFragment
 // #define DATA_BLOCKS_PER_MU2E_FRAGMENT 2500
-#define DATA_BLOCKS_PER_MU2E_FRAGMENT 500
+// #define DATA_BLOCKS_PER_MU2E_FRAGMENT 500
+#define DATA_BLOCKS_PER_MU2E_FRAGMENT 5
 
 namespace mu2e {
 class mu2eFragment;
