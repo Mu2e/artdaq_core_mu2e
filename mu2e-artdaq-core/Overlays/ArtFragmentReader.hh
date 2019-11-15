@@ -26,9 +26,19 @@ std::ostream &operator<<(std::ostream &, ArtFragmentReader const &);
 class mu2e::ArtFragmentReader : public mu2e::ArtFragment
 {
 public:
-	ArtFragmentReader(artdaq::Fragment const &f)
-		: ArtFragment(f){};
-
+  ArtFragmentReader(artdaq::Fragment const &f)
+    : ArtFragment(f){};
+  
+  enum class PacketType : uint8_t
+  {
+    DCSRequest = 0,
+      Heartbeat = 1,
+      DataRequest = 2,
+      DCSReply = 3,
+      Dataheader = 5
+      };
+  
+  const int format_version = 6;
 	/**************************************************************************
 	 ***************          DATA STRUCTURES                   ***************
 	 **************************************************************************/
