@@ -60,6 +60,8 @@ e15:s67:online:prof         e15:s67:prof  -std=c++17
 
 e19:s94:offline:debug       e19:s94:debug     -std=c++17
 e19:s94:offline:prof        e19:s94:prof      -std=c++17
+e19:s94:py2:offline:debug   e19:s94:py2:debug     -std=c++17
+e19:s94:py2:offline:prof    e19:s94:py2:prof      -std=c++17
 
 e19:s89:offline:debug       e19:s89:debug     -std=c++17
 e19:s89:offline:prof        e19:s89:prof      -std=c++17
