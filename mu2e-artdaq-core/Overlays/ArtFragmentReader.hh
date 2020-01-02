@@ -295,7 +295,7 @@ public:
 			ReadoutPacketPointerCache[block_num].push_back(ptr);
 		}
 
-		while (ReadoutPacketPointerCache[block_num].size() < hit_num + 1)
+		while (ReadoutPacketPointerCache[block_num].size() <= hit_num)
 		{
 			auto last_ptr = ReadoutPacketPointerCache[block_num].back();
 			auto ptr = reinterpret_cast<const CalorimeterHitReadoutPacket *>(reinterpret_cast<const uint16_t *>(last_ptr + 1) + last_ptr->NumberOfSamples);
@@ -306,7 +306,7 @@ public:
 			}
 			ReadoutPacketPointerCache[block_num].push_back(ptr);
 		}
-		return ReadoutPacketPointerCache[block_num][hit_num + 1];
+		return ReadoutPacketPointerCache[block_num][hit_num];
 	}
 
 	const uint16_t *GetCalorimeterReadoutSample(size_t block_num, size_t hit_num, size_t sample_num)
