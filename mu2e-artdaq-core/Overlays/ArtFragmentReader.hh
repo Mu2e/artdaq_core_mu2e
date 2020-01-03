@@ -26,19 +26,19 @@ std::ostream &operator<<(std::ostream &, ArtFragmentReader const &);
 class mu2e::ArtFragmentReader : public mu2e::ArtFragment
 {
 public:
-  ArtFragmentReader(artdaq::Fragment const &f)
-    : ArtFragment(f){};
-  
-  enum class PacketType : uint8_t
-  {
-    DCSRequest = 0,
-      Heartbeat = 1,
-      DataRequest = 2,
-      DCSReply = 3,
-      Dataheader = 5
-      };
-  
-  const int format_version = 6;
+	ArtFragmentReader(artdaq::Fragment const &f)
+		: ArtFragment(f){};
+
+	enum class PacketType : uint8_t
+	{
+		DCSRequest = 0,
+		Heartbeat = 1,
+		DataRequest = 2,
+		DCSReply = 3,
+		Dataheader = 5
+	};
+
+	const int format_version = 6;
 	/**************************************************************************
 	 ***************          DATA STRUCTURES                   ***************
 	 **************************************************************************/
@@ -79,47 +79,130 @@ public:
 		uint16_t TDC1;
 		uint8_t TOT0;
 		uint8_t TOT1;
-		uint64_t ADC00 : 12;  // 12b
-		uint64_t ADC01 : 12;  // 24b
-		uint64_t ADC02 : 12;  // 36b
-		uint64_t ADC03 : 12;  // 48b
-		uint64_t ADC04 : 12;  // 60b
-		uint64_t ADC05A : 4;  // 64b
-		uint64_t ADC05B : 8;  // 8b
-		uint16_t ADC05() const { return static_cast<uint16_t>(ADC05A) + static_cast<uint16_t>(ADC05B << 4); }
-		uint64_t ADC06 : 12;  // 20b
-		uint64_t ADC07 : 12;  // 32b
-		uint64_t ADC08 : 12;  // 44b
-		uint64_t ADC09 : 12;  // 56b
-		uint64_t ADC10A : 8;  // 64b
-		uint64_t ADC10B : 4;  // 4b
-		uint16_t ADC10() const { return static_cast<uint16_t>(ADC10A) + static_cast<uint16_t>(ADC10B << 8); }
-		uint64_t ADC11 : 12;  // 16b
-		uint64_t ADC12 : 12;  // 28b
-		uint64_t ADC13 : 12;  // 40b
-		uint64_t ADC14 : 12;  // 52b
-		uint64_t unused1 : 4;
-		uint64_t PreprocessingFlags : 8;
+		uint16_t ADC00 : 12;
+		uint16_t ADC01A : 4;
+		uint16_t ADC01B : 8;
+		uint16_t ADC01() const { return ADC01A + (ADC01B << 4); }
+		uint16_t ADC02A : 8;
+		uint16_t ADC02B : 4;
+		uint16_t ADC02() const { return ADC02A + (ADC02B << 8); }
+
+		uint16_t ADC03 : 12;
+		uint16_t ADC04A : 4;
+		uint16_t ADC04B : 8;
+		uint16_t ADC04() const { return ADC04A + (ADC04B << 4); }
+		uint16_t ADC05A : 8;
+		uint16_t ADC05B : 4;
+		uint16_t ADC05() const { return ADC05A + (ADC05B << 8); }
+
+		uint16_t ADC06 : 12;
+		uint16_t ADC07A : 4;
+		uint16_t ADC07B : 8;
+		uint16_t ADC07() const { return ADC07A + (ADC07B << 4); }
+		uint16_t ADC08A : 8;
+		uint16_t ADC08B : 4;
+		uint16_t ADC08() const { return ADC08A + (ADC08B << 8); }
+
+		uint16_t ADC09 : 12;
+		uint16_t ADC10A : 4;
+		uint16_t ADC10B : 8;
+		uint16_t ADC10() const { return ADC10A + (ADC10B << 4); }
+		uint16_t ADC11A : 8;
+		uint16_t ADC11B : 4;
+		uint16_t ADC11() const { return ADC11A + (ADC11B << 8); }
+
+		uint16_t ADC12 : 12;
+		uint16_t ADC13A : 4;
+		uint16_t ADC13B : 8;
+		uint16_t ADC13() const { return ADC13A + (ADC13B << 4); }
+		uint16_t ADC14A : 8;
+		uint16_t ADC14B : 4;
+		uint16_t ADC14() const { return ADC14A + (ADC14B << 8); }
+
+		uint16_t unused1 : 4;
+		uint16_t PreprocessingFlags : 8;
 
 		std::array<adc_t, 15> Waveform() const
 		{
 			std::array<adc_t, 15> output;
 			output[0] = ADC00;
-			output[1] = ADC01;
-			output[2] = ADC02;
+			output[1] = ADC01();
+			output[2] = ADC02();
 			output[3] = ADC03;
-			output[4] = ADC04;
+			output[4] = ADC04();
 			output[5] = ADC05();
 			output[6] = ADC06;
-			output[7] = ADC07;
-			output[8] = ADC08;
+			output[7] = ADC07();
+			output[8] = ADC08();
 			output[9] = ADC09;
 			output[10] = ADC10();
-			output[11] = ADC11;
+			output[11] = ADC11();
 			output[12] = ADC12;
-			output[13] = ADC13;
-			output[14] = ADC14;
+			output[13] = ADC13();
+			output[14] = ADC14();
 			return output;
+		}
+
+		void SetWaveform(size_t index, adc_t waveform)
+		{
+			switch (index)
+			{
+				case 0:
+					ADC00 = waveform & 0xFFF;
+					break;
+				case 1:
+					ADC01A = waveform & 0xF;
+					ADC01B = (waveform >> 4) & 0xFF;
+					break;
+				case 2:
+					ADC02A = waveform & 0xFF;
+					ADC02B = (waveform >> 8) & 0xF;
+					break;
+				case 3:
+					ADC03 = waveform & 0xFFF;
+					break;
+				case 4:
+					ADC04A = waveform & 0xF;
+					ADC04B = (waveform >> 4) & 0xFF;
+					break;
+				case 5:
+					ADC05A = waveform & 0xFF;
+					ADC05B = (waveform >> 8) & 0xF;
+					break;
+				case 6:
+					ADC06 = waveform & 0xFFF;
+					break;
+				case 7:
+					ADC07A = waveform & 0xF;
+					ADC07B = (waveform >> 4) & 0xFF;
+					break;
+				case 8:
+					ADC08A = waveform & 0xFF;
+					ADC08B = (waveform >> 8) & 0xF;
+					break;
+				case 9:
+					ADC09 = waveform & 0xFFF;
+					break;
+				case 10:
+					ADC10A = waveform & 0xF;
+					ADC10B = (waveform >> 4) & 0xFF;
+					break;
+				case 11:
+					ADC11A = waveform & 0xFF;
+					ADC11B = (waveform >> 8) & 0xF;
+					break;
+				case 12:
+					ADC12 = waveform & 0xFFF;
+					break;
+				case 13:
+					ADC13A = waveform & 0xF;
+					ADC13B = (waveform >> 4) & 0xFF;
+					break;
+				case 14:
+					ADC14A = waveform & 0xFF;
+					ADC14B = (waveform >> 8) & 0xF;
+					break;
+			}
 		}
 	};
 
@@ -180,7 +263,8 @@ public:
 		uint8_t WaveformSample6;
 		uint8_t WaveformSample7;
 
-		std::array<unsigned int, 8> Waveform() const {
+		std::array<unsigned int, 8> Waveform() const
+		{
 			std::array<unsigned int, 8> output;
 			output[0] = WaveformSample0;
 			output[1] = WaveformSample1;
@@ -371,7 +455,8 @@ public:
 		if (hdr == nullptr) return nullptr;
 
 		auto hit_count = GetCRVHitCount(block_num);
-		if (hit_idx >= hit_count) {
+		if (hit_idx >= hit_count)
+		{
 			TLOG(TLVL_ERROR) << "Requested hit index " << hit_idx << " is greater than the last hit index in this DataBlock (" << (hit_count - 1) << ")!";
 			return nullptr;
 		}
