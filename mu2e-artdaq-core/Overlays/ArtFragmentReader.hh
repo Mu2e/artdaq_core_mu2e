@@ -86,30 +86,25 @@ public:
 		uint16_t ADC02A : 8;
 		uint16_t ADC02B : 4;
 		uint16_t ADC02() const { return ADC02A + (ADC02B << 8); }
-
 		uint16_t ADC03 : 12;
-		uint16_t ADC04A : 4;
-		uint16_t ADC04B : 8;
-		uint16_t ADC04() const { return ADC04A + (ADC04B << 4); }
-		uint16_t ADC05A : 8;
-		uint16_t ADC05B : 4;
-		uint16_t ADC05() const { return ADC05A + (ADC05B << 8); }
 
-		uint16_t ADC06 : 12;
-		uint16_t ADC07A : 4;
-		uint16_t ADC07B : 8;
-		uint16_t ADC07() const { return ADC07A + (ADC07B << 4); }
-		uint16_t ADC08A : 8;
-		uint16_t ADC08B : 4;
-		uint16_t ADC08() const { return ADC08A + (ADC08B << 8); }
+		uint16_t ADC04 : 12;
+		uint16_t ADC05A : 4;
+		uint16_t ADC05B : 8;
+		uint16_t ADC05() const { return ADC05A + (ADC05B << 4); }
+		uint16_t ADC06A : 8;
+		uint16_t ADC06B : 4;
+		uint16_t ADC06() const { return ADC06A + (ADC06B << 8); }
+		uint16_t ADC07 : 12;
 
-		uint16_t ADC09 : 12;
-		uint16_t ADC10A : 4;
-		uint16_t ADC10B : 8;
-		uint16_t ADC10() const { return ADC10A + (ADC10B << 4); }
-		uint16_t ADC11A : 8;
-		uint16_t ADC11B : 4;
-		uint16_t ADC11() const { return ADC11A + (ADC11B << 8); }
+		uint16_t ADC08 : 12;
+		uint16_t ADC09A : 4;
+		uint16_t ADC09B : 8;
+		uint16_t ADC09() const { return ADC09A + (ADC09B << 4); }
+		uint16_t ADC10A : 8;
+		uint16_t ADC10B : 4;
+		uint16_t ADC10() const { return ADC10A + (ADC10B << 8); }
+		uint16_t ADC11 : 12;
 
 		uint16_t ADC12 : 12;
 		uint16_t ADC13A : 4;
@@ -129,14 +124,14 @@ public:
 			output[1] = ADC01();
 			output[2] = ADC02();
 			output[3] = ADC03;
-			output[4] = ADC04();
+			output[4] = ADC04;
 			output[5] = ADC05();
-			output[6] = ADC06;
-			output[7] = ADC07();
-			output[8] = ADC08();
-			output[9] = ADC09;
+			output[6] = ADC06();
+			output[7] = ADC07;
+			output[8] = ADC08;
+			output[9] = ADC09();
 			output[10] = ADC10();
-			output[11] = ADC11();
+			output[11] = ADC11;
 			output[12] = ADC12;
 			output[13] = ADC13();
 			output[14] = ADC14();
@@ -162,34 +157,32 @@ public:
 					ADC03 = waveform & 0xFFF;
 					break;
 				case 4:
-					ADC04A = waveform & 0xF;
-					ADC04B = (waveform >> 4) & 0xFF;
+					ADC04 = waveform & 0xFFF;
 					break;
 				case 5:
-					ADC05A = waveform & 0xFF;
-					ADC05B = (waveform >> 8) & 0xF;
+					ADC05A = waveform & 0xF;
+					ADC05B = (waveform >> 4) & 0xFF;
 					break;
 				case 6:
-					ADC06 = waveform & 0xFFF;
+					ADC06A = waveform & 0xFF;
+					ADC06B = (waveform >> 8) & 0xF;
 					break;
 				case 7:
-					ADC07A = waveform & 0xF;
-					ADC07B = (waveform >> 4) & 0xFF;
+					ADC07 = waveform & 0xFFF;
 					break;
 				case 8:
-					ADC08A = waveform & 0xFF;
-					ADC08B = (waveform >> 8) & 0xF;
+					ADC08 = waveform & 0xFFF;
 					break;
 				case 9:
-					ADC09 = waveform & 0xFFF;
+					ADC09A = waveform & 0xF;
+					ADC09B = (waveform >> 4) & 0xFF;
 					break;
 				case 10:
-					ADC10A = waveform & 0xF;
-					ADC10B = (waveform >> 4) & 0xFF;
+					ADC10A = waveform & 0xFF;
+					ADC10B = (waveform >> 8) & 0xF;
 					break;
 				case 11:
-					ADC11A = waveform & 0xFF;
-					ADC11B = (waveform >> 8) & 0xF;
+					ADC11 = waveform & 0xFFF;
 					break;
 				case 12:
 					ADC12 = waveform & 0xFFF;
