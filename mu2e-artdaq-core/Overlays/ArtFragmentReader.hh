@@ -69,6 +69,24 @@ public:
 		uint8_t DTCID;
 		uint8_t EVBMode;
 
+		DataBlockHeader()
+			: ByteCount(0)
+			, Hopcount(0)
+			, PacketType(0)
+			, ROCID(0)
+			, unused1(0)
+			, SubsystemID(0)
+			, Valid(0)
+			, PacketCount(0)
+			, unused2(0)
+			, TimestampLow(0)
+			, TimestampMed(0)
+			, TimestampHigh(0)
+			, Status(0)
+			, FormatVersion(0)
+			, DTCID(0)
+			, EVBMode(0)
+		{}
 		uint64_t GetTimestamp() const { return static_cast<uint64_t>(TimestampLow) + (static_cast<uint64_t>(TimestampMed) << 16) + (static_cast<uint64_t>(TimestampHigh) << 32); }
 	};
 
@@ -116,6 +134,39 @@ public:
 
 		uint16_t unused1 : 4;
 		uint16_t PreprocessingFlags : 8;
+
+		TrackerDataPacket()
+			: StrawIndex(0)
+			, TDC0(0)
+			, TDC1(0)
+			, TOT0(0)
+			, TOT1(0)
+			, ADC00(0)
+			, ADC01A(0)
+			, ADC01B(0)
+			, ADC02A(0)
+			, ADC02B(0)
+			, ADC03(0)
+			, ADC04(0)
+			, ADC05A(0)
+			, ADC05B(0)
+			, ADC06A(0)
+			, ADC06B(0)
+			, ADC07(0)
+			, ADC08(0)
+			, ADC09A(0)
+			, ADC09B(0)
+			, ADC10A(0)
+			, ADC10B(0)
+			, ADC11(0)
+			, ADC12(0)
+			, ADC13A(0)
+			, ADC13B(0)
+			, ADC14A(0)
+			, ADC14B(0)
+			, unused1(0)
+			, PreprocessingFlags(0)
+		{}
 
 		std::array<adc_t, 15> Waveform() const
 		{
@@ -202,6 +253,9 @@ public:
 	struct CalorimeterDataPacket
 	{
 		uint16_t NumberOfHits;
+
+		CalorimeterDataPacket()
+			: NumberOfHits(0) {}
 	};
 
 	struct CalorimeterBoardID
@@ -210,6 +264,9 @@ public:
 		uint16_t ChannelStatusFlagsA : 6;
 		uint16_t ChannelStatusFlagsB : 14;
 		uint16_t unused : 2;
+
+		CalorimeterBoardID()
+			: BoardID(0), ChannelStatusFlagsA(0), ChannelStatusFlagsB(0), unused(0) {}
 	};
 
 	struct CalorimeterHitReadoutPacket
@@ -221,6 +278,9 @@ public:
 		uint16_t Time;
 		uint8_t NumberOfSamples;
 		uint8_t IndexOfMaxDigitizerSample;
+
+		CalorimeterHitReadoutPacket()
+			: ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
 	};
 
 	struct CRVROCStatusPacket
@@ -240,6 +300,24 @@ public:
 		uint8_t unused6;
 		uint8_t Errors;
 		uint8_t EventType;
+
+		CRVROCStatusPacket()
+			: unused1(0)
+			, PacketType(0)
+			, ControllerID(0)
+			, ControllerEventWordCount(0)
+			, ActiveFEBFlags2(0)
+			, unused2(0)
+			, ActiveFEBFlags0(0)
+			, ActiveFEBFlags1(0)
+			, unused3(0)
+			, unused4(0)
+			, TriggerCount(0)
+			, unused5(0)
+			, unused6(0)
+			, Errors(0)
+			, EventType(0)
+		{}
 	};
 
 	struct CRVHitReadoutPacket
@@ -256,6 +334,18 @@ public:
 		uint8_t WaveformSample6;
 		uint8_t WaveformSample7;
 
+		CRVHitReadoutPacket()
+			: SiPMID(0)
+			, HitTime(0)
+			, NumSamples(0)
+			, WaveformSample0(0)
+			, WaveformSample1(0)
+			, WaveformSample2(0)
+			, WaveformSample3(0)
+			, WaveformSample4(0)
+			, WaveformSample5(0)
+			, WaveformSample6(0)
+			, WaveformSample7(0) {}
 		std::array<unsigned int, 8> Waveform() const
 		{
 			std::array<unsigned int, 8> output;
