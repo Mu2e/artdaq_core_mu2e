@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_03_05
+parent mu2e_artdaq_core 	v1_03_06
 defaultqual	e17:s74:offline
 
 # These optional lines define the installed directories where
@@ -17,7 +17,7 @@ bindir      fq_dir      bin
 
 #
 product		version		optional
-artdaq_core	v3_05_08a       offline
+artdaq_core	v3_05_13        offline
 artdaq_core     v3_05_09        online
 cetbuildtools	v7_13_02	-	only_for_build
 end_product_list
@@ -62,6 +62,11 @@ e17:s67:online:prof         e17:s67:prof  -std=c++17
 e15:s67:online:debug        e15:s67:debug  -std=c++17
 e15:s67:online:prof         e15:s67:prof  -std=c++17
 
+e19:s96:offline:debug       e19:s96:debug     -std=c++17
+e19:s96:offline:prof        e19:s96:prof      -std=c++17
+e19:s96:py2:offline:debug   e19:s96:py2:debug     -std=c++17
+e19:s96:py2:offline:prof    e19:s96:py2:prof      -std=c++17
+
 e19:s94:offline:debug       e19:s94:debug     -std=c++17
 e19:s94:offline:prof        e19:s94:prof      -std=c++17
 e19:s94:py2:offline:debug   e19:s94:py2:debug     -std=c++17
@@ -93,26 +98,6 @@ e19:s81:offline:debug       e19:s81:debug -std=c++17
 e19:s81:offline:prof        e19:s81:prof  -std=c++17
 e17:s81:offline:debug       e17:s81:debug -std=c++17
 e17:s81:offline:prof        e17:s81:prof  -std=c++17
-
-e17:s79:offline:debug       e17:s79:debug -std=c++17
-e17:s79:offline:prof        e17:s79:prof  -std=c++17
-
-e17:s74:offline:debug       e17:s74:debug -std=c++17
-e17:s74:offline:prof        e17:s74:prof -std=c++17
-
-e17:s73:offline:debug       e17:s73:debug -std=c++17
-e17:s73:offline:prof        e17:s73:prof -std=c++17
-
-e17:s72:offline:debug       e17:s72:debug -std=c++17
-e17:s72:offline:prof        e17:s72:prof -std=c++17
-
-e17:s70:offline:debug       e17:s70:debug -std=c++17
-e17:s70:offline:prof        e17:s70:prof -std=c++17
-
-e17:s67:offline:debug       e17:s67:debug -std=c++17
-e17:s67:offline:prof        e17:s67:prof  -std=c++17
-
-e15:s67:offline:prof        e15:s67:prof  -std=c++17
 
 end_qualifier_list
 
