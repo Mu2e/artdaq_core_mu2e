@@ -18,7 +18,7 @@ bindir      fq_dir      bin
 #
 product		version		optional
 artdaq_core	v3_05_08a       offline
-artdaq_core     v3_05_09        online
+artdaq_core     v3_05_10        online
 cetbuildtools	v7_13_02	-	only_for_build
 end_product_list
 
