@@ -17,6 +17,7 @@ IF (NOT CETBUILDTOOLS_VERSION)
 ENDIF()
 
 set(CMAKE_MODULE_PATH 
+  $ENV{CANVAS_ROOT_IO_DIR}/Modules
         $ENV{CANVAS_DIR}/Modules
         $ENV{CETBUILDTOOLS_DIR}/Modules
         ${CMAKE_MODULE_PATH})
@@ -59,6 +60,7 @@ cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PAT
 # macros for art_dictionary and simple_plugin
 include(CetMake)
 include(CetTest)
+  include(ArtDictionary)
 
 # source
 add_subdirectory(mu2e-artdaq-core)
