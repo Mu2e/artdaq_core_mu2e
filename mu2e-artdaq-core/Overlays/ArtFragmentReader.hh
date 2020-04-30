@@ -16,6 +16,7 @@
 #include <iostream>
 #include <deque>
 #include <unordered_map>
+#include <array>
 
 namespace mu2e {
 class ArtFragmentReader;
