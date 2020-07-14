@@ -80,12 +80,8 @@ e15:s67:online:prof         e15:s67:prof  -std=c++17
 
 e20:s98:offline:debug       e20:s98:debug     -std=c++17
 e20:s98:offline:prof        e20:s98:prof      -std=c++17
-e20:s98:py2:offline:debug   e20:s98:py2:debug     -std=c++17
-e20:s98:py2:offline:prof    e20:s98:py2:prof      -std=c++17
 e19:s98:offline:debug       e19:s98:debug     -std=c++17
 e19:s98:offline:prof        e19:s98:prof      -std=c++17
-e19:s98:py2:offline:debug   e19:s98:py2:debug     -std=c++17
-e19:s98:py2:offline:prof    e19:s98:py2:prof      -std=c++17
 
 e19:s97:offline:debug       e19:s97:debug     -std=c++17
 e19:s97:offline:prof        e19:s97:prof      -std=c++17
