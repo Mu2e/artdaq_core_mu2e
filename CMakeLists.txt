@@ -47,7 +47,7 @@ find_ups_product( canvas )
 #find_ups_product( messagefacility v1_10_00 )
 find_ups_product( TRACE v3_03_00 )
 find_ups_product( cetlib v1_03_00 )
-#find_ups_root( v5_34_00 )
+find_ups_root( v5_34_00 )
 find_ups_boost( v1_50_0 filesystem
                         program_options
                         unit_test_framework
@@ -60,7 +60,7 @@ cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PAT
 # macros for art_dictionary and simple_plugin
 include(CetMake)
 include(CetTest)
-  include(ArtDictionary)
+include(ArtDictionary)
 
 # source
 add_subdirectory(mu2e-artdaq-core)
