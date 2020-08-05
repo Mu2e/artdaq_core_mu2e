@@ -12,7 +12,7 @@ cet_make(NO_DICTIONARY
 
   artdaq-core_Data
 
-  mu2e_artdaq-core_Overlays
+  mu2e-artdaq-core_Overlays
 
   artdaq-core_Data_Artdaq_fragmentNameHelper
 
