@@ -70,7 +70,7 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment &f)
 	// DTCFragment's standard data type size and the
 	// artdaq::Fragment's data type size, on the Metadata object
 
-	TLOG_ARB(TLVL_DEBUG, "mu2eFragmentWriter") << "mu2eFragmentWriter Constructor";
+	TLOG_ARB(17, "mu2eFragmentWriter") << "mu2eFragmentWriter Constructor";
 
 	assert(sizeof(Metadata::data_t) == sizeof(Header::data_t));
 
