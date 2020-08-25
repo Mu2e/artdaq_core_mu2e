@@ -61,6 +61,7 @@ cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PAT
 include(CetMake)
 include(CetTest)
 include(ArtDictionary)
+include(BasicPlugin)
 
 # source
 add_subdirectory(mu2e-artdaq-core)
