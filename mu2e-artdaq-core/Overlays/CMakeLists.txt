@@ -2,9 +2,11 @@ cet_make(NO_DICTIONARY
   EXCLUDE Mu2e_fragmentNameHelper.cc
   LIBRARIES
   artdaq-core_Utilities
+  DTCInterface
   ${ARTDAQ_DAQDATA}
   ${CETLIB}
   ${CETLIB_EXCEPT}
+  ${MF_MESSAGELOGGER}
   )
 
 

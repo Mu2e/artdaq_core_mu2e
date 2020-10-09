@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core 	v1_04_07
+parent mu2e_artdaq_core		v1_04_08_indev
 defaultqual	e19:s96:online
 
 # These optional lines define the installed directories where
@@ -16,10 +16,11 @@ libdir      fq_dir      lib
 bindir      fq_dir      bin
 
 #
-product		version		optional
-artdaq_core	v3_06_02        offline
-artdaq_core     v3_06_01        online
-cetbuildtools	v7_17_01	-	only_for_build
+product						version		optional
+artdaq_core					v3_06_01	offline
+artdaq_core					v3_06_01	online
+pcie_linux_kernel_module	v2_03_07_indev
+cetbuildtools				v7_17_01	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -30,40 +31,45 @@ end_product_list
 # -nq- means there is no qualifier
 # a "-" means the dependent product is not required by the parent and will not be setup
 
-qualifier     	  	    artdaq_core   notes
-e20:s101:online:debug       e20:s101:debug     -std=c++17
-e20:s101:online:prof        e20:s101:prof      -std=c++17
-e19:s101:online:debug       e19:s101:debug     -std=c++17
-e19:s101:online:prof        e19:s101:prof      -std=c++17
-c7:s101:online:debug        c7:s101:debug       -std=c++17
-c7:s101:online:prof         c7:s101:prof        -std=c++17
+qualifier					artdaq_core			pcie_linux_kernel_module	notes
+e20:s101:online:debug		e20:s101:debug		e20:s101:debug				-std=c++17
+e20:s101:online:prof		e20:s101:prof		e20:s101:prof				-std=c++17
+e19:s101:online:debug		e19:s101:debug		e19:s101:debug				-std=c++17
+e19:s101:online:prof		e19:s101:prof		e19:s101:prof				-std=c++17
+c7:s101:online:debug		c7:s101:debug		c7:s101:debug				-std=c++17
+c7:s101:online:prof			c7:s101:prof		c7:s101:prof				-std=c++17
 
-e19:s96:online:debug       e19:s96:debug     -std=c++17
-e19:s96:online:prof        e19:s96:prof      -std=c++17
-e19:s96:py2:online:debug   e19:s96:py2:debug     -std=c++17
-e19:s96:py2:online:prof    e19:s96:py2:prof      -std=c++17
-c7:s96:online:debug       c7:s96:debug     -std=c++17
-c7:s96:online:prof        c7:s96:prof      -std=c++17
-c7:s96:py2:online:debug   c7:s96:py2:debug     -std=c++17
-c7:s96:py2:online:prof    c7:s96:py2:prof      -std=c++17
+e19:s96:online:debug		e19:s96:debug		e19:s96:debug				-std=c++17
+e19:s96:online:prof			e19:s96:prof		e19:s96:prof				-std=c++17
+e19:s96:py2:online:debug	e19:s96:py2:debug	e19:s96:py2:debug			-std=c++17
+e19:s96:py2:online:prof		e19:s96:py2:prof	e19:s96:py2:prof			-std=c++17
+c7:s96:online:debug			c7:s96:debug		c7:s96:debug				-std=c++17
+c7:s96:online:prof			c7:s96:prof			c7:s96:prof					-std=c++17
+c7:s96:py2:online:debug		c7:s96:py2:debug	c7:s96:py2:debug			-std=c++17
+c7:s96:py2:online:prof		c7:s96:py2:prof		c7:s96:py2:prof				-std=c++17
 
-e19:s87:online:debug       e19:s87:debug -std=c++17
-e19:s87:online:prof        e19:s87:prof  -std=c++17
-e17:s87:online:debug       e17:s87:debug -std=c++17
-e17:s87:online:prof        e17:s87:prof  -std=c++17
+e19:s87:online:debug		e19:s87:debug		e19:s87:debug				-std=c++17
+e19:s87:online:prof			e19:s87:prof		e19:s87:prof				-std=c++17
+e17:s87:online:debug		e17:s87:debug		e17:s87:debug				-std=c++17
+e17:s87:online:prof			e17:s87:prof		e17:s87:prof				-std=c++17
 
-e17:s85:online:debug        e17:s85:debug -std=c++17
-e17:s85:online:prof         e17:s85:prof -std=c++17
+e17:s85:online:debug		e17:s85:debug		e17:s85:debug				-std=c++17
+e17:s85:online:prof			e17:s85:prof		e17:s85:prof				-std=c++17
 
-e20:s101:offline:debug       e20:s101:debug     -std=c++17
-e20:s101:offline:prof        e20:s101:prof      -std=c++17
-e19:s101:offline:debug       e19:s101:debug     -std=c++17
-e19:s101:offline:prof        e19:s101:prof      -std=c++17
+e20:s101:offline:debug		e20:s101:debug		e20:s101:debug				-std=c++17
+e20:s101:offline:prof		e20:s101:prof		e20:s101:prof				-std=c++17
+e19:s101:offline:debug		e19:s101:debug		e19:s101:debug				-std=c++17
+e19:s101:offline:prof		e19:s101:prof		e19:s101:prof				-std=c++17
 
-e19:s96:offline:debug       e19:s96:debug     -std=c++17
-e19:s96:offline:prof        e19:s96:prof      -std=c++17
-e19:s96:py2:offline:debug   e19:s96:py2:debug     -std=c++17
-e19:s96:py2:offline:prof    e19:s96:py2:prof      -std=c++17
+e19:s97:offline:debug		e19:s97:debug		e19:s97:debug				-std=c++17
+e19:s97:offline:prof		e19:s97:prof		e19:s97:prof				-std=c++17
+e19:s97:py2:offline:debug	e19:s97:py2:debug	e19:s97:py2:debug			-std=c++17
+e19:s97:py2:offline:prof	e19:s97:py2:prof	e19:s97:py2:prof			-std=c++17
+
+e19:s96:offline:debug		e19:s96:debug		e19:s96:debug				-std=c++17
+e19:s96:offline:prof		e19:s96:prof		e19:s96:prof				-std=c++17
+e19:s96:py2:offline:debug	e19:s96:py2:debug	e19:s96:py2:debug			-std=c++17
+e19:s96:py2:offline:prof	e19:s96:py2:prof	e19:s96:py2:prof			-std=c++17
 
 end_qualifier_list
 
