@@ -111,7 +111,7 @@ std::unique_ptr<TrackerFragment::TrackerDataPacket> TrackerFragment::Upgrade(con
 
 	output->TDC0B = 0;
 	output->TOT0 = input->TOT0 & 0xF;
-	output->EWMCounter;
+	output->EWMCounter = 0;
 
 	output->TDC1A = input->TDC1;
 
@@ -120,7 +120,7 @@ std::unique_ptr<TrackerFragment::TrackerDataPacket> TrackerFragment::Upgrade(con
 	output->ErrorFlags = input->PreprocessingFlags & 0xF;  // Note that we're dropping 4 bits here
 
 	output->NumADCPackets = 1;
-	output->PMP;
+	output->PMP = 0;
 
 	return output;
 }
