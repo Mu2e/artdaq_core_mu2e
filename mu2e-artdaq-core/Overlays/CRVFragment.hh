@@ -5,6 +5,7 @@
 #include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
 #include <memory>
 #include <vector>
+#include <array>
 
 namespace mu2e {
 class CRVFragment : public ArtFragment
