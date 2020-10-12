@@ -106,10 +106,12 @@ std::vector<uint16_t> TrackerFragment::GetWaveform(TrackerDataPacket const* trac
 	return output;
 }
 
-TrackerFragment::TrackerDataPacket* TrackerFragment::Upgrade(const TrackerFragment::TrackerDataPacketV0* input)
+const TrackerFragment::TrackerDataPacket* TrackerFragment::Upgrade(const TrackerFragment::TrackerDataPacketV0* input) const
 {
 	if (input == nullptr) return nullptr;
-	TrackerDataPacket* output = new TrackerDataPacket();
+
+	upgraded_data_packets_.emplace_back();
+	TrackerDataPacket* output = &upgraded_data_packets_.back();
 	output->StrawIndex = input->StrawIndex;
 
 	output->TDC0A = input->TDC0;

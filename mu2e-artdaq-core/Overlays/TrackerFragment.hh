@@ -275,13 +275,16 @@ public:
 		}
 	};
 
-	typedef std::vector<std::pair<TrackerDataPacket*, std::vector<uint16_t>>> tracker_data_t;
+	typedef std::vector<std::pair<const TrackerDataPacket*, std::vector<uint16_t>>> tracker_data_t;
 	tracker_data_t GetTrackerData(size_t blockIndex, bool readWaveform = true) const;
+	void ClearUpgradedPackets() { upgraded_data_packets_.clear(); }
 
 private:
-	static TrackerDataPacket* Upgrade(const TrackerDataPacketV0* input);
+	const TrackerDataPacket* Upgrade(const TrackerDataPacketV0* input) const;
 	std::vector<uint16_t> GetWaveformV0(const TrackerDataPacketV0* input) const;
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
+
+	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
 };
 }  // namespace mu2e
 
