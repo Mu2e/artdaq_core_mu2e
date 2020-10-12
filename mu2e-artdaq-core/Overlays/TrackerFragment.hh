@@ -275,11 +275,11 @@ public:
 		}
 	};
 
-	typedef std::vector<std::pair<TrackerDataPacket, std::vector<uint16_t>>> tracker_data_t;
-	tracker_data_t GetTrackerData(size_t blockIndex) const;
+	typedef std::vector<std::pair<TrackerDataPacket*, std::vector<uint16_t>>> tracker_data_t;
+	tracker_data_t GetTrackerData(size_t blockIndex, bool readWaveform = true) const;
 
 private:
-	static TrackerDataPacket Upgrade(const TrackerDataPacketV0* input);
+	static TrackerDataPacket* Upgrade(const TrackerDataPacketV0* input);
 	std::vector<uint16_t> GetWaveformV0(const TrackerDataPacketV0* input) const;
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 };

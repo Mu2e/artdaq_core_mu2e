@@ -18,7 +18,7 @@ TrackerFragment::TrackerFragment(artdaq::Fragment const& f)
 	}
 }
 
-TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockIndex) const
+TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockIndex, bool readWaveform) const
 {
 	tracker_data_t output;
 
@@ -28,7 +28,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 	{
 		case 0: {
 			auto trackerPacket = reinterpret_cast<TrackerDataPacketV0 const*>(dataPtr->GetData());
-			output.push_back(std::make_pair(Upgrade(trackerPacket), GetWaveformV0(trackerPacket)));
+			output.emplace_back(Upgrade(trackerPacket), readWaveform ? std::vector<uint16_t>() : GetWaveformV0(trackerPacket));
 		}
 		break;
 		case 1: {
@@ -38,7 +38,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 			// Critical Assumption: TrackerDataPacket and TrackerADCPacket are both 16 bytes!
 			while (packetsProcessed < dataPtr->GetHeader().GetPacketCount())
 			{
-				output.push_back(std::make_pair(TrackerDataPacket(*pos), GetWaveform(pos)));
+				output.emplace_back(pos, readWaveform ? std::vector<uint16_t>() : GetWaveform(pos));
 				auto nPackets = 1 + pos->NumADCPackets;  // TrackerDataPacket + NumADCPackets
 				packetsProcessed += nPackets;
 				pos += nPackets;
@@ -106,26 +106,26 @@ std::vector<uint16_t> TrackerFragment::GetWaveform(TrackerDataPacket const* trac
 	return output;
 }
 
-TrackerFragment::TrackerDataPacket TrackerFragment::Upgrade(const TrackerFragment::TrackerDataPacketV0* input)
+TrackerFragment::TrackerDataPacket* TrackerFragment::Upgrade(const TrackerFragment::TrackerDataPacketV0* input)
 {
-	if (input == nullptr) return TrackerDataPacket();
-	TrackerDataPacket output;
-	output.StrawIndex = input->StrawIndex;
+	if (input == nullptr) return nullptr;
+	TrackerDataPacket* output = new TrackerDataPacket();
+	output->StrawIndex = input->StrawIndex;
 
-	output.TDC0A = input->TDC0;
+	output->TDC0A = input->TDC0;
 
-	output.TDC0B = 0;
-	output.TOT0 = input->TOT0 & 0xF;
-	output.EWMCounter = 0;
+	output->TDC0B = 0;
+	output->TOT0 = input->TOT0 & 0xF;
+	output->EWMCounter = 0;
 
-	output.TDC1A = input->TDC1;
+	output->TDC1A = input->TDC1;
 
-	output.TDC1B = 0;
-	output.TOT1 = input->TOT1 & 0xF;
-	output.ErrorFlags = input->PreprocessingFlags & 0xF;  // Note that we're dropping 4 bits here
+	output->TDC1B = 0;
+	output->TOT1 = input->TOT1 & 0xF;
+	output->ErrorFlags = input->PreprocessingFlags & 0xF;  // Note that we're dropping 4 bits here
 
-	output.NumADCPackets = 1;
-	output.PMP = 0;
+	output->NumADCPackets = 1;
+	output->PMP = 0;
 
 	return output;
 }
