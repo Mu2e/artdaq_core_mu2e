@@ -28,7 +28,8 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 	{
 		case 0: {
 			auto trackerPacket = reinterpret_cast<TrackerDataPacketV0 const*>(dataPtr->GetData());
-			output.emplace_back(Upgrade(trackerPacket), readWaveform ? std::vector<uint16_t>() : GetWaveformV0(trackerPacket));
+			output.emplace_back(Upgrade(trackerPacket), readWaveform ? GetWaveformV0(trackerPacket)
+																	 : std::vector<uint16_t>());
 		}
 		break;
 		case 1: {
@@ -38,7 +39,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 			// Critical Assumption: TrackerDataPacket and TrackerADCPacket are both 16 bytes!
 			while (packetsProcessed < dataPtr->GetHeader().GetPacketCount())
 			{
-				output.emplace_back(pos, readWaveform ? std::vector<uint16_t>() : GetWaveform(pos));
+				output.emplace_back(pos, readWaveform ? GetWaveform(pos) : std::vector<uint16_t>());
 				auto nPackets = 1 + pos->NumADCPackets;  // TrackerDataPacket + NumADCPackets
 				packetsProcessed += nPackets;
 				pos += nPackets;
