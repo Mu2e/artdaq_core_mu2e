@@ -199,28 +199,28 @@ public:
 
 		uint16_t ADC1B : 4;
 		uint16_t ADC2 : 10;
-		uint8_t unused0 : 2;
+		uint16_t unused0 : 2;
 
 		uint16_t ADC3 : 10;
 		uint16_t ADC4A : 6;
 
 		uint16_t ADC4B : 4;
 		uint16_t ADC5 : 10;
-		uint8_t unused1 : 2;
+		uint16_t unused1 : 2;
 
 		uint16_t ADC6 : 10;
 		uint16_t ADC7A : 6;
 
 		uint16_t ADC7B : 4;
 		uint16_t ADC8 : 10;
-		uint8_t unused2 : 2;
+		uint16_t unused2 : 2;
 
 		uint16_t ADC9 : 10;
 		uint16_t ADC10A : 6;
 
 		uint16_t ADC10B : 4;
 		uint16_t ADC11 : 10;
-		uint8_t unused3 : 2;
+		uint16_t unused3 : 2;
 
 		inline uint16_t ADC1() const { return ADC1A + (ADC1B << 6); }
 		inline uint16_t ADC4() const { return ADC4A + (ADC4B << 6); }
@@ -275,11 +275,13 @@ public:
 		}
 	};
 
-	std::unique_ptr<TrackerDataPacket> GetTrackerData(size_t blockIndex) const;
-	std::vector<uint16_t> GetWaveform(size_t blockIndex) const;
+	typedef std::vector<std::pair<TrackerDataPacket, std::vector<uint16_t>>> tracker_data_t;
+	tracker_data_t GetTrackerData(size_t blockIndex) const;
 
 private:
-	static std::unique_ptr<TrackerDataPacket> Upgrade(const TrackerDataPacketV0* input);
+	static TrackerDataPacket Upgrade(const TrackerDataPacketV0* input);
+	std::vector<uint16_t> GetWaveformV0(const TrackerDataPacketV0* input) const;
+	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 };
 }  // namespace mu2e
 
