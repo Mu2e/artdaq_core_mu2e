@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core		v1_05_01_indev
+parent mu2e_artdaq_core		v1_05_01
 defaultqual	e19:s96:online
 
 # These optional lines define the installed directories where
@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_06_02	offline
-artdaq_core					v3_06_01	online
-pcie_linux_kernel_module	v2_03_07
+artdaq_core					v3_06_03	offline
+artdaq_core					v3_06_03	online
+pcie_linux_kernel_module	v2_03_08
 cetbuildtools				v7_17_01	-	only_for_build
 end_product_list
 
@@ -32,12 +32,30 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier					artdaq_core			pcie_linux_kernel_module	notes
+e19:s102:online:debug		e19:s102:debug		e19:s102:debug				-std=c++17
+e19:s102:online:prof			e19:s102:prof		e19:s102:prof				-std=c++17
+e19:s102:py2:online:debug	e19:s102:py2:debug	e19:s102:py2:debug			-std=c++17
+e19:s102:py2:online:prof		e19:s102:py2:prof	e19:s102:py2:prof			-std=c++17
+c7:s102:online:debug			c7:s102:debug		c7:s102:debug				-std=c++17
+c7:s102:online:prof			c7:s102:prof			c7:s102:prof					-std=c++17
+c7:s102:py2:online:debug		c7:s102:py2:debug	c7:s102:py2:debug			-std=c++17
+c7:s102:py2:online:prof		c7:s102:py2:prof		c7:s102:py2:prof				-std=c++17
+
 e20:s101:online:debug		e20:s101:debug		e20:s101:debug				-std=c++17
 e20:s101:online:prof		e20:s101:prof		e20:s101:prof				-std=c++17
 e19:s101:online:debug		e19:s101:debug		e19:s101:debug				-std=c++17
 e19:s101:online:prof		e19:s101:prof		e19:s101:prof				-std=c++17
 c7:s101:online:debug		c7:s101:debug		c7:s101:debug				-std=c++17
 c7:s101:online:prof			c7:s101:prof		c7:s101:prof				-std=c++17
+
+e19:s97:online:debug		e19:s97:debug		e19:s97:debug				-std=c++17
+e19:s97:online:prof			e19:s97:prof		e19:s97:prof				-std=c++17
+e19:s97:py2:online:debug	e19:s97:py2:debug	e19:s97:py2:debug			-std=c++17
+e19:s97:py2:online:prof		e19:s97:py2:prof	e19:s97:py2:prof			-std=c++17
+c7:s97:online:debug			c7:s97:debug		c7:s97:debug				-std=c++17
+c7:s97:online:prof			c7:s97:prof			c7:s97:prof					-std=c++17
+c7:s97:py2:online:debug		c7:s97:py2:debug	c7:s97:py2:debug			-std=c++17
+c7:s97:py2:online:prof		c7:s97:py2:prof		c7:s97:py2:prof				-std=c++17
 
 e19:s96:online:debug		e19:s96:debug		e19:s96:debug				-std=c++17
 e19:s96:online:prof			e19:s96:prof		e19:s96:prof				-std=c++17
