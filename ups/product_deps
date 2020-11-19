@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core		v1_05_02_indev
+parent mu2e_artdaq_core		v1_05_02
 defaultqual	e19:s96:online
 
 # These optional lines define the installed directories where
@@ -17,7 +17,7 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_06_03	offline
+artdaq_core					v3_06_04	offline
 artdaq_core					v3_06_03	online
 pcie_linux_kernel_module	v2_03_08
 cetbuildtools				v7_17_01	-	only_for_build
@@ -73,6 +73,11 @@ e17:s87:online:prof			e17:s87:prof		e17:s87:prof				-std=c++17
 
 e17:s85:online:debug		e17:s85:debug		e17:s85:debug				-std=c++17
 e17:s85:online:prof			e17:s85:prof		e17:s85:prof				-std=c++17
+
+e19:s103:offline:debug		e19:s103:debug		e19:s103:debug				-std=c++17
+e19:s103:offline:prof			e19:s103:prof		e19:s103:prof				-std=c++17
+e19:s103:py2:offline:debug	e19:s103:py2:debug	e19:s103:py2:debug			-std=c++17
+e19:s103:py2:offline:prof		e19:s103:py2:prof	e19:s103:py2:prof			-std=c++17
 
 e20:s101:offline:debug		e20:s101:debug		e20:s101:debug				-std=c++17
 e20:s101:offline:prof		e20:s101:prof		e20:s101:prof				-std=c++17
