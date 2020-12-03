@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core		v1_05_02
+parent mu2e_artdaq_core		v1_05_03
 defaultqual	e19:s96:online
 
 # These optional lines define the installed directories where
@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_06_04	offline
-artdaq_core					v3_06_03	online
-pcie_linux_kernel_module	v2_03_09
+artdaq_core					v3_06_06	offline
+artdaq_core					v3_06_06	online
+pcie_linux_kernel_module	v2_03_10
 cetbuildtools				v7_17_01	-	only_for_build
 end_product_list
 
@@ -32,6 +32,13 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier					artdaq_core			pcie_linux_kernel_module	notes
+e20:s104:online:debug		e20:s104:debug		e20:s104:debug				-std=c++17
+e20:s104:online:prof		e20:s104:prof		e20:s104:prof				-std=c++17
+e19:s104:online:debug		e19:s104:debug		e19:s104:debug				-std=c++17
+e19:s104:online:prof		e19:s104:prof		e19:s104:prof				-std=c++17
+c7:s104:online:debug		c7:s104:debug		c7:s104:debug				-std=c++17
+c7:s104:online:prof			c7:s104:prof		c7:s104:prof				-std=c++17
+
 e19:s102:online:debug		e19:s102:debug		e19:s102:debug				-std=c++17
 e19:s102:online:prof			e19:s102:prof		e19:s102:prof				-std=c++17
 e19:s102:py2:online:debug	e19:s102:py2:debug	e19:s102:py2:debug			-std=c++17
@@ -73,6 +80,11 @@ e17:s87:online:prof			e17:s87:prof		e17:s87:prof				-std=c++17
 
 e17:s85:online:debug		e17:s85:debug		e17:s85:debug				-std=c++17
 e17:s85:online:prof			e17:s85:prof		e17:s85:prof				-std=c++17
+
+e20:s104:offline:debug		e20:s104:debug		e20:s104:debug				-std=c++17
+e20:s104:offline:prof		e20:s104:prof		e20:s104:prof				-std=c++17
+e19:s104:offline:debug		e19:s104:debug		e19:s104:debug				-std=c++17
+e19:s104:offline:prof		e19:s104:prof		e19:s104:prof				-std=c++17
 
 e19:s103:offline:debug		e19:s103:debug		e19:s103:debug				-std=c++17
 e19:s103:offline:prof			e19:s103:prof		e19:s103:prof				-std=c++17
