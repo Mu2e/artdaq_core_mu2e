@@ -70,7 +70,7 @@ mu2e::mu2eFragmentWriter::mu2eFragmentWriter(artdaq::Fragment &f)
 	// DTCFragment's standard data type size and the
 	// artdaq::Fragment's data type size, on the Metadata object
 
-	TLOG_ARB(17, "mu2eFragmentWriter") << "mu2eFragmentWriter Constructor";
+	TLOG(TLVL_TRACE + 7, "mu2eFragmentWriter") << "mu2eFragmentWriter Constructor";
 
 	assert(sizeof(Metadata::data_t) == sizeof(Header::data_t));
 
@@ -123,19 +123,19 @@ inline size_t mu2e::mu2eFragmentWriter::words_to_frag_words_(size_t nWords)
 
 void mu2e::mu2eFragmentWriter::addSpace(size_t bytes)
 {
-	TLOG_ARB(10, "mu2eFragmentWriter") << "addSpace: START bytes=" << bytes;
+	TLOG(TLVL_TRACE + 5, "mu2eFragmentWriter") << "addSpace: START bytes=" << bytes;
 	auto currSize = sizeof(artdaq::Fragment::value_type) * artdaq_Fragment_.size();
-	TLOG_ARB(10, "mu2eFragmentWriter") << "addSpace: Resizing fragment: additional bytes requested: " << bytes
+	TLOG(TLVL_TRACE +5, "mu2eFragmentWriter") << "addSpace: Resizing fragment: additional bytes requested: " << bytes
 									   << ", size of fragment: " << currSize;
 	artdaq_Fragment_.resizeBytes(bytes + currSize);
 }
 
 void mu2e::mu2eFragmentWriter::endSubEvt(size_t bytes)
 {
-	TLOG_ARB(11, "mu2eFragmentWriter") << "endSubEvt START bytes=" << bytes;
+	TLOG(TLVL_TRACE +6, "mu2eFragmentWriter") << "endSubEvt START bytes=" << bytes;
 	header_()->index[hdr_block_count()] = blockOffset(hdr_block_count()) + bytes;
 	header_()->block_count++;
-	TLOG_ARB(11, "mu2eFragmentWriter") << "endSubEvt END";
+	TLOG(TLVL_TRACE +6, "mu2eFragmentWriter") << "endSubEvt END";
 }
 
 #endif /* mu2e_artdaq_core_Overlays_mu2eFragmentWriter_hh */
