@@ -12,20 +12,18 @@ std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRV
 
 std::vector<mu2e::CRVFragment::CRVHitReadoutPacket> mu2e::CRVFragment::GetCRVHitReadoutPackets(size_t blockIndex) const
 {
-	std::vector<CRVHitReadoutPacket> output;
 	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return output;
+	if (dataPtr == nullptr) return std::vector<CRVHitReadoutPacket>();
+
 
 	auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
 	size_t nHits = (crvRocHdr->ControllerEventWordCount -
 					sizeof(CRVROCStatusPacket)) /
 				   sizeof(CRVHitReadoutPacket);
 
-	auto pos = reinterpret_cast<CRVHitReadoutPacket const*>(crvRocHdr + 1);
-	for (size_t ii = 0; ii < nHits; ++ii) {
-		output.emplace_back(*pos);
-		pos++;
-	}
+	std::vector<CRVHitReadoutPacket> output(nHits);
+
+	memcpy(&output[0], reinterpret_cast<CRVHitReadoutPacket const*>(crvRocHdr + 1), nHits * sizeof(CRVHitReadoutPacket));
 
 	return output;
 }

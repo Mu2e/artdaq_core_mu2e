@@ -41,11 +41,8 @@ std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, st
 		output.emplace_back(CalorimeterHitReadoutPacket(*reinterpret_cast<CalorimeterHitReadoutPacket const*>(pos)), std::vector<uint16_t>());
 		pos += sizeof(CalorimeterHitReadoutPacket) / 2;
 		auto nHits = output.back().first.NumberOfSamples;
-		for (size_t jj = 0; jj < nHits; ++jj) {
-			output.back().second.push_back(*pos);
-			++pos;
-		}
-
+		output.back().second.resize(nHits);
+		memcpy(output.back().second.data(), pos, sizeof(uint16_t) * nHits);
 	}
 	return output;
 }

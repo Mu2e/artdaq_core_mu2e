@@ -75,29 +75,30 @@ std::vector<uint16_t> TrackerFragment::GetWaveformV0(TrackerDataPacketV0 const* 
 
 std::vector<uint16_t> TrackerFragment::GetWaveform(TrackerDataPacket const* trackerHeaderPacket) const
 {
-	std::vector<uint16_t> output;
-
-	output.push_back(trackerHeaderPacket->ADC00);
-	output.push_back(trackerHeaderPacket->ADC01());
-	output.push_back(trackerHeaderPacket->ADC02);
-
 	auto adcs = trackerHeaderPacket->NumADCPackets;
+	std::vector<uint16_t> output(3 + 12 * adcs);
+
+	output[0] = trackerHeaderPacket->ADC00;
+	output[1] = trackerHeaderPacket->ADC01();
+	output[2] = trackerHeaderPacket->ADC02;
+
 	auto adcsProcessed = 0;
+	auto idx = 2;
 	auto trackerADCPacket = reinterpret_cast<TrackerADCPacket const*>(trackerHeaderPacket + 1);
 	while (adcsProcessed < adcs)
 	{
-		output.push_back(trackerADCPacket->ADC0);
-		output.push_back(trackerADCPacket->ADC1());
-		output.push_back(trackerADCPacket->ADC2);
-		output.push_back(trackerADCPacket->ADC3);
-		output.push_back(trackerADCPacket->ADC4());
-		output.push_back(trackerADCPacket->ADC5);
-		output.push_back(trackerADCPacket->ADC6);
-		output.push_back(trackerADCPacket->ADC7());
-		output.push_back(trackerADCPacket->ADC8);
-		output.push_back(trackerADCPacket->ADC9);
-		output.push_back(trackerADCPacket->ADC10());
-		output.push_back(trackerADCPacket->ADC11);
+		output[++idx] = trackerADCPacket->ADC0;
+		output[++idx] = trackerADCPacket->ADC1();
+		output[++idx] = trackerADCPacket->ADC2;
+		output[++idx] = trackerADCPacket->ADC3;
+		output[++idx] = trackerADCPacket->ADC4();
+		output[++idx] = trackerADCPacket->ADC5;
+		output[++idx] = trackerADCPacket->ADC6;
+		output[++idx] = trackerADCPacket->ADC7();
+		output[++idx] = trackerADCPacket->ADC8;
+		output[++idx] = trackerADCPacket->ADC9;
+		output[++idx] = trackerADCPacket->ADC10();
+		output[++idx] = trackerADCPacket->ADC11;
 
 		adcsProcessed++;
 		if (adcsProcessed < adcs)
