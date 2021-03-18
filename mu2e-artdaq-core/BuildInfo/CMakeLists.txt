@@ -1,6 +1,3 @@
-# project name
-project(mu2e-artdaq-core_BuildInfo)
-
 # the utcDateTime variable is used by the GetPackageBuildInfo code
 # to report the build datetime
 execute_process( COMMAND "date" "-u" "+%d-%b-%Y %H:%M:%S %Z" OUTPUT_VARIABLE rawUTCDate )

@@ -1,26 +1,20 @@
 cet_make(NO_DICTIONARY 
   EXCLUDE Mu2e_fragmentNameHelper.cc
   LIBRARIES
-  artdaq-core_Utilities
-  DTCInterface
-  ${ARTDAQ_DAQDATA}
-  ${CETLIB}
-  ${CETLIB_EXCEPT}
-  ${MF_MESSAGELOGGER}
+  artdaq_core::artdaq-core_Utilities
+  pcie_linux_kernel_module::DTCInterface
+  cetlib::cetlib
+  cetlib_except::cetlib_except
+  messagefacility::MF_MessageLogger
   )
 
 
   basic_plugin(Mu2e "fragmentNameHelper"
-
-  artdaq-core_Data
-
-  mu2e-artdaq-core_Overlays
-
-  artdaq-core_Data_Artdaq_fragmentNameHelper
-
-  MF_MessageLogger
-
-)
+    artdaq_core::artdaq-core_Data
+    mu2e-artdaq-core_Overlays
+    artdaq_core::artdaq-core_Data_Artdaq_fragmentNameHelper
+    messagefacility::MF_MessageLogger
+ )
 
 cet_remove_compiler_flags(-fsanitize=address -lasan)
 cet_remove_compiler_flags(-fsanitize=thread -ltsan)
