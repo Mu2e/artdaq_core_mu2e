@@ -5,10 +5,13 @@
 #  source .../path/to/mu2e_artdaq-core/ups/setup_for_development
 #  buildtool
 # ======================================================================
-project(mu2e_artdaq_core)
 
 # use cmake 3.17 or later
 cmake_minimum_required (VERSION 3.17)
+
+find_package(cetbuildtools)
+
+project(mu2e_artdaq_core VERSION 1.05.08)
 
 # cetbuildtools contains our cmake modules
 SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
@@ -47,7 +50,7 @@ find_ups_product( canvas )
 #find_ups_product( messagefacility v1_10_00 )
 find_ups_product( TRACE v3_03_00 )
 find_ups_product( cetlib v1_03_00 )
-find_ups_product( pcie_linux_kernel_module v2_03_00 )
+find_ups_product( pcie_linux_kernel_module v2_04_00 )
 find_ups_root( v5_34_00 )
 find_ups_boost( v1_50_0 filesystem
                         program_options
