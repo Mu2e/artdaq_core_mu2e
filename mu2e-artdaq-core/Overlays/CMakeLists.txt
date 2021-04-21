@@ -8,10 +8,10 @@ cet_make(NO_DICTIONARY
     ${MF_MESSAGELOGGER}
   )
 
-get_cmake_property(_variableNames VARIABLES)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach()
+#get_cmake_property(_variableNames VARIABLES)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
 
 
   basic_plugin(Mu2e "fragmentNameHelper"
