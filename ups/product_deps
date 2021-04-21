@@ -20,7 +20,7 @@ product						version		optional
 artdaq_core					v3_06_10	!s107
 artdaq_core					v3_06_11	s107
 pcie_linux_kernel_module	v2_04_04
-cetbuildtools				v8_04_00	-	only_for_build
+cetbuildtools				v8_06_02	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y

@@ -47,7 +47,7 @@ find_ups_product( cetbuildtools v4_01_04 )
 find_ups_product( artdaq_core v1_03_04 )
 find_ups_product( canvas )
 #find_ups_product( fhiclcpp v2_16_00 )
-#find_ups_product( messagefacility v1_10_00 )
+find_ups_product( messagefacility v1_10_00 )
 find_ups_product( TRACE v3_03_00 )
 find_ups_product( cetlib v1_03_00 )
 find_ups_product( pcie_linux_kernel_module v2_04_00 )
@@ -56,6 +56,12 @@ find_ups_boost( v1_50_0 filesystem
                         program_options
                         unit_test_framework
  )
+
+if(${artdaq_core_VERSION} VERSION_GREATER_EQUAL 3.06.11)
+   set(ARTDAQ_CORE_PREFIX artdaq_core::)
+   set(CETLIB_PREFIX cetlib::)
+   set(CETLIB_EXCEPT_PREFIX cetlib_except::)
+endif()
 
 # have to make sure cmake doesn't select the system libraries
 # define libsigc
