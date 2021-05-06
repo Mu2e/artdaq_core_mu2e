@@ -17,10 +17,9 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_06_10	!s107
-artdaq_core					v3_06_11	s107
-pcie_linux_kernel_module	v2_04_07
-cetbuildtools				v8_06_02	-	only_for_build
+artdaq_core					v3_07_00
+pcie_linux_kernel_module	v2_04_08
+cetbuildtools				v8_07_01	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -32,6 +31,13 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier			artdaq_core			pcie_linux_kernel_module	notes
+e20:s108:debug		e20:s108:debug		e20:s108:debug				-std=c++17
+e20:s108:prof		e20:s108:prof		e20:s108:prof				-std=c++17
+e19:s108:debug		e19:s108:debug		e19:s108:debug				-std=c++17
+e19:s108:prof		e19:s108:prof		e19:s108:prof				-std=c++17
+c7:s108:debug		c7:s108:debug		c7:s108:debug				-std=c++17
+c7:s108:prof		c7:s108:prof		c7:s108:prof				-std=c++17
+
 e20:s107:debug		e20:s107:debug		e20:s107:debug				-std=c++17
 e20:s107:prof		e20:s107:prof		e20:s107:prof				-std=c++17
 e19:s107:debug		e19:s107:debug		e19:s107:debug				-std=c++17
