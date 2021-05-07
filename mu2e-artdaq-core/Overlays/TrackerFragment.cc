@@ -35,6 +35,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 		case 1: {
 			auto pos = reinterpret_cast<TrackerDataPacket const*>(dataPtr->GetData());
 			auto packetsProcessed = 0;
+			output.reserve(dataPtr->GetHeader().GetPacketCount());
 
 			// Critical Assumption: TrackerDataPacket and TrackerADCPacket are both 16 bytes!
 			while (packetsProcessed < dataPtr->GetHeader().GetPacketCount())
