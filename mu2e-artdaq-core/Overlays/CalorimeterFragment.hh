@@ -47,6 +47,7 @@ public:
 	std::unique_ptr<CalorimeterDataPacket> GetCalorimeterData(size_t blockIndex) const;
 	std::unique_ptr<CalorimeterBoardID> GetCalorimeterBoardID(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitReadoutPacket, std::vector<uint16_t>>> GetCalorimeterHits(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitReadoutPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
 };
 }  // namespace mu2e
 

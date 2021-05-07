@@ -11,7 +11,7 @@ cmake_minimum_required (VERSION 3.17)
 
 find_package(cetbuildtools)
 
-project(mu2e_artdaq_core VERSION 1.05.09)
+project(mu2e_artdaq_core VERSION 1.05.09a)
 
 # cetbuildtools contains our cmake modules
 SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )

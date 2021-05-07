@@ -45,14 +45,45 @@ std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, st
 		pos += sizeof(CalorimeterHitReadoutPacket) / sizeof(uint16_t);
 
 		// Setup waveform storage
-		auto nHits = output.back().first.NumberOfSamples;
-		output.back().second.resize(nHits);
+		auto nSamples = output.back().first.NumberOfSamples;
+		output.back().second.resize(nSamples);
 
 		// Copy waveform into output
-		memcpy(output.back().second.data(), pos, sizeof(uint16_t) * nHits);
+		memcpy(output.back().second.data(), pos, sizeof(uint16_t) * nSamples);
 
 		// Step pos past waveform
-		pos += nHits;
+		pos += nSamples;
+	}
+	return output;
+}
+
+std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, uint16_t>> mu2e::CalorimeterFragment::GetCalorimeterHitsForTrigger(size_t blockIndex) const
+{
+	std::vector<std::pair<CalorimeterHitReadoutPacket,uint16_t>> output;
+
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return output;
+
+	static_assert(sizeof(CalorimeterBoardID) % 2 == 0);
+	static_assert(sizeof(CalorimeterHitReadoutPacket) % 2 == 0);
+
+	auto dataPacket = reinterpret_cast<CalorimeterDataPacket const*>(dataPtr->GetData());
+	auto boardID = reinterpret_cast<uint16_t const*>(dataPacket + 1) + dataPacket->NumberOfHits;
+	// pos is a uint16_t pointer after the BoardID in the data stream
+	uint16_t const* pos = boardID + (sizeof(CalorimeterBoardID) / sizeof(uint16_t));
+
+	for (size_t ii = 0; ii < dataPacket->NumberOfHits; ++ii)
+	{
+		// Reinterpret pos as a pointer to a hit readout header
+		output.emplace_back(CalorimeterHitReadoutPacket(*reinterpret_cast<CalorimeterHitReadoutPacket const*>(pos)), 0);
+		// Step pos past the hit readout
+		pos += sizeof(CalorimeterHitReadoutPacket) / sizeof(uint16_t);
+
+		output.back().second = *(pos + output.back().first.IndexOfMaxDigitizerSample);
+
+		// Step pos past waveform
+		auto nSamples = output.back().first.NumberOfSamples;
+		pos += nSamples;
 	}
 	return output;
 }
