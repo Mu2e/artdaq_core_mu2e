@@ -1,11 +1,8 @@
 cet_make(NO_DICTIONARY 
   EXCLUDE Mu2e_fragmentNameHelper.cc
   LIBRARIES
- ${ARTDAQ_CORE_PREFIX}artdaq-core_Utilities
   pcie_linux_kernel_module::DTCInterface
-  ${CETLIB_PREFIX}cetlib
-  ${CETLIB_EXCEPT_PREFIX}cetlib_except
-    ${MF_MESSAGELOGGER}
+  artdaq_core::artdaq-core_Data
   )
 
 #get_cmake_property(_variableNames VARIABLES)
@@ -14,11 +11,9 @@ cet_make(NO_DICTIONARY
 #endforeach()
 
 
-  basic_plugin(Mu2e "fragmentNameHelper"
-   ${ARTDAQ_CORE_PREFIX}artdaq-core_Data
-    mu2e-artdaq-core_Overlays
-    ${ARTDAQ_CORE_PREFIX}artdaq-core_Data_Artdaq_fragmentNameHelper
-    ${MF_MESSAGELOGGER}
+  basic_plugin(Mu2e "fragmentNameHelper"  
+  mu2e_artdaq_core::mu2e-artdaq-core_Overlays
+  artdaq_core::artdaq-core_Data_Artdaq_fragmentNameHelper
  )
 
 cet_remove_compiler_flags(-fsanitize=address -lasan)

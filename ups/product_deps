@@ -44,13 +44,6 @@ e19:s108:debug		e19:s108:debug		e19:s108:debug				-std=c++17
 e19:s108:prof		e19:s108:prof		e19:s108:prof				-std=c++17
 c7:s108:debug		c7:s108:debug		c7:s108:debug				-std=c++17
 c7:s108:prof		c7:s108:prof		c7:s108:prof				-std=c++17
-
-e20:s107:debug		e20:s107:debug		e20:s107:debug				-std=c++17
-e20:s107:prof		e20:s107:prof		e20:s107:prof				-std=c++17
-e19:s107:debug		e19:s107:debug		e19:s107:debug				-std=c++17
-e19:s107:prof		e19:s107:prof		e19:s107:prof				-std=c++17
-c7:s107:debug		c7:s107:debug		c7:s107:debug				-std=c++17
-c7:s107:prof		c7:s107:prof		c7:s107:prof				-std=c++17
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:

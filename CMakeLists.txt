@@ -56,13 +56,7 @@ find_ups_boost( v1_50_0 filesystem
                         program_options
                         unit_test_framework
  )
-
-if(${artdaq_core_VERSION} VERSION_GREATER_EQUAL 3.06.11)
-   set(ARTDAQ_CORE_PREFIX artdaq_core::)
-   set(CETLIB_PREFIX cetlib::)
-   set(CETLIB_EXCEPT_PREFIX cetlib_except::)
-endif()
-
+ 
 # have to make sure cmake doesn't select the system libraries
 # define libsigc
 cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PATH )
