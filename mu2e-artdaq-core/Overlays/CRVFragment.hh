@@ -14,6 +14,12 @@ public:
 	explicit CRVFragment(artdaq::Fragment const& f)
 		: ArtFragment(f) {}
 
+	CRVFragment(const void* ptr, size_t sz)
+		: ArtFragment(ptr, sz) {}
+
+	explicit CRVFragment(std::pair<const void*, sz> p)
+		: CRVFragment(p.first, p.second) {}
+
 	struct CRVROCStatusPacket
 	{
 		uint8_t unused1 : 4;

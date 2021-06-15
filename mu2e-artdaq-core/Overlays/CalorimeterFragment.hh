@@ -11,6 +11,12 @@ public:
 	explicit CalorimeterFragment(artdaq::Fragment const& f)
 		: ArtFragment(f) {}
 
+	CalorimeterFragment(const void* ptr, size_t sz)
+		: ArtFragment(ptr, sz) {}
+
+	explicit CalorimeterFragment(std::pair<const void*, sz> p)
+		: CalorimeterFragment(p.first, p.second) {}
+
 	struct CalorimeterDataPacket
 	{
 		uint16_t NumberOfHits;

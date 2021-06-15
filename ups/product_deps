@@ -33,17 +33,17 @@ end_product_list
 qualifier			artdaq_core			pcie_linux_kernel_module	notes
 e20:s109:debug		e20:s109:debug		e20:s109:debug				-std=c++17
 e20:s109:prof		e20:s109:prof		e20:s109:prof				-std=c++17
-#e19:s109:debug		e19:s109:debug		e19:s109:debug				-std=c++17
-#e19:s109:prof		e19:s109:prof		e19:s109:prof				-std=c++17
-#c7:s109:debug		c7:s109:debug		c7:s109:debug				-std=c++17
-#c7:s109:prof		c7:s109:prof		c7:s109:prof				-std=c++17
+e19:s109:debug		e19:s109:debug		e19:s109:debug				-std=c++17
+e19:s109:prof		e19:s109:prof		e19:s109:prof				-std=c++17
+c7:s109:debug		c7:s109:debug		c7:s109:debug				-std=c++17
+c7:s109:prof		c7:s109:prof		c7:s109:prof				-std=c++17
 
-#e20:s108:debug		e20:s108:debug		e20:s108:debug				-std=c++17
-#e20:s108:prof		e20:s108:prof		e20:s108:prof				-std=c++17
-#e19:s108:debug		e19:s108:debug		e19:s108:debug				-std=c++17
-#e19:s108:prof		e19:s108:prof		e19:s108:prof				-std=c++17
-#c7:s108:debug		c7:s108:debug		c7:s108:debug				-std=c++17
-#c7:s108:prof		c7:s108:prof		c7:s108:prof				-std=c++17
+e20:s108:debug		e20:s108:debug		e20:s108:debug				-std=c++17
+e20:s108:prof		e20:s108:prof		e20:s108:prof				-std=c++17
+e19:s108:debug		e19:s108:debug		e19:s108:debug				-std=c++17
+e19:s108:prof		e19:s108:prof		e19:s108:prof				-std=c++17
+c7:s108:debug		c7:s108:debug		c7:s108:debug				-std=c++17
+c7:s108:prof		c7:s108:prof		c7:s108:prof				-std=c++17
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:

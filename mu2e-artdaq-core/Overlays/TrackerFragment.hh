@@ -13,6 +13,10 @@ public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
 
 	explicit TrackerFragment(artdaq::Fragment const& f);
+	explicit TrackerFragment(const void* ptr, size_t sz);
+
+	explicit TrackerFragment(std::pair<const void*, sz> p)
+		: TrackerFragment(p.first, p.second) {}
 
 	struct TrackerDataPacketV0
 	{

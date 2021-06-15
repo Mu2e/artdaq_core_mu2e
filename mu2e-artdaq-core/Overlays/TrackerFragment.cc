@@ -18,6 +18,20 @@ TrackerFragment::TrackerFragment(artdaq::Fragment const& f)
 	}
 }
 
+TrackerFragment::TrackerFragment(const void* ptr, size_t sz)
+	: ArtFragment(ptr, sz)
+{
+	if (block_count() > 0)
+	{
+		auto dataPtr = dataAtBlockIndex(0);
+		auto hdr = dataPtr->GetHeader();
+		if (hdr.GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr.GetVersion() > 1)
+		{
+			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr.GetSubsystem() << "/" << static_cast<int>(hdr.GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
+		}
+	}
+}
+
 TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockIndex, bool readWaveform) const
 {
 	tracker_data_t output;

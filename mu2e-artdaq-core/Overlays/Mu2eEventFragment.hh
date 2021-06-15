@@ -98,6 +98,35 @@ public:
 		return reinterpret_cast<void const*>(reinterpret_cast<uint8_t const*>(dataBegin()) + lastFragmentIndex());  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
 
+	std::pair<void const*, size_t> atPtr(size_t index) const
+	{
+		if (index >= block_count() || block_count() == 0)
+		{
+			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::atPtr was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
+		}
+
+		return std::make_pair(static_cast<uint8_t const*>(dataBegin()) + fragmentIndex(index) + sizeof(artdaq::detail::RawFragmentHeader, 
+			fragSize(index) - sizeof(artdaq::detail::RawFragmentHeader); // Skip past header
+	}
+
+	std::pair<void const*, size_t> trackerAtPtr(size_t trkIndex) const
+	{
+		if (index >= tracker_block_count())
+		{
+			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::trackerAtPtr was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
+		}
+		return atPtr(index);
+	}
+
+	std::pair<void const*, size_t> calorimeterAtPtr(size_t caloIndex) const
+	{
+		if (index >= calorimeter_block_count())
+		{
+			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::calorimeterAtPtr was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
+		}
+		return atPtr(index + metadata()->tracker_block_count);
+	}
+
 	/**
 	 * \brief Gets a specific Fragment from the Mu2eEventFragment
 	 * \param index The Fragment index to return
@@ -151,7 +180,7 @@ public:
 	{
 		if (index >= calorimeter_block_count())
 		{
-			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::trackerAt was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
+			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::calorimeterAt was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
 		}
 		return at(index + metadata()->tracker_block_count);
 	}
@@ -241,7 +270,7 @@ protected:
 	void reset_index_ptr_() const
 	{
 		TLOG(TLVL_TRACE + 11, "Mu2eEventFragment") << "Request to reset index_ptr recieved. has_index=" << metadata()->has_index << ", Check word = " << std::hex
-											  << *(reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset) + block_count());                   // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
+												   << *(reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset) + block_count());    // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		if (metadata()->has_index && *(reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset) + block_count()) == CONTAINER_MAGIC)  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		{
 			TLOG(TLVL_TRACE + 11, "Mu2eEventFragment") << "Setting index_ptr to found valid index";

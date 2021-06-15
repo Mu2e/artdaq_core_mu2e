@@ -24,32 +24,36 @@ class mu2e::ArtFragment
 {
 public:
 	explicit ArtFragment(artdaq::Fragment const &f)
-		: artdaq_Fragment_(f)
 	{
 		// Initialize the index array
 		block_count_ = 0;
-		auto curPos = dataBegin();
-		if (dataBegin() != dataEnd())
+		auto curPos = reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataBegin());
+		auto end = reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataEnd());
+
+		while (curPos < end)
 		{
-			while (curPos < dataEnd())
-			{
-				block_count_++;
-				index_.push_back(new DTCLib::DTC_DataBlock(curPos));
-				curPos += index_.back()->byteSize;
-			}
+			block_count_++;
+			index_.push_back(new DTCLib::DTC_DataBlock(curPos));
+			curPos += index_.back()->byteSize;
 		}
 	}
 
-	// Start of the DTC packets, returned as a pointer to the packet type
-	uint8_t const *dataBegin() const
-	{
-		return reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataBegin());
+	ArtFragment(const void *ptr, size_t sz) {
+		// Initialize the index array
+		block_count_ = 0;
+		auto curPos = static_cast<uint8_t const *>(ptr);
+		auto end = curPos + sz;
+		
+		while (curPos < end)
+		{
+			block_count_++;
+			index_.push_back(new DTCLib::DTC_DataBlock(curPos));
+			curPos += index_.back()->byteSize;
+		}
 	}
 
-	uint8_t const *dataEnd() const
-	{
-		return reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataEnd());
-	}
+	explicit ArtFragment(std::pair<const void *, sz> p)
+		: ArtFragment(p.first, p.second) {}
 
 	// const getter functions for the data in the header
 	size_t block_count() const { return block_count_; }
@@ -74,7 +78,7 @@ public:
 
 	void printPacketAtByte(size_t blockIndex, size_t byteIdx) const
 	{
-		auto dataPtr = reinterpret_cast<uint16_t const*>(reinterpret_cast<uint8_t const*>(dataAtBlockIndex(blockIndex)->GetData()) + byteIdx);
+		auto dataPtr = reinterpret_cast<uint16_t const *>(reinterpret_cast<uint8_t const *>(dataAtBlockIndex(blockIndex)->GetData()) + byteIdx);
 		std::cout << "\t\t"
 				  << "Packet Bits (128): " << std::endl;
 		for (int adcIdx = 0; adcIdx < 8; adcIdx++)
@@ -105,7 +109,6 @@ public:
 	}
 
 private:
-	artdaq::Fragment const &artdaq_Fragment_;
 	size_t block_count_;
 	std::vector<DTCLib::DTC_DataBlock const *> index_;
 };
