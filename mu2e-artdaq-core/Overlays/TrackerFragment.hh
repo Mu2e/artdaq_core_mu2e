@@ -15,7 +15,7 @@ public:
 	explicit TrackerFragment(artdaq::Fragment const& f);
 	explicit TrackerFragment(const void* ptr, size_t sz);
 
-	explicit TrackerFragment(std::pair<const void*, sz> p)
+	explicit TrackerFragment(std::pair<const void*, size_t> p)
 		: TrackerFragment(p.first, p.second) {}
 
 	struct TrackerDataPacketV0

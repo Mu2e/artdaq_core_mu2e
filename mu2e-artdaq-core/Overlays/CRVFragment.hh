@@ -17,7 +17,7 @@ public:
 	CRVFragment(const void* ptr, size_t sz)
 		: ArtFragment(ptr, sz) {}
 
-	explicit CRVFragment(std::pair<const void*, sz> p)
+	explicit CRVFragment(std::pair<const void*, size_t> p)
 		: CRVFragment(p.first, p.second) {}
 
 	struct CRVROCStatusPacket

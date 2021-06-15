@@ -129,7 +129,7 @@ void mu2e::Mu2eEventFragmentWriter::fill_event(std::vector<std::unique_ptr<DTCLi
 						data_ptr->version = artdaq::detail::RawFragmentHeader::CurrentVersion;
 						data_ptr->word_count = fragmentSize + artdaq::detail::RawFragmentHeader::num_words();
 						data_ptr->sequence_id = fragment_timestamp;
-						data_ptr->fragment_id = headerPacket.GetEVBMode();
+						data_ptr->fragment_id = headerPacket->GetEVBMode();
 						data_ptr->timestamp = fragment_timestamp;
 						data_ptr->type = subsystem == DTCLib::DTC_Subsystem_Tracker ? mu2e::detail::FragmentType::TRK : mu2e::detail::FragmentType::CAL;
 						data_ptr->touch();

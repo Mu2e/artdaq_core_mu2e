@@ -11,9 +11,9 @@ TrackerFragment::TrackerFragment(artdaq::Fragment const& f)
 	{
 		auto dataPtr = dataAtBlockIndex(0);
 		auto hdr = dataPtr->GetHeader();
-		if (hdr.GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr.GetVersion() > 1)
+		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
 		{
-			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr.GetSubsystem() << "/" << static_cast<int>(hdr.GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
+			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
 		}
 	}
 }
@@ -25,9 +25,9 @@ TrackerFragment::TrackerFragment(const void* ptr, size_t sz)
 	{
 		auto dataPtr = dataAtBlockIndex(0);
 		auto hdr = dataPtr->GetHeader();
-		if (hdr.GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr.GetVersion() > 1)
+		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
 		{
-			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr.GetSubsystem() << "/" << static_cast<int>(hdr.GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
+			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
 		}
 	}
 }
@@ -38,7 +38,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return output;
-	switch (dataPtr->GetHeader().GetVersion())
+	switch (dataPtr->GetHeader()->GetVersion())
 	{
 		case 0: {
 			auto trackerPacket = reinterpret_cast<TrackerDataPacketV0 const*>(dataPtr->GetData());
@@ -49,10 +49,10 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 		case 1: {
 			auto pos = reinterpret_cast<TrackerDataPacket const*>(dataPtr->GetData());
 			auto packetsProcessed = 0;
-			output.reserve(dataPtr->GetHeader().GetPacketCount());
+			output.reserve(dataPtr->GetHeader()->GetPacketCount());
 
 			// Critical Assumption: TrackerDataPacket and TrackerADCPacket are both 16 bytes!
-			while (packetsProcessed < dataPtr->GetHeader().GetPacketCount())
+			while (packetsProcessed < dataPtr->GetHeader()->GetPacketCount())
 			{
 				output.emplace_back(pos, readWaveform ? GetWaveform(pos) : std::vector<uint16_t>());
 				auto nPackets = 1 + pos->NumADCPackets;  // TrackerDataPacket + NumADCPackets

@@ -27,8 +27,8 @@ public:
 	{
 		// Initialize the index array
 		block_count_ = 0;
-		auto curPos = reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataBegin());
-		auto end = reinterpret_cast<uint8_t const *>(&*artdaq_Fragment_.dataEnd());
+		auto curPos = reinterpret_cast<uint8_t const *>(&*f.dataBegin());
+		auto end = reinterpret_cast<uint8_t const *>(&*f.dataEnd());
 
 		while (curPos < end)
 		{
@@ -52,7 +52,7 @@ public:
 		}
 	}
 
-	explicit ArtFragment(std::pair<const void *, sz> p)
+	explicit ArtFragment(std::pair<const void *, size_t> p)
 		: ArtFragment(p.first, p.second) {}
 
 	// const getter functions for the data in the header

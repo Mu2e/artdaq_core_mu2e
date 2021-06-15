@@ -14,7 +14,7 @@ public:
 	CalorimeterFragment(const void* ptr, size_t sz)
 		: ArtFragment(ptr, sz) {}
 
-	explicit CalorimeterFragment(std::pair<const void*, sz> p)
+	explicit CalorimeterFragment(std::pair<const void*, size_t> p)
 		: CalorimeterFragment(p.first, p.second) {}
 
 	struct CalorimeterDataPacket

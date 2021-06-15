@@ -105,11 +105,11 @@ public:
 			throw cet::exception("ArgumentOutOfRange") << "Buffer overrun detected! Mu2eEventFragment::atPtr was asked for a non-existent Fragment!";  // NOLINT(cert-err60-cpp)
 		}
 
-		return std::make_pair(static_cast<uint8_t const*>(dataBegin()) + fragmentIndex(index) + sizeof(artdaq::detail::RawFragmentHeader, 
-			fragSize(index) - sizeof(artdaq::detail::RawFragmentHeader); // Skip past header
+		return std::make_pair(static_cast<uint8_t const*>(dataBegin()) + fragmentIndex(index) + sizeof(artdaq::detail::RawFragmentHeader), 
+			fragSize(index) - sizeof(artdaq::detail::RawFragmentHeader)); // Skip past header
 	}
 
-	std::pair<void const*, size_t> trackerAtPtr(size_t trkIndex) const
+	std::pair<void const*, size_t> trackerAtPtr(size_t index) const
 	{
 		if (index >= tracker_block_count())
 		{
@@ -118,7 +118,7 @@ public:
 		return atPtr(index);
 	}
 
-	std::pair<void const*, size_t> calorimeterAtPtr(size_t caloIndex) const
+	std::pair<void const*, size_t> calorimeterAtPtr(size_t index) const
 	{
 		if (index >= calorimeter_block_count())
 		{
