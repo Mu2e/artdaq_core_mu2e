@@ -218,7 +218,7 @@ protected:
 	 */
 	const size_t* create_index_() const
 	{
-		TLOG(TLVL_TRACE, "Mu2eEventFragment") << "Creating new index for Mu2eEventFragment";
+		TLOG(TLVL_TRACE + 10, "Mu2eEventFragment") << "Creating new index for Mu2eEventFragment";
 		index_ptr_owner_ = std::make_unique<std::vector<size_t>>(block_count() + 1);
 
 		auto current = reinterpret_cast<uint8_t const*>(artdaq_Fragment_.dataBegin());  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
@@ -226,6 +226,7 @@ protected:
 		for (size_t ii = 0; ii < block_count(); ++ii)
 		{
 			auto this_size = reinterpret_cast<const artdaq::detail::RawFragmentHeader*>(current)->word_count * sizeof(artdaq::RawDataType);  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+			//TLOG(TLVL_TRACE + 10, "Mu2eEventFragment") << "Block " << ii << " / " << block_count() << ": Size=" << this_size << " bytes";
 			offset += this_size;
 			index_ptr_owner_->at(ii) = offset;
 			current += this_size;  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
@@ -239,11 +240,11 @@ protected:
 	 */
 	void reset_index_ptr_() const
 	{
-		TLOG(TLVL_TRACE, "Mu2eEventFragment") << "Request to reset index_ptr recieved. has_index=" << metadata()->has_index << ", Check word = " << std::hex
+		TLOG(TLVL_TRACE + 11, "Mu2eEventFragment") << "Request to reset index_ptr recieved. has_index=" << metadata()->has_index << ", Check word = " << std::hex
 											  << *(reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset) + block_count());                   // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		if (metadata()->has_index && *(reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset) + block_count()) == CONTAINER_MAGIC)  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		{
-			TLOG(TLVL_TRACE, "Mu2eEventFragment") << "Setting index_ptr to found valid index";
+			TLOG(TLVL_TRACE + 11, "Mu2eEventFragment") << "Setting index_ptr to found valid index";
 			index_ptr_ = reinterpret_cast<size_t const*>(artdaq_Fragment_.dataBeginBytes() + metadata()->index_offset);  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		}
 		else
