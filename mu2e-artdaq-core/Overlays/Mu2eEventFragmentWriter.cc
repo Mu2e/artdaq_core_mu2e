@@ -90,14 +90,14 @@ void mu2e::Mu2eEventFragmentWriter::fill_event(std::vector<std::unique_ptr<DTCLi
 						TLOG(TLVL_TRACE + 4) << "Getting first block header";
 						auto blockStart = subevt.GetDataBlocks()[ii].blockPointer;
 						auto headerPacket = subevt.GetDataBlocks()[ii].GetHeader();
-						auto byteCount = headerPacket->GetByteCount();
+						size_t byteCount = headerPacket->GetByteCount();
 
 						TLOG(TLVL_TRACE + 4) << "Checking subsequent blocks to see if they are from the same ROC";
 						while (ii < subevt.GetDataBlockCount() - 1)
 						{
 							try
 							{
-								auto newHeaderPacket = subevt.GetDataBlocks()[+ii].GetHeader();
+								auto newHeaderPacket = subevt.GetDataBlocks()[++ii].GetHeader();
 
 								// Collapse multiple blocks from the same DTC/ROC into one Fragment
 								if (newHeaderPacket->GetSubsystem() == subsystem && newHeaderPacket->GetID() == headerPacket->GetID() && newHeaderPacket->GetLinkID() == headerPacket->GetLinkID() && newHeaderPacket->GetHopCount() == headerPacket->GetHopCount())
