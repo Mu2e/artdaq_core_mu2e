@@ -19,7 +19,7 @@ bindir      fq_dir      bin
 product						version		optional
 artdaq_core					v3_07_02
 pcie_linux_kernel_module	v2_05_06
-cetbuildtools				v8_10_00	-	only_for_build
+cetbuildtools				v8_10_01	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
