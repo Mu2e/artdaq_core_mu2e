@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_07_04
-pcie_linux_kernel_module	v2_05_07
-cetbuildtools				v8_11_01	-	only_for_build
+artdaq_core					v3_07_05
+pcie_linux_kernel_module	v2_05_09
+cetbuildtools				v8_13_04	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -45,6 +45,13 @@ e19:s111:prof		e19:s111:prof		e19:s111:prof				-std=c++17
 c7:s111:debug		c7:s111:debug		c7:s111:debug				-std=c++17
 c7:s111:prof		c7:s111:prof		c7:s111:prof				-std=c++17
 
+e20:s110:debug		e20:s110:debug		e20:s110:debug				-std=c++17
+e20:s110:prof		e20:s110:prof		e20:s110:prof				-std=c++17
+e19:s110:debug		e19:s110:debug		e19:s110:debug				-std=c++17
+e19:s110:prof		e19:s110:prof		e19:s110:prof				-std=c++17
+c7:s110:debug		c7:s110:debug		c7:s110:debug				-std=c++17
+c7:s110:prof		c7:s110:prof		c7:s110:prof				-std=c++17
+
 e20:s109:debug		e20:s109:debug		e20:s109:debug				-std=c++17
 e20:s109:prof		e20:s109:prof		e20:s109:prof				-std=c++17
 e19:s109:debug		e19:s109:debug		e19:s109:debug				-std=c++17
@@ -58,6 +65,13 @@ e19:s108:debug		e19:s108:debug		e19:s108:debug				-std=c++17
 e19:s108:prof		e19:s108:prof		e19:s108:prof				-std=c++17
 c7:s108:debug		c7:s108:debug		c7:s108:debug				-std=c++17
 c7:s108:prof		c7:s108:prof		c7:s108:prof				-std=c++17
+
+e20:s106:debug		e20:s106:debug		e20:s106:debug				-std=c++17
+e20:s106:prof		e20:s106:prof		e20:s106:prof				-std=c++17
+e19:s106:debug		e19:s106:debug		e19:s106:debug				-std=c++17
+e19:s106:prof		e19:s106:prof		e19:s106:prof				-std=c++17
+c7:s106:debug		c7:s106:debug		c7:s106:debug				-std=c++17
+c7:s106:prof		c7:s106:prof		c7:s106:prof				-std=c++17
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:
