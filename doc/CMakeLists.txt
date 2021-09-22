@@ -48,6 +48,7 @@ if(DOXYGEN_FOUND)
 	
 	string(REPLACE ";" " " DOXYGEN_INCLUDE_PATH "${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
 
+	set(version ${PROJECT_NAME}_UPS_PRODUCT_VERSION)
 	configure_file(${DOXYFILE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 	configure_file(${DOXYFILE_DIR}/header.html.in ${CMAKE_CURRENT_BINARY_DIR}/header.html @ONLY)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.tag
