@@ -9,22 +9,12 @@
 # use cmake 3.17 or later
 cmake_minimum_required (VERSION 3.17)
 
-find_package(cetbuildtools)
+find_package(cetmodules)
+set(CET_CETBUILDTOOLS_COMPAT TRUE)
+include(Compatibility)
+set(CET_WARN_DEPRECATED)
 
-project(mu2e_artdaq_core VERSION 1.06.05)
-
-# cetbuildtools contains our cmake modules
-SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
-IF (NOT CETBUILDTOOLS_VERSION)
-    MESSAGE (FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules")
-ENDIF()
-
-set(CMAKE_MODULE_PATH 
-  $ENV{CANVAS_ROOT_IO_DIR}/Modules
-        $ENV{CANVAS_DIR}/Modules
-        $ENV{CETBUILDTOOLS_DIR}/Modules
-        ${CMAKE_MODULE_PATH})
-
+project(mu2e_artdaq_core VERSION 1.06.06)
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -43,7 +33,6 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 cet_report_compiler_flags()
 
 # these are minimum required versions, not the actual product versions
-find_ups_product( cetbuildtools v4_01_04 )
 find_ups_product( artdaq_core v1_03_04 )
 find_ups_product( canvas )
 #find_ups_product( fhiclcpp v2_16_00 )
@@ -76,8 +65,4 @@ add_subdirectory(mu2e-artdaq-core)
 # documentation
 add_subdirectory(doc)
 
-# ups - table and config files
-add_subdirectory(ups)
-
-# packaging utility
-include(UseCPack)
+cet_cmake_config()
