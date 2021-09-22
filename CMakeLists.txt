@@ -30,7 +30,7 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 #  cet_add_compiler_flags(-fsanitize=address)
 #endif()
 
-cet_report_compiler_flags()
+#cet_report_compiler_flags()
 
 # these are minimum required versions, not the actual product versions
 find_ups_product( artdaq_core v1_03_04 )
