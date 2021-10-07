@@ -14,7 +14,7 @@ set(CET_CETBUILDTOOLS_COMPAT TRUE)
 include(Compatibility)
 set(CET_WARN_DEPRECATED)
 
-project(mu2e_artdaq_core VERSION 1.06.06)
+project(mu2e_artdaq_core VERSION 1.06.07)
 
 include(CetCMakeEnv)
 cet_cmake_env()
