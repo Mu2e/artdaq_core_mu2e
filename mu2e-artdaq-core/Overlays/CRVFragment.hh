@@ -8,17 +8,17 @@
 #include <array>
 
 namespace mu2e {
-class CRVFragment : public ArtFragment
+class CRVFragmentTmp : public ArtFragment
 {
 public:
-	explicit CRVFragment(artdaq::Fragment const& f)
+	explicit CRVFragmentTmp(artdaq::Fragment const& f)
 		: ArtFragment(f) {}
 
-	CRVFragment(const void* ptr, size_t sz)
+	CRVFragmentTmp(const void* ptr, size_t sz)
 		: ArtFragment(ptr, sz) {}
 
-	explicit CRVFragment(std::pair<const void*, size_t> p)
-		: CRVFragment(p.first, p.second) {}
+	explicit CRVFragmentTmp(std::pair<const void*, size_t> p)
+		: CRVFragmentTmp(p.first, p.second) {}
 
 	struct CRVROCStatusPacket
 	{
@@ -34,16 +34,20 @@ public:
 		uint8_t ActiveFEBFlags0;
 		uint8_t ActiveFEBFlags1;
 
-		uint8_t unused3;
-		uint8_t unused4;
-
 		uint16_t TriggerCount;
 
+		uint8_t Status;
+		uint8_t unused3;
+
+		uint8_t unused4;
 		uint8_t unused5;
-		uint8_t unused6;
 
 		uint8_t Errors;
 		uint8_t EventType;
+
+                uint16_t MicroBunchNumberLow;
+
+                uint16_t MicroBunchNumberHigh;
 
 		CRVROCStatusPacket()
 			: unused1(0)
@@ -54,13 +58,25 @@ public:
 			, unused2(0)
 			, ActiveFEBFlags0(0)
 			, ActiveFEBFlags1(0)
+			, TriggerCount(0)
+			, Status(0)
 			, unused3(0)
 			, unused4(0)
-			, TriggerCount(0)
 			, unused5(0)
-			, unused6(0)
 			, Errors(0)
 			, EventType(0)
+			, MicroBunchNumberLow(0)
+			, MicroBunchNumberHigh(0)
+		{}
+	};
+
+	struct CRVHitWaveformSample
+	{
+		int16_t ADC : 12;
+		int16_t unused : 4;
+		CRVHitWaveformSample()
+			: ADC(0)
+			, unused(0)
 		{}
 	};
 
@@ -68,46 +84,16 @@ public:
 	{
 		uint16_t SiPMID;
 
-		uint16_t HitTime : 10;
-		uint16_t NumSamples : 6;
+		uint16_t HitTime : 12;
+		uint16_t NumSamples : 4;
 
-		uint8_t WaveformSample0;
-		uint8_t WaveformSample1;
-
-		uint8_t WaveformSample2;
-		uint8_t WaveformSample3;
-
-		uint8_t WaveformSample4;
-		uint8_t WaveformSample5;
-
-		uint8_t WaveformSample6;
-		uint8_t WaveformSample7;
+		CRVHitWaveformSample  WaveformSamples[8];
 
 		CRVHitReadoutPacket()
 			: SiPMID(0)
 			, HitTime(0)
-			, NumSamples(0)
-			, WaveformSample0(0)
-			, WaveformSample1(0)
-			, WaveformSample2(0)
-			, WaveformSample3(0)
-			, WaveformSample4(0)
-			, WaveformSample5(0)
-			, WaveformSample6(0)
-			, WaveformSample7(0) {}
-		std::array<unsigned int, 8> Waveform() const
-		{
-			std::array<unsigned int, 8> output;
-			output[0] = WaveformSample0;
-			output[1] = WaveformSample1;
-			output[2] = WaveformSample2;
-			output[3] = WaveformSample3;
-			output[4] = WaveformSample4;
-			output[5] = WaveformSample5;
-			output[6] = WaveformSample6;
-			output[7] = WaveformSample7;
-			return output;
-		}
+			, NumSamples(0) 
+                {}
 	};
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
