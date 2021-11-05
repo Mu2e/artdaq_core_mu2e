@@ -8,17 +8,17 @@
 #include <array>
 
 namespace mu2e {
-class CRVFragmentTmp : public ArtFragment
+class CRVFragment : public ArtFragment
 {
 public:
-	explicit CRVFragmentTmp(artdaq::Fragment const& f)
+	explicit CRVFragment(artdaq::Fragment const& f)
 		: ArtFragment(f) {}
 
-	CRVFragmentTmp(const void* ptr, size_t sz)
+	CRVFragment(const void* ptr, size_t sz)
 		: ArtFragment(ptr, sz) {}
 
-	explicit CRVFragmentTmp(std::pair<const void*, size_t> p)
-		: CRVFragmentTmp(p.first, p.second) {}
+	explicit CRVFragment(std::pair<const void*, size_t> p)
+		: CRVFragment(p.first, p.second) {}
 
 	struct CRVROCStatusPacket
 	{

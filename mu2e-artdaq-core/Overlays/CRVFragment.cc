@@ -1,6 +1,6 @@
 #include "mu2e-artdaq-core/Overlays/CRVFragment.hh"
 
-std::unique_ptr<mu2e::CRVFragmentTmp::CRVROCStatusPacket> mu2e::CRVFragmentTmp::GetCRVROCStatusPacket(size_t blockIndex) const
+std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRVROCStatusPacket(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
@@ -10,7 +10,7 @@ std::unique_ptr<mu2e::CRVFragmentTmp::CRVROCStatusPacket> mu2e::CRVFragmentTmp::
 	return output;
 }
 
-std::vector<mu2e::CRVFragmentTmp::CRVHitReadoutPacket> mu2e::CRVFragmentTmp::GetCRVHitReadoutPackets(size_t blockIndex) const
+std::vector<mu2e::CRVFragment::CRVHitReadoutPacket> mu2e::CRVFragment::GetCRVHitReadoutPackets(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return std::vector<CRVHitReadoutPacket>();
