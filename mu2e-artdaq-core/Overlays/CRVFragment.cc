@@ -15,11 +15,10 @@ std::vector<mu2e::CRVFragment::CRVHitReadoutPacket> mu2e::CRVFragment::GetCRVHit
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return std::vector<CRVHitReadoutPacket>();
 
-
 	auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
-	size_t nHits = (crvRocHdr->ControllerEventWordCount -
-					sizeof(CRVROCStatusPacket)) /
-				   sizeof(CRVHitReadoutPacket);
+        size_t nHits = 0;
+        if(2*crvRocHdr->ControllerEventWordCount>sizeof(CRVROCStatusPacket))
+	       nHits = (2*crvRocHdr->ControllerEventWordCount-sizeof(CRVROCStatusPacket)) / sizeof(CRVHitReadoutPacket);
 
 	std::vector<CRVHitReadoutPacket> output(nHits);
 
