@@ -30,9 +30,12 @@ end_product_list
 # -nq- means there is no qualifier
 # a "-" means the dependent product is not required by the parent and will not be setup
 
-qualifier			artdaq_core			pcie_linux_kernel_module	notes
+qualifier		artdaq_core		pcie_linux_kernel_module        	notes
 e20:s112:debug		e20:s112:debug		e20:s112:debug				-std=c++17
 e20:s112:prof		e20:s112:prof		e20:s112:prof				-std=c++17
+e20:s108:debug		e20:s108:debug		e20:s108:debug				-std=c++17
+e20:s108:prof		e20:s108:prof		e20:s108:prof				-std=c++17
+
 
 end_qualifier_list
 
