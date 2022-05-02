@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/EventHeader.hh"
+#include "mu2e-artdaq-core/Data/EventHeader.hh"
 #include <ostream>
 
 namespace mu2e {

@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/TimeStamp.hh"
+#include "mu2e-artdaq-core/Data/TimeStamp.hh"
 #include <iomanip>
 #include <ostream>
 

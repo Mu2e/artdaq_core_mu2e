@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_Overlays_SubRunHeader_hh
-#define mu2e_artdaq_core_Overlays_SubRunHeader_hh
+#ifndef mu2e_artdaq_core_Data_SubRunHeader_hh
+#define mu2e_artdaq_core_Data_SubRunHeader_hh
 //
 // Header describing a Mu2e art::SubRun.
 //
@@ -13,8 +13,8 @@
 //     for a long time.
 //
 
-#include "mu2e-artdaq-core/Overlays/EWT.hh"
-#include "mu2e-artdaq-core/Overlays/TimeStamp.hh"
+#include "mu2e-artdaq-core/Data/EWT.hh"
+#include "mu2e-artdaq-core/Data/TimeStamp.hh"
 #include <iosfwd>
 
 namespace mu2e {
@@ -36,4 +36,4 @@ struct SubRunHeader {
 			   SubRunHeader const& sh );
 
 }
-#endif /* mu2e_artdaq_core_Overlays */
+#endif /* mu2e_artdaq_core_Data_SubRunHeader_hh */

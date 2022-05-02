@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_Overlays_TimeStamp_hh
-#define mu2e_artdaq_core_Overlays_TimeStamp_hh
+#ifndef mu2e_artdaq_core_Data_TimeStamp_hh
+#define mu2e_artdaq_core_Data_TimeStamp_hh
 //
 // A presistent time stamp class that represents a time, as seconds from the start of the
 // unix epoch.  Mu2e plans to store times in UTC but this is not enforced by this class.
@@ -53,4 +53,4 @@ private:
 			   TimeStamp const& ts );
 
 }
-#endif /* mu2e_artdaq_core_Overlays */
+#endif /* mu2e_artdaq_core_Data_TimeStamp_hh */

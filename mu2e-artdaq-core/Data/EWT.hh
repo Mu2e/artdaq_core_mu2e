@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_Overlays_EWT_hh
-#define mu2e_artdaq_core_Overlays_EWT_hh
+#ifndef mu2e_artdaq_core_Data_EWT_hh
+#define mu2e_artdaq_core_Data_EWT_hh
 //
 // A type representing an Event Window Tag.
 //
@@ -15,4 +15,4 @@ namespace mu2e {
   typedef uint64_t EWT;
 
 }
-#endif /* mu2e_artdaq_core_Overlays */
+#endif /* mu2e_artdaq_core_Data_EWT_hh */

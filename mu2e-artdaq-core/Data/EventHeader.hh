@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_Overlays_EventHeader_hh
-#define mu2e_artdaq_core_Overlays_EventHeader_hh
+#ifndef mu2e_artdaq_core_Data_EventHeader_hh
+#define mu2e_artdaq_core_Data_EventHeader_hh
 //
 // Header describing a Mu2e art::Event
 //
@@ -17,7 +17,7 @@
 //            bit is out of range.  Is this the behaviour we want?
 //
 
-#include "mu2e-artdaq-core/Overlays/EWT.hh"
+#include "mu2e-artdaq-core/Data/EWT.hh"
 #include <array>
 #include <cstdint>
 #include <iosfwd>
@@ -58,4 +58,4 @@ struct EventHeader {
 			   EventHeader const& eh );
 
 }
-#endif /* mu2e_artdaq_core_Overlays */
+#endif /* mu2e_artdaq_core_Data_EventHeader_hh */

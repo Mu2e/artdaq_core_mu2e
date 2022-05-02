@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_Overlays_RunHeader_hh
-#define mu2e_artdaq_core_Overlays_RunHeader_hh
+#ifndef mu2e_artdaq_core_Data_RunHeader_hh
+#define mu2e_artdaq_core_Data_RunHeader_hh
 //
 // Header describing a Mu2e art::Run.
 //
@@ -13,8 +13,8 @@
 //     for a long time.
 //
 
-#include "mu2e-artdaq-core/Overlays/EWT.hh"
-#include "mu2e-artdaq-core/Overlays/TimeStamp.hh"
+#include "mu2e-artdaq-core/Data/EWT.hh"
+#include "mu2e-artdaq-core/Data/TimeStamp.hh"
 #include <iosfwd>
 
 namespace mu2e {
@@ -36,4 +36,4 @@ struct RunHeader {
 			   RunHeader const& rh );
 
 }
-#endif /* mu2e_artdaq_core_Overlays */
+#endif /* mu2e_artdaq_core_Data_RunHeader_hh */

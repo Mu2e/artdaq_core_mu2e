@@ -1,0 +1,5 @@
+#include "mu2e-artdaq-core/Data/TimeStamp.hh"
+#include "mu2e-artdaq-core/Data/RunHeader.hh"
+#include "mu2e-artdaq-core/Data/SubRunHeader.hh"
+#include "mu2e-artdaq-core/Data/EventHeader.hh"
+#include "canvas/Persistency/Common/Wrapper.h"
