@@ -14,5 +14,8 @@ namespace mu2e {
 
   typedef uint64_t EWT;
 
+  // Maximum value of EWT is 2^48 which is represented with 15 decimal digits.
+  constexpr int ewt_decimal_digits = 15;
+
 }
 #endif /* mu2e_artdaq_core_Data_EWT_hh */

@@ -1,4 +1,5 @@
 #include "mu2e-artdaq-core/Data/RunHeader.hh"
+#include <iomanip>
 #include <ostream>
 
 namespace mu2e {
@@ -6,7 +7,7 @@ namespace mu2e {
   std::ostream& operator<<(std::ostream& os,
 			   RunHeader const& rh ){
     os << " start Time: " << rh.startTime
-       << " first EWT: "  << rh.ewtFirst;
+       << " first EWT: "  << std::setw(ewt_decimal_digits) << rh.ewtFirst;
     return os;
   }
 

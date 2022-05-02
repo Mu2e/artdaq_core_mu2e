@@ -34,10 +34,10 @@ struct EventHeader {
     ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags) {
   }
 
-  EWT        ewt       = 0;  // Event Window Tag
-  uint16_t   mode      = 0;  // Event Mode
-  uint16_t   rfmTDC    = 0;  // RF Marker TDC
-  uint8_t    flags     = 0;  // on-spill bit and reserved flags
+  EWT        ewt   = 0;  // Event Window Tag
+  uint32_t   mode  = 0;  // Event Mode
+  uint8_t   rfmTDC = 0;  // RF Marker TDC
+  uint8_t    flags = 0;  // on-spill bit and reserved flags
 
   bool isOnSpill() const{
     return ( (flags & spillMask) == 1);
@@ -47,10 +47,7 @@ struct EventHeader {
     return ( ! isOnSpill() );
   }
 
-  bool isFlagBitSet( int bit){
-    static constexpr std::array<uint8_t,8> mask = { 1, 2, 4, 8, 16, 32, 64, 128 };
-    return ( (flags & mask.at(bit)) != 0 );
-  }
+  bool isFlagBitSet( int bit) const;
 
 };
 
