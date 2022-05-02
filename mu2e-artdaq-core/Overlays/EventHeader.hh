@@ -13,6 +13,8 @@
 //  3) Did not use std::bitset for flags since, in  g++ 9.3.0, it allocates space in chunks of 32 bits.
 //  4) Fixme: add additional named bits in flags and EventMode as they are defined; maybe create 
 //            separate classes for these?
+//  5) Fixme: in the member function isFlagBit set, the code with thrown an exception if the requested
+//            bit is out of range.  Is this the behaviour we want?
 //
 
 #include "mu2e-artdaq-core/Overlays/EWT.hh"
@@ -45,9 +47,9 @@ struct EventHeader {
     return ( ! isOnSpill() );
   }
 
-  bool isFlagBitSet( uint8_t flag, int bit){
+  bool isFlagBitSet( int bit){
     static constexpr std::array<uint8_t,8> mask = { 1, 2, 4, 8, 16, 32, 64, 128 };
-    return ( (flags & mask.at(bit)) != 0 );  // Fixme - is this the right behaviour for an out of bounds reference?
+    return ( (flags & mask.at(bit)) != 0 );
   }
 
 };
