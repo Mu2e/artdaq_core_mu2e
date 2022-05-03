@@ -26,11 +26,11 @@ namespace mu2e {
 
 struct EventHeader {
 
-  constexpr static char spillMask  = 0x1;
+  constexpr static uint8_t spillMask  = 0x1;
 
   EventHeader(){}
 
-  EventHeader( EWT ewt, uint16_t mode, uint16_t rfmTDC, uint8_t flags ):
+  EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags ):
     ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags) {
   }
 
