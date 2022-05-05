@@ -20,7 +20,7 @@ product						version		optional
 artdaq_core					v3_08_02	s115
 artdaq_core					v3_08_03	s116
 artdaq_core					v3_08_01	-default-
-pcie_linux_kernel_module	v2_05_16
+pcie_linux_kernel_module	v2_05_19
 cetmodules					v2_26_00	-	only_for_build
 end_product_list
 
