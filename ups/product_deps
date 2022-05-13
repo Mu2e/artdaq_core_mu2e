@@ -17,11 +17,9 @@ bindir      fq_dir      bin
 
 #
 product						version		optional
-artdaq_core					v3_08_02	s115
-artdaq_core					v3_08_03	s116
-artdaq_core					v3_08_01	-default-
-pcie_linux_kernel_module	v2_05_19
-cetmodules					v2_26_00	-	only_for_build
+artdaq_core					v3_08_04
+pcie_linux_kernel_module	v2_05_20
+cetmodules					v3_08_00	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -35,9 +33,6 @@ end_product_list
 qualifier		artdaq_core		pcie_linux_kernel_module        	notes
 e20:s116:debug		e20:s116:debug		e20:s116:debug				-std=c++17
 e20:s116:prof		e20:s116:prof		e20:s116:prof				-std=c++17
-
-e20:s115:debug		e20:s115:debug		e20:s115:debug				-std=c++17
-e20:s115:prof		e20:s115:prof		e20:s115:prof				-std=c++17
 
 e20:s114:debug		e20:s114:debug		e20:s114:debug				-std=c++17
 e20:s114:prof		e20:s114:prof		e20:s114:prof				-std=c++17
