@@ -15,10 +15,10 @@ incdir      product_dir include
 libdir      fq_dir      lib
 bindir      fq_dir      bin
 
-#
+# for e20:s116
 product						version		optional
-artdaq_core					v3_08_00
-pcie_linux_kernel_module			v2_05_12
+artdaq_core					v3_08_03
+pcie_linux_kernel_module			v2_05_16
 cetmodules					v2_26_00	-	only_for_build
 end_product_list
 
