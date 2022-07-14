@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/FragmentType.hh"
+#include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 
 #include <algorithm>
 #include <cassert>

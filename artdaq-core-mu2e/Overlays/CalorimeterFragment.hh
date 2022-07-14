@@ -2,7 +2,7 @@
 #ifndef MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
 #define MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
 
-#include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
+#include "artdaq-core-mu2e/Overlays/ArtFragment.hh"
 
 namespace mu2e {
 class CalorimeterFragment : public ArtFragment

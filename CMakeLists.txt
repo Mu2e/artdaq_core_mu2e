@@ -1,8 +1,8 @@
 # ======================================================================
-#  mu2e_artdaq-core main build file
+#  artdaq_core_mu2e main build file
 #
 #  cd .../path/to/build/directory
-#  source .../path/to/mu2e_artdaq-core/ups/setup_for_development
+#  source .../path/to/artdaq-core-mu2e/ups/setup_for_development
 #  buildtool
 # ======================================================================
 
@@ -14,7 +14,7 @@ set(CET_CETBUILDTOOLS_COMPAT TRUE)
 include(Compatibility)
 set(CET_WARN_DEPRECATED)
 
-project(mu2e_artdaq_core VERSION 1.06.09)
+project(artdaq_core_mu2e VERSION 1.06.09)
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -57,7 +57,7 @@ include(ArtDictionary)
 include(BasicPlugin)
 
 # source
-add_subdirectory(mu2e-artdaq-core)
+add_subdirectory(artdaq-core-mu2e)
 
 # testing
 # add_subdirectory(test)

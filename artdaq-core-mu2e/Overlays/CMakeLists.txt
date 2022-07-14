@@ -12,13 +12,13 @@ cet_make(NO_DICTIONARY
 
 
   basic_plugin(Mu2e "fragmentNameHelper"  
-  mu2e_artdaq_core::mu2e-artdaq-core_Overlays
+  artdaq_core_mu2e::artdaq-core-mu2e_Overlays
   artdaq_core::artdaq-core_Data_Artdaq_fragmentNameHelper
  )
 
 cet_remove_compiler_flags(-fsanitize=address -lasan)
 cet_remove_compiler_flags(-fsanitize=thread -ltsan)
-  art_dictionary(DICTIONARY_LIBRARIES mu2e-artdaq-core_Overlays)
+  art_dictionary(DICTIONARY_LIBRARIES artdaq-core-mu2e_Overlays)
 
 install_headers()
 install_source()

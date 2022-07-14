@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/DTCFragment.hh"
+#include "artdaq-core-mu2e/Overlays/DTCFragment.hh"
 
 #include <iomanip>
 

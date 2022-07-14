@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/BuildInfo/GetPackageBuildInfo.hh"
+#include "artdaq-core-mu2e/BuildInfo/GetPackageBuildInfo.hh"
 
 #include <string>
 
@@ -8,7 +8,7 @@ artdaq::PackageBuildInfo GetPackageBuildInfo::getPackageBuildInfo()
 {
 	artdaq::PackageBuildInfo pkg;
 
-	pkg.setPackageName("mu2e-artdaq-core");
+	pkg.setPackageName("artdaq_core_mu2e");
 	pkg.setPackageVersion("@version@");
 	pkg.setBuildTimestamp("@utcDateTime@");
 
