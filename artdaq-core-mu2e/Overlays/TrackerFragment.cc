@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/TrackerFragment.hh"
+#include "artdaq-core-mu2e/Overlays/TrackerFragment.hh"
 
 #include <vector>
 #include "TrackerFragment.hh"

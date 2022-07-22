@@ -2,7 +2,7 @@
 #ifndef MU2E_ARTDAQ_CORE_OVERLAYS_TRACKERFRAGMENT_HH
 #define MU2E_ARTDAQ_CORE_OVERLAYS_TRACKERFRAGMENT_HH
 
-#include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
+#include "artdaq-core-mu2e/Overlays/ArtFragment.hh"
 
 #include <vector>
 

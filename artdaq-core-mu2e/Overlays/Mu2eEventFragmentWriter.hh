@@ -10,7 +10,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#include "mu2e-artdaq-core/Overlays/Mu2eEventFragment.hh"
+#include "artdaq-core-mu2e/Overlays/Mu2eEventFragment.hh"
 #include "dtcInterfaceLib/DTC_Packets.h"
 #include "artdaq-core/Data/Fragment.hh"
 

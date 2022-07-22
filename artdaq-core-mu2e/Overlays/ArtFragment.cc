@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/ArtFragment.hh"
+#include "artdaq-core-mu2e/Overlays/ArtFragment.hh"
 
 #include <iomanip>
 

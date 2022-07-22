@@ -1,5 +1,5 @@
-#include "mu2e-artdaq-core/Overlays/Mu2eEventFragmentWriter.hh"
-#include "mu2e-artdaq-core/Overlays/FragmentType.hh"
+#include "artdaq-core-mu2e/Overlays/Mu2eEventFragmentWriter.hh"
+#include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 
 mu2e::Mu2eEventFragmentWriter::Mu2eEventFragmentWriter(artdaq::Fragment& f, uint64_t eventWindowTag, uint8_t evbMode)
 	: Mu2eEventFragment(f)

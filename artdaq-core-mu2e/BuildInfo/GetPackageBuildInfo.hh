@@ -1,5 +1,5 @@
-#ifndef mu2e_artdaq_core_BuildInfo_GetPackageBuildInfo_hh
-#define mu2e_artdaq_core_BuildInfo_GetPackageBuildInfo_hh
+#ifndef artdaq_core_mu2e_BuildInfo_GetPackageBuildInfo_hh
+#define artdaq_core_mu2e_BuildInfo_GetPackageBuildInfo_hh
 
 #include "artdaq-core/Data/PackageBuildInfo.hh"
 
@@ -7,7 +7,7 @@
 
 namespace mu2e {
 /// <summary>
-/// Gets the Build information for the mu2e_artdaq_core package
+/// Gets the Build information for the artdaq_core_mu2e package
 /// </summary>
 struct GetPackageBuildInfo
 {
@@ -20,4 +20,4 @@ struct GetPackageBuildInfo
 
 }  // namespace mu2e
 
-#endif /* mu2e_artdaq_core_BuildInfo_GetPackageBuildInfo_hh */
+#endif /* artdaq_core_mu2e_BuildInfo_GetPackageBuildInfo_hh */

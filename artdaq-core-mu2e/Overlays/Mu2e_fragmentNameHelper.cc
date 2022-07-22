@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Overlays/FragmentType.hh"
+#include "artdaq-core-mu2e/Overlays/FragmentType.hh"
 #include "artdaq-core/Data/FragmentNameHelper.hh"
 
 #include "TRACE/tracemf.h"
@@ -8,7 +8,7 @@
 namespace mu2e {
 /**
  * \brief Mu2eFragmentNameHelper extends ArtdaqFragmentNameHelper.
- * This implementation uses mu2e-artdaq-core's FragmentTypeMap and directly assigns names based on it
+ * This implementation uses artdaq_core_mu2e's FragmentTypeMap and directly assigns names based on it
  */
 class Mu2eFragmentNameHelper : public artdaq::ArtdaqFragmentNameHelper
 {

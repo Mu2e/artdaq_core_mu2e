@@ -15,7 +15,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "artdaq-core/Data/Fragment.hh"
-#include "mu2e-artdaq-core/Overlays/mu2eFragment.hh"
+#include "artdaq-core-mu2e/Overlays/mu2eFragment.hh"
 
 #include <iostream>
 
