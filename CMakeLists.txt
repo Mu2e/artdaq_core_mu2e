@@ -6,12 +6,11 @@
 #  buildtool
 # ======================================================================
 
-# use cmake 3.17 or later
-cmake_minimum_required (VERSION 3.17)
+cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
 find_package(cetmodules)
 
-project(artdaq_core_mu2e VERSION 1.06.09)
+project(artdaq_core_mu2e VERSION 1.08.00)
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -20,7 +19,6 @@ cet_set_compiler_flags(DIAGS VIGILANT
  WERROR
  NO_UNDEFINED
  EXTRA_FLAGS -pedantic
- EXTRA_CXX_FLAGS -D_GLIBCXX_USE_NANOSLEEP
  )
 string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 #if( ${BTYPE_UC} MATCHES "DEBUG" )
@@ -29,29 +27,11 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 
 #cet_report_compiler_flags()
 
-# these are minimum required versions, not the actual product versions
-find_ups_product( artdaq_core v1_03_04 )
-find_ups_product( canvas )
-#find_ups_product( fhiclcpp v2_16_00 )
-find_ups_product( messagefacility v1_10_00 )
-find_ups_product( TRACE v3_03_00 )
-find_ups_product( cetlib v1_03_00 )
-find_ups_product( pcie_linux_kernel_module v2_04_00 )
-find_ups_root( v5_34_00 )
-find_ups_boost( v1_50_0 filesystem
-                        program_options
-                        unit_test_framework
- )
- 
-# have to make sure cmake doesn't select the system libraries
-# define libsigc
-cet_find_library( SIGC    NAMES sigc-2.0  PATHS ENV LIBSIGCPP_LIB NO_DEFAULT_PATH )
+find_package(artdaq_core 3.09.00 REQUIRED)
+find_package(pcie_linux_kernel_module 2.06.00 REQUIRED)
 
-# macros for art_dictionary and simple_plugin
-include(CetMake)
-include(CetTest)
 include(ArtDictionary)
-include(BasicPlugin)
+include(BuildPlugins)
 
 # source
 add_subdirectory(artdaq-core-mu2e)

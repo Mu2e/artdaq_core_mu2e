@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Data/EventHeader.hh"
+#include "artdaq-core-mu2e/Data/EventHeader.hh"
 #include <iomanip>
 #include <ostream>
 #include <cstdio>

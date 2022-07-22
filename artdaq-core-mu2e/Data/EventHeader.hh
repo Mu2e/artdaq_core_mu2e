@@ -17,7 +17,7 @@
 //            bit is out of range.  Is this the behaviour we want?
 //
 
-#include "mu2e-artdaq-core/Data/EWT.hh"
+#include "artdaq-core-mu2e/Data/EWT.hh"
 #include <array>
 #include <cstdint>
 #include <iosfwd>

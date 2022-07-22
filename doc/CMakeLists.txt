@@ -1,4 +1,3 @@
-cmake_policy(VERSION 3.0.1)
 include(FindDoxygen)
 include(FindLATEX)
 
@@ -35,9 +34,8 @@ if(DOXYGEN_FOUND)
 
 	if(CM_DEPENDS)
 		foreach(dependency ${CM_DEPENDS})
-			if(TARGET ${dependency}_doc)
-				get_target_property(tag_source ${dependency}_doc SOURCE_DIR)
-				set(TAG_FILES "${TAG_FILES} ${CMAKE_BINARY_DIR}/${dependency}/doc/${dependency}.tag=${tag_source}/../")
+			if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../../${dependency})
+				set(TAG_FILES "${TAG_FILES} ${CMAKE_BINARY_DIR}/${dependency}/doc/${dependency}.tag=../../${dependency}/")
 				add_dependencies(${PROJECT_NAME}_doc ${dependency}_doc)
 			else()
 				string(TOUPPER ${dependency} dependency_uc)
@@ -48,7 +46,6 @@ if(DOXYGEN_FOUND)
 	
 	string(REPLACE ";" " " DOXYGEN_INCLUDE_PATH "${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
 
-	set(version ${PROJECT_NAME}_UPS_PRODUCT_VERSION)
 	configure_file(${DOXYFILE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 	configure_file(${DOXYFILE_DIR}/header.html.in ${CMAKE_CURRENT_BINARY_DIR}/header.html @ONLY)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.tag

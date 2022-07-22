@@ -13,8 +13,8 @@
 //     for a long time.
 //
 
-#include "mu2e-artdaq-core/Data/EWT.hh"
-#include "mu2e-artdaq-core/Data/TimeStamp.hh"
+#include "artdaq-core-mu2e/Data/EWT.hh"
+#include "artdaq-core-mu2e/Data/TimeStamp.hh"
 #include <iosfwd>
 
 namespace mu2e {

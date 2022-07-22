@@ -1,4 +1,4 @@
-#include "mu2e-artdaq-core/Data/SubRunHeader.hh"
+#include "artdaq-core-mu2e/Data/SubRunHeader.hh"
 #include <iomanip>
 #include <ostream>
 
