@@ -27,8 +27,8 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 
 #cet_report_compiler_flags()
 
-find_package(artdaq_core 3.09.00 REQUIRED)
-find_package(pcie_linux_kernel_module 2.06.00 REQUIRED)
+find_package(artdaq_core 3.09.00 REQUIRED EXPORT)
+find_package(pcie_linux_kernel_module 2.06.00 REQUIRED EXPORT)
 
 include(ArtDictionary)
 include(BuildPlugins)
