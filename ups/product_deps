@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent mu2e_artdaq_core		
+parent          mu2e_artdaq_core		
 defaultqual	e20:s112
 
 # These optional lines define the installed directories where
