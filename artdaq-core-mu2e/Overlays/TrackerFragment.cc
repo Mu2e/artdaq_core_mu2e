@@ -68,7 +68,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 
 std::vector<uint16_t> TrackerFragment::GetWaveformV0(TrackerDataPacketV0 const* trackerPacket) const
 {
-	std::vector<uint16_t> output(14);
+	std::vector<uint16_t> output(15);
 	output[0] = trackerPacket->ADC00;
 	output[1] = trackerPacket->ADC01();
 	output[2] = trackerPacket->ADC02();
