@@ -10,7 +10,7 @@ Mu2eEventHeader.cc
 mu2eFragment.cc
 TrackerFragment.cc
   LIBRARIES PUBLIC
-  pcie_linux_kernel_module::DTCInterface
+  mu2e_pcie_utils::DTCInterface
   artdaq_core::artdaq-core_Data
   )
 
