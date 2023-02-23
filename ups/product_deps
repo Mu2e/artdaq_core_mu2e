@@ -17,9 +17,9 @@ bindir      fq_dir      bin
 
 # for e20:s116
 product				version		optional
-artdaq_core			v3_09_04
-mu2e_pcie_utils		v2_08_00
-cetmodules			v3_19_02	-	only_for_build
+artdaq_core			v3_09_07
+mu2e_pcie_utils		v2_08_01
+cetmodules			v3_21_00	-	only_for_build
 end_product_list
 
 # e6  - with gcc 4.9.1 and -std=c++1y
@@ -31,6 +31,11 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier			artdaq_core		mu2e_pcie_utils		notes
+e26:s122:debug		e26:s122:debug	e26:s122:debug		-std=c++17
+e26:s122:prof		e26:s122:prof	e26:s122:prof		-std=c++17
+e20:s122:debug		e20:s122:debug	e20:s122:debug		-std=c++17
+e20:s122:prof		e20:s122:prof	e20:s122:prof		-std=c++17
+
 e26:s118:debug		e26:s118:debug	e26:s118:debug		-std=c++17
 e26:s118:prof		e26:s118:prof	e26:s118:prof		-std=c++17
 e20:s118:debug		e20:s118:debug	e20:s118:debug		-std=c++17
