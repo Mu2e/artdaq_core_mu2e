@@ -3,7 +3,7 @@
 #include "artdaq-core/Data/Fragment.hh"
 
 namespace mu2e {
-static std::vector<std::string> const names{"MISSED", "DTC", "MU2E", "MU2EEVENT", "TRK", "CAL", "CRV", "DBG", "UNKNOWN"};
+  static std::vector<std::string> const names{"MISSED", "DTC", "MU2E", "MU2EEVENT", "TRK", "CAL", "CRV", "DBG", "STM", "UNKNOWN"};
 
 namespace detail {
 enum FragmentType : artdaq::Fragment::type_t
@@ -17,6 +17,7 @@ enum FragmentType : artdaq::Fragment::type_t
 	CAL,     // Calorimeter fragment
 	CRV,     // Cosmic Ray Veto fragment
 	DBG,     // Debug Packet Fragment
+        STM,     // Stopping Target Monitor fragment
 	INVALID  // Should always be last.
 };
 
