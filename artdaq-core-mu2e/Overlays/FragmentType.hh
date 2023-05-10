@@ -3,20 +3,20 @@
 #include "artdaq-core/Data/Fragment.hh"
 
 namespace mu2e {
-static std::vector<std::string> const names{"MISSED", "DTC", "MU2E", "MU2EEVENT", "TRK", "CAL", "CRV", "DBG", "UNKNOWN"};
 
 namespace detail {
 enum FragmentType : artdaq::Fragment::type_t
 {
 	EMPTY = artdaq::Fragment::EmptyFragmentType,
 	MISSED = artdaq::Fragment::FirstUserFragmentType,
-	DTC,
-	MU2E,
-	MU2EEVENT,
-	TRK,     // Tracker fragment
-	CAL,     // Calorimeter fragment
-	CRV,     // Cosmic Ray Veto fragment
-	DBG,     // Debug Packet Fragment
+	//DTC = artdaq::Fragment::FirstUserFragmentType + 1,  // DEPRECATED
+	//MU2E = artdaq::Fragment::FirstUserFragmentType + 2, // DEPRECATED
+	//MU2EEVENT = artdaq::Fragment::FirstUserFragmentType + 3, // DEPRECATED
+	TRK = artdaq::Fragment::FirstUserFragmentType + 4,     // Tracker fragment
+	CAL = artdaq::Fragment::FirstUserFragmentType + 5,     // Calorimeter fragment
+	CRV = artdaq::Fragment::FirstUserFragmentType + 6,     // Cosmic Ray Veto fragment
+	DBG = artdaq::Fragment::FirstUserFragmentType + 7,     // Debug Packet Fragment
+	DTCEVT = artdaq::Fragment::FirstUserFragmentType + 8, // DTC Event Fragment
 	INVALID  // Should always be last.
 };
 
@@ -25,6 +25,18 @@ static_assert(artdaq::Fragment::isUserFragmentType(FragmentType::INVALID - 1), "
 }  // namespace detail
 
 using detail::FragmentType;
+
+std::unordered_map<FragmentType, std::string> const names{
+	{FragmentType::MISSED, "MISSED"},
+	//{FragmentType::DTC, "DTC"},   // DEPRECATED
+	//{FragmentType::MU2E, "MU2E"}, // DEPRECATED
+	//{FragmentType::MU2EEVENT, "MU2EEVENT"},
+	{FragmentType::TRK, "TRK"},
+	{FragmentType::CAL, "CAL"},
+	{FragmentType::CRV, "CRV"},
+	{FragmentType::DBG, "DBG"},
+	{FragmentType::DTCEVT, "DTCEVT"}
+};
 
 FragmentType toFragmentType(std::string t_string);
 std::string fragmentTypeToString(FragmentType val);

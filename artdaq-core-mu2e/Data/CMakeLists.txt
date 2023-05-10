@@ -4,6 +4,7 @@ EventHeader.cc
 RunHeader.cc
 SubRunHeader.cc
 TimeStamp.cc
+Mu2eEventHeader.cc
 LIBRARIES PUBLIC
   )
 

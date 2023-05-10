@@ -4,6 +4,8 @@
   <class name="mu2e::RunHeader" />
   <class name="mu2e::SubRunHeader" />
   <class name="mu2e::EventHeader" />
+  <class name="mu2e::Mu2eEventHeader" />
+  <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
   <class name="art::Wrapper<mu2e::RunHeader>"/>
   <class name="art::Wrapper<mu2e::SubRunHeader>"/>
   <class name="art::Wrapper<mu2e::EventHeader>"/>
