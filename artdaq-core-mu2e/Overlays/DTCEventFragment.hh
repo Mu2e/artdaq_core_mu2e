@@ -41,6 +41,7 @@ public:
 		if (event_ptr_ == nullptr)
 		{
 			event_ptr_.reset(new DTCLib::DTC_Event(artdaq_Fragment_.dataBeginBytes()));
+			event_ptr_->SetupEvent();
 		}
 		return *event_ptr_.get();
 	}
