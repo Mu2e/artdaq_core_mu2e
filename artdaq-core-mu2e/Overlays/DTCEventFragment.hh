@@ -36,7 +36,7 @@ public:
 	{
 	}
 
-	DTCLib::DTC_Event get_data()
+	DTCLib::DTC_Event getData()
 	{
 		if (event_ptr_ == nullptr)
 		{
@@ -46,9 +46,9 @@ public:
 		return *event_ptr_.get();
 	}
 
-	std::vector<DTCLib::DTC_DataBlock> get_subsystem_data(DTCLib::DTC_Subsystem subsys)
+	std::vector<DTCLib::DTC_DataBlock> getSubsystemData(DTCLib::DTC_Subsystem subsys)
 	{
-		auto data = get_data();
+		auto data = getData();
 		return data.GetSubsystemDataBlocks(subsys);
 	}
 
