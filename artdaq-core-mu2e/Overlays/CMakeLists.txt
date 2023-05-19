@@ -1,10 +1,7 @@
 cet_make_library(LIBRARY_NAME Overlays
 SOURCE 
-ArtFragment.cc 
-CalorimeterFragment.cc 
-CRVFragment.cc 
 FragmentType.cc 
-TrackerFragment.cc
+DTCEventFragment.cc
   LIBRARIES PUBLIC
   mu2e_pcie_utils::DTCInterface
   artdaq_core::artdaq-core_Data

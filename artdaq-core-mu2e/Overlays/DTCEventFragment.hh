@@ -47,10 +47,10 @@ public:
 		return *event_ptr_.get();
 	}
 
-	std::vector<DTCLib::DTC_DataBlock> getSubsystemData(DTCLib::DTC_Subsystem subsys) const 
+	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const 
 	{
 		auto data = getData();
-		return data.GetSubsystemDataBlocks(subsys);
+		return data.GetSubsystemData(subsys);
 	}
 
 protected:
