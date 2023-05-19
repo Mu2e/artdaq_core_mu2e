@@ -2,8 +2,11 @@
 #define mu2e_artdaq_core_Overlays_ArtFragment_hh
 
 #include "artdaq-core/Data/Fragment.hh"
+#include "artdaq-core/Data/dictionarycontrol.hh"
 #include "cetlib_except/exception.h"
+#if HIDE_FROM_ROOT
 #include "dtcInterfaceLib/DTC_Packets.h"
+#endif
 
 #include <iostream>
 
@@ -23,40 +26,32 @@ std::ostream &operator<<(std::ostream &, ArtFragment const &);
 class mu2e::ArtFragment
 {
 public:
-	explicit ArtFragment(artdaq::Fragment const &f)
+	ArtFragment() {}
+
+#if HIDE_FROM_ROOT  // Hide most things from ROOT
+	explicit ArtFragment(std::vector<uint8_t> data)
+		: data_(data) {
+		auto ptr = data_.data();
+		event_ = DTCLib::DTC_SubEvent(ptr);	
+	}
+
+	explicit ArtFragment(DTCLib::DTC_SubEvent const &se)
 	{
-		// Initialize the index array
-		block_count_ = 0;
-		auto curPos = reinterpret_cast<uint8_t const *>(&*f.dataBegin());
-		auto end = reinterpret_cast<uint8_t const *>(&*f.dataEnd());
+		data_ = std::vector<uint8_t>(se.GetSubEventByteCount());
+		memcpy(&data_[0], se.GetHeader(), sizeof(DTCLib::DTC_SubEventHeader));
+		size_t offset = sizeof(DTCLib::DTC_SubEventHeader);
 
-		while (curPos < end)
-		{
-			block_count_++;
-			index_.push_back(new DTCLib::DTC_DataBlock(curPos));
-			curPos += index_.back()->byteSize;
+		for(auto& bl : se.GetDataBlocks()) {
+			memcpy(&data_[0] + offset, bl.blockPointer, bl.byteSize);
+			offset += bl.byteSize;
 		}
-	}
-
-	ArtFragment(const void *ptr, size_t sz) {
-		// Initialize the index array
-		block_count_ = 0;
-		auto curPos = static_cast<uint8_t const *>(ptr);
-		auto end = curPos + sz;
 		
-		while (curPos < end)
-		{
-			block_count_++;
-			index_.push_back(new DTCLib::DTC_DataBlock(curPos));
-			curPos += index_.back()->byteSize;
-		}
+		auto ptr = data_.data();
+		event_ = DTCLib::DTC_SubEvent(ptr);	
 	}
-
-	explicit ArtFragment(std::pair<const void *, size_t> p)
-		: ArtFragment(p.first, p.second) {}
 
 	// const getter functions for the data in the header
-	size_t block_count() const { return block_count_; }
+	size_t block_count() const { return event_.GetDataBlockCount(); }
 
 	// Return size of block at given DataBlock index
 	size_t blockSizeBytes(size_t blockIndex) const
@@ -66,14 +61,14 @@ public:
 			return 0;
 		}
 
-		return index_[blockIndex]->byteSize;
+		return event_.GetDataBlock(blockIndex)->byteSize;
 	}
 
 	// Return pointer to beginning of DataBlock at given DataBlock index
 	DTCLib::DTC_DataBlock const *dataAtBlockIndex(size_t blockIndex) const
 	{
 		if (blockIndex > block_count()) return nullptr;
-		return index_.at(blockIndex);
+		return event_.GetDataBlock(blockIndex);
 	}
 
 	void printPacketAtByte(size_t blockIndex, size_t byteIdx) const
@@ -107,10 +102,14 @@ public:
 		std::cout << std::endl;
 		return;
 	}
+#endif
 
 private:
-	size_t block_count_;
-	std::vector<DTCLib::DTC_DataBlock const *> index_;
+#if HIDE_FROM_ROOT
+	DTCLib::DTC_SubEvent event_;
+#endif
+
+	std::vector<uint8_t> data_;
 };
 
 #endif /* mu2e_artdaq_Overlays_ArtFragment_hh */

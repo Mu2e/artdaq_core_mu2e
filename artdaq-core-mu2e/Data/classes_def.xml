@@ -2,11 +2,29 @@
 
   <class name="mu2e::TimeStamp" />
   <class name="mu2e::RunHeader" />
+  <class name="art::Wrapper<mu2e::RunHeader>"/>
   <class name="mu2e::SubRunHeader" />
+  <class name="art::Wrapper<mu2e::SubRunHeader>"/>
   <class name="mu2e::EventHeader" />
+  <class name="art::Wrapper<mu2e::EventHeader>"/>
   <class name="mu2e::Mu2eEventHeader" />
   <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
-  <class name="art::Wrapper<mu2e::RunHeader>"/>
-  <class name="art::Wrapper<mu2e::SubRunHeader>"/>
-  <class name="art::Wrapper<mu2e::EventHeader>"/>
+  
+  <class name="mu2e::ArtFragment" />
+  <class name="std::vector<mu2e::ArtFragment>" />
+  <class name="art::Wrapper<mu2e::ArtFragment>" />
+  <class name="art::Wrapper<std::vector<mu2e::ArtFragment>>" />
+  <class name="mu2e::TrackerFragment" />
+  <class name="std::vector<mu2e::TrackerFragment>" />
+  <class name="art::Wrapper<mu2e::TrackerFragment>" />
+  <class name="art::Wrapper<std::vector<mu2e::TrackerFragment>>" />
+  <class name="mu2e::CalorimeterFragment" />
+  <class name="std::vector<mu2e::CalorimeterFragment>" />
+  <class name="art::Wrapper<mu2e::CalorimeterFragment>" />
+  <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragment>>" />
+  <class name="mu2e::CRVFragment" />
+  <class name="std::vector<mu2e::CRVFragment>" />
+  <class name="art::Wrapper<mu2e::CRVFragment>" />
+  <class name="art::Wrapper<std::vector<mu2e::CRVFragment>>" />
+	  
 </lcgdict>

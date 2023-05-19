@@ -2,20 +2,22 @@
 #ifndef MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
 #define MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
 
-#include "artdaq-core-mu2e/Overlays/ArtFragment.hh"
+#include "artdaq-core-mu2e/Data/ArtFragment.hh"
 
 namespace mu2e {
 class CalorimeterFragment : public ArtFragment
 {
 public:
-	explicit CalorimeterFragment(artdaq::Fragment const& f)
+
+	CalorimeterFragment() : ArtFragment() {}
+
+	#if HIDE_FROM_ROOT
+	explicit CalorimeterFragment(DTCLib::DTC_SubEvent const& f)
 		: ArtFragment(f) {}
 
-	CalorimeterFragment(const void* ptr, size_t sz)
-		: ArtFragment(ptr, sz) {}
-
-	explicit CalorimeterFragment(std::pair<const void*, size_t> p)
-		: CalorimeterFragment(p.first, p.second) {}
+	CalorimeterFragment(std::vector<uint8_t> data)
+		: ArtFragment(data) {}
+	#endif
 
 	struct CalorimeterDataPacket
 	{
