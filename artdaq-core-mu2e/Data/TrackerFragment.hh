@@ -13,11 +13,10 @@ public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
 
 	TrackerFragment() : ArtFragment() {}
+	explicit TrackerFragment(std::vector<uint8_t> data);
 
 	#if HIDE_FROM_ROOT
 	explicit TrackerFragment(DTCLib::DTC_SubEvent const& evt);
-	explicit TrackerFragment(std::vector<uint8_t> data);
-	#endif
 
 	struct TrackerDataPacketV0
 	{
@@ -290,6 +289,7 @@ private:
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 
 	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
+	#endif
 };
 }  // namespace mu2e
 

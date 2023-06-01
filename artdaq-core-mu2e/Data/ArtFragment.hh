@@ -28,13 +28,11 @@ class mu2e::ArtFragment
 public:
 	ArtFragment() {}
 
-#if HIDE_FROM_ROOT  // Hide most things from ROOT
 	explicit ArtFragment(std::vector<uint8_t> data)
 		: data_(data) {
-		auto ptr = data_.data();
-		event_ = DTCLib::DTC_SubEvent(ptr);	
 	}
 
+#if HIDE_FROM_ROOT  // Hide most things from ROOT
 	explicit ArtFragment(DTCLib::DTC_SubEvent const &se)
 	{
 		data_ = std::vector<uint8_t>(se.GetSubEventByteCount());
@@ -48,14 +46,23 @@ public:
 		
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
+		setup_ = true;
 	}
 
+	void setup_event() {
+		auto ptr = data_.data();
+		event_ = DTCLib::DTC_SubEvent(ptr);	
+		setup_ = true;
+		}
+
 	// const getter functions for the data in the header
-	size_t block_count() const { return event_.GetDataBlockCount(); }
+	size_t block_count() const {
+		if (!setup_) setup_event(); return event_.GetDataBlockCount(); }
 
 	// Return size of block at given DataBlock index
 	size_t blockSizeBytes(size_t blockIndex) const
 	{
+		if (!setup_) setup_event();
 		if (blockIndex > block_count())
 		{
 			return 0;
@@ -67,12 +74,14 @@ public:
 	// Return pointer to beginning of DataBlock at given DataBlock index
 	DTCLib::DTC_DataBlock const *dataAtBlockIndex(size_t blockIndex) const
 	{
+		if (!setup_) setup_event();
 		if (blockIndex > block_count()) return nullptr;
 		return event_.GetDataBlock(blockIndex);
 	}
 
 	void printPacketAtByte(size_t blockIndex, size_t byteIdx) const
 	{
+		if (!setup_) setup_event();
 		auto dataPtr = reinterpret_cast<uint16_t const *>(reinterpret_cast<uint8_t const *>(dataAtBlockIndex(blockIndex)->GetData()) + byteIdx);
 		std::cout << "\t\t"
 				  << "Packet Bits (128): " << std::endl;
@@ -109,6 +118,7 @@ private:
 	DTCLib::DTC_SubEvent event_;
 #endif
 
+	bool setup_{false};
 	std::vector<uint8_t> data_;
 };
 

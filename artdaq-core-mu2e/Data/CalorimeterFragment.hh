@@ -11,13 +11,13 @@ public:
 
 	CalorimeterFragment() : ArtFragment() {}
 
+	CalorimeterFragment(std::vector<uint8_t> data)
+		: ArtFragment(data) {}
+
 	#if HIDE_FROM_ROOT
 	explicit CalorimeterFragment(DTCLib::DTC_SubEvent const& f)
 		: ArtFragment(f) {}
 
-	CalorimeterFragment(std::vector<uint8_t> data)
-		: ArtFragment(data) {}
-	#endif
 
 	struct CalorimeterDataPacket
 	{
@@ -56,6 +56,7 @@ public:
 	std::unique_ptr<CalorimeterBoardID> GetCalorimeterBoardID(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitReadoutPacket, std::vector<uint16_t>>> GetCalorimeterHits(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitReadoutPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
+	#endif
 };
 }  // namespace mu2e
 

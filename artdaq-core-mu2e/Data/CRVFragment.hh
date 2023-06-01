@@ -14,14 +14,13 @@ public:
 	CRVFragment()
 		: ArtFragment() {}
 
+	CRVFragment(std::vector<uint8_t> data)
+		: ArtFragment(data) {}
+
 #if HIDE_FROM_ROOT
 	explicit CRVFragment(DTCLib::DTC_SubEvent const& f)
 		: ArtFragment(f)
 	{}
-
-	CRVFragment(std::vector<uint8_t> data)
-		: ArtFragment(data) {}
-#endif
 
 	struct CRVROCStatusPacket
 	{
@@ -101,6 +100,7 @@ public:
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
 	std::vector<CRVHitReadoutPacket> GetCRVHitReadoutPackets(size_t blockIndex) const;
+#endif
 };
 }  // namespace mu2e
 
