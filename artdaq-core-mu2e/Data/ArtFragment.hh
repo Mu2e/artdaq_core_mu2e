@@ -49,7 +49,7 @@ public:
 		setup_ = true;
 	}
 
-	void setup_event() {
+	void setup_event() const {
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
 		setup_ = true;
@@ -115,10 +115,10 @@ public:
 
 private:
 #if HIDE_FROM_ROOT
-	DTCLib::DTC_SubEvent event_;
+	mutable DTCLib::DTC_SubEvent event_;
 #endif
 
-	bool setup_{false};
+	mutable bool setup_{false};
 	std::vector<uint8_t> data_;
 };
 
