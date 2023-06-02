@@ -57,7 +57,8 @@ public:
 
 	// const getter functions for the data in the header
 	size_t block_count() const {
-		if (!setup_) setup_event(); return event_.GetDataBlockCount(); }
+	  if (!setup_) {setup_event();}
+	  return event_.GetDataBlockCount(); }
 
 	// Return size of block at given DataBlock index
 	size_t blockSizeBytes(size_t blockIndex) const

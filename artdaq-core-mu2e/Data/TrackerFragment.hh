@@ -289,7 +289,7 @@ private:
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 
 	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
-	#endif
+        #endif
 };
 }  // namespace mu2e
 

@@ -17,9 +17,9 @@ mu2e::FragmentType mu2e::toFragmentType(std::string t_string)
 
 std::string mu2e::fragmentTypeToString(FragmentType val)
 {
-	if (names.count(val))
+        if (mu2e::names.count(val))
 	{
-		return names.at(val);
+	        return mu2e::names.at(val);
 	}
 
 	return "INVALID/UNKNOWN";
@@ -28,7 +28,7 @@ std::string mu2e::fragmentTypeToString(FragmentType val)
 std::map<artdaq::Fragment::type_t, std::string> mu2e::makeFragmentTypeMap()
 {
 	auto output = artdaq::Fragment::MakeSystemTypeMap();
-	for (const auto& name : names)
+	for (const auto& name : mu2e::names)
 	{
 		output[name.first] = name.second;
 	}

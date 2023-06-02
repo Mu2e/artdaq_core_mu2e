@@ -1,6 +1,7 @@
 #ifndef mu2e_artdaq_core_Overlays_FragmentType_hh
 #define mu2e_artdaq_core_Overlays_FragmentType_hh
 #include "artdaq-core/Data/Fragment.hh"
+#include <unordered_map>
 
 namespace mu2e {
 
