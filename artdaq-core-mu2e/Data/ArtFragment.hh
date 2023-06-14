@@ -17,18 +17,18 @@
 // May contain multiple DataBlocks from the same ROC
 
 namespace mu2e {
-class ArtFragment;
+struct ArtFragment;
+using ArtFragments = std::vector<ArtFragment>;
 
 // Let the "<<" operator dump the ArtFragment's data to stdout
 std::ostream &operator<<(std::ostream &, ArtFragment const &);
 }  // namespace mu2e
 
-class mu2e::ArtFragment
+struct mu2e::ArtFragment
 {
-public:
 	ArtFragment() {}
 
-	explicit ArtFragment(std::vector<uint8_t> data)
+	explicit ArtFragment(std::vector<uint8_t> const& data)
 		: data_(data) {
 	}
 
@@ -113,14 +113,14 @@ public:
 		return;
 	}
 #endif
-
-private:
-#if HIDE_FROM_ROOT
-	mutable DTCLib::DTC_SubEvent event_;
-#endif
+	
 
 	mutable bool setup_{false};
 	std::vector<uint8_t> data_;
+
+#if HIDE_FROM_ROOT  // Hide most things from ROOT
+	mutable DTCLib::DTC_SubEvent event_;
+#endif
 };
 
 #endif /* mu2e_artdaq_Overlays_ArtFragment_hh */
