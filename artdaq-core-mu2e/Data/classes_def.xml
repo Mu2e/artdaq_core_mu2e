@@ -14,48 +14,16 @@
   <class name="std::vector<mu2e::ArtFragment>" />
   <class name="art::Wrapper<mu2e::ArtFragment>" />
   <class name="art::Wrapper<std::vector<mu2e::ArtFragment>>" />
-  <ioread sourceClass="mu2e::ArtFragment"
-          source="std::vector<unsigned char> data_;"
-  version="[-11]"
-  targetClass="mu2e::ArtFragment"
-  target="data_"
-  embed="true">
-  <![CDATA[ data_ = onfile.data_; ]]>
- </ioread>
   <class name="mu2e::TrackerFragment" />
   <class name="std::vector<mu2e::TrackerFragment>" />
   <class name="art::Wrapper<mu2e::TrackerFragment>" />
   <class name="art::Wrapper<std::vector<mu2e::TrackerFragment>>" />
- <ioread sourceClass="mu2e::TrackerFragment"
-          source="std::vector<unsigned char> data_;"
-  version="[-11]"
-  targetClass="mu2e::TrackerFragment"
-  target="data_"
-  embed="true">
-  <![CDATA[ data_ = onfile.data_; ]]>
- </ioread>
   <class name="mu2e::CalorimeterFragment" />
   <class name="std::vector<mu2e::CalorimeterFragment>" />
   <class name="art::Wrapper<mu2e::CalorimeterFragment>" />
   <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragment>>" />
-<ioread sourceClass="mu2e::CalorimeterFragment"
-          source="std::vector<unsigned char> data_;"
-  version="[-11]"
-  targetClass="mu2e::CalorimeterFragment"
-  target="data_"
-  embed="true">
-  <![CDATA[ data_ = onfile.data_; ]]>
- </ioread>
  <class name="mu2e::CRVFragment" />
   <class name="std::vector<mu2e::CRVFragment>" />
   <class name="art::Wrapper<mu2e::CRVFragment>" />
   <class name="art::Wrapper<std::vector<mu2e::CRVFragment>>" />
-<ioread sourceClass="mu2e::CRVFragment"
-          source="std::vector<unsigned char> data_;"
-  version="[-11]"
-  targetClass="mu2e::CRVFragment"
-  target="data_"
-  embed="true">
-  <![CDATA[ data_ = onfile.data_; ]]>
- </ioread>
 </lcgdict>
