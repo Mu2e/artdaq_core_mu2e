@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Overlays/CRVFragment.hh"
+#include "artdaq-core-mu2e/Data/CRVFragment.hh"
 
 std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRVROCStatusPacket(size_t blockIndex) const
 {

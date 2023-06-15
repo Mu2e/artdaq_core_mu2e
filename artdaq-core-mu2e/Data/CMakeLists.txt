@@ -4,7 +4,13 @@ EventHeader.cc
 RunHeader.cc
 SubRunHeader.cc
 TimeStamp.cc
+Mu2eEventHeader.cc
+ArtFragment.cc 
+CalorimeterFragment.cc 
+CRVFragment.cc 
+TrackerFragment.cc
 LIBRARIES PUBLIC
+  artdaq_core_mu2e::Overlays
   )
 
 include(ArtDictionary)
