@@ -10,20 +10,38 @@ std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRV
 	return output;
 }
 
-std::vector<mu2e::CRVFragment::CRVHitReadoutPacket> mu2e::CRVFragment::GetCRVHitReadoutPackets(size_t blockIndex) const
+std::vector<mu2e::CRVFragment::CRVHit> mu2e::CRVFragment::GetCRVHits(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return std::vector<CRVHitReadoutPacket>();
+	if (dataPtr == nullptr) return std::vector<CRVHit>();
 
 	auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
-        size_t nHits = 0;
-        if(2*crvRocHdr->ControllerEventWordCount>sizeof(CRVROCStatusPacket))
-	       nHits = (2*crvRocHdr->ControllerEventWordCount-sizeof(CRVROCStatusPacket)) / sizeof(CRVHitReadoutPacket);
+        size_t eventSize = 2*crvRocHdr->ControllerEventWordCount;
+        size_t pos = sizeof(CRVROCStatusPacket);
 
-	std::vector<CRVHitReadoutPacket> output(nHits);
+        std::vector<mu2e::CRVFragment::CRVHit> output;
+        while(pos<eventSize)
+        {
+          output.resize(output.size()+1);
 
-	memcpy(&output[0], reinterpret_cast<CRVHitReadoutPacket const*>(crvRocHdr + 1), nHits * sizeof(CRVHitReadoutPacket));
+	  memcpy(&output.back().first, reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, sizeof(CRVHitInfo));
+          pos += sizeof(CRVHitInfo);
+
+          size_t nWaveformSamples = output.back().first.NumSamples;
+          output.back().second.resize(nWaveformSamples);
+	  memcpy(&output.back().second[0], reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, nWaveformSamples*sizeof(CRVHitWaveformSample));
+          pos += sizeof(CRVHitWaveformSample)*nWaveformSamples;
+
+          if(pos>eventSize)
+          {
+            std::cerr << "************************************************" << std::endl;
+            std::cerr << "Corrupted data in blockIndex " << blockIndex << std::endl;
+            std::cerr << "ROCID " << (uint16_t)crvRocHdr->ControllerID << std::endl;
+            std::cerr << "TriggerCount " << crvRocHdr->TriggerCount << std::endl;
+            std::cerr << "EventWindowTag " << crvRocHdr->GetEventWindowTag() << std::endl;
+            std::cerr << "************************************************" << std::endl;
+          }
+        }
 
 	return output;
 }
-
