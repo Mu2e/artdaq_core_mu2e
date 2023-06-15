@@ -2,7 +2,7 @@
 #ifndef MU2E_ARTDAQ_CORE_OVERLAYS_CRVFRAGMENT_HH
 #define MU2E_ARTDAQ_CORE_OVERLAYS_CRVFRAGMENT_HH
 
-#include "artdaq-core-mu2e/Overlays/ArtFragment.hh"
+#include "artdaq-core-mu2e/Data/ArtFragment.hh"
 #include <memory>
 #include <vector>
 #include <array>
@@ -11,14 +11,16 @@ namespace mu2e {
 class CRVFragment : public ArtFragment
 {
 public:
-	explicit CRVFragment(artdaq::Fragment const& f)
-		: ArtFragment(f) {}
+	CRVFragment()
+		: ArtFragment() {}
 
-	CRVFragment(const void* ptr, size_t sz)
-		: ArtFragment(ptr, sz) {}
+	CRVFragment(std::vector<uint8_t> data)
+		: ArtFragment(data) {}
 
-	explicit CRVFragment(std::pair<const void*, size_t> p)
-		: CRVFragment(p.first, p.second) {}
+#if HIDE_FROM_ROOT
+	explicit CRVFragment(DTCLib::DTC_SubEvent const& f)
+		: ArtFragment(f)
+	{}
 
 	struct CRVROCStatusPacket
 	{
@@ -45,9 +47,9 @@ public:
 		uint8_t Errors;
 		uint8_t EventType;
 
-                uint16_t MicroBunchNumberLow;
+		uint16_t MicroBunchNumberLow;
 
-                uint16_t MicroBunchNumberHigh;
+		uint16_t MicroBunchNumberHigh;
 
 		CRVROCStatusPacket()
 			: unused1(0)
@@ -87,17 +89,18 @@ public:
 		uint16_t HitTime : 12;
 		uint16_t NumSamples : 4;
 
-		CRVHitWaveformSample  WaveformSamples[8];
+		CRVHitWaveformSample WaveformSamples[8];
 
 		CRVHitReadoutPacket()
 			: SiPMID(0)
 			, HitTime(0)
-			, NumSamples(0) 
-                {}
+			, NumSamples(0)
+		{}
 	};
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
 	std::vector<CRVHitReadoutPacket> GetCRVHitReadoutPackets(size_t blockIndex) const;
+#endif
 };
 }  // namespace mu2e
 

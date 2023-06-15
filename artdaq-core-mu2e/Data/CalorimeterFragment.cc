@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Overlays/CalorimeterFragment.hh"
+#include "artdaq-core-mu2e/Data/CalorimeterFragment.hh"
 
 std::unique_ptr<mu2e::CalorimeterFragment::CalorimeterDataPacket> mu2e::CalorimeterFragment::GetCalorimeterData(size_t blockIndex) const
 {
