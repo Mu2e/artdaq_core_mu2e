@@ -37,7 +37,7 @@ std::unordered_map<FragmentType, std::string> const names{
 	{FragmentType::CAL, "CAL"},
 	{FragmentType::CRV, "CRV"},
 	{FragmentType::DBG, "DBG"},
-	{FragmentType::DTCEVT, "DTCEVT"}
+        {FragmentType::DTCEVT, "DTCEVT"},
 	{FragmentType::STM, "STM"}
 };
 
