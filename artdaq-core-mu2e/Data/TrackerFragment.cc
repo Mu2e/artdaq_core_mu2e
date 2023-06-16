@@ -1,11 +1,11 @@
-#include "artdaq-core-mu2e/Overlays/TrackerFragment.hh"
+#include "artdaq-core-mu2e/Data/TrackerFragment.hh"
 
 #include <vector>
 #include "TrackerFragment.hh"
 
 namespace mu2e {
-TrackerFragment::TrackerFragment(artdaq::Fragment const& f)
-	: ArtFragment(f)
+TrackerFragment::TrackerFragment(DTCLib::DTC_SubEvent const& evt)
+	: ArtFragment(evt)
 {
 	if (block_count() > 0)
 	{
@@ -18,8 +18,8 @@ TrackerFragment::TrackerFragment(artdaq::Fragment const& f)
 	}
 }
 
-TrackerFragment::TrackerFragment(const void* ptr, size_t sz)
-	: ArtFragment(ptr, sz)
+TrackerFragment::TrackerFragment(std::vector<uint8_t> data)
+	: ArtFragment(data)
 {
 	if (block_count() > 0)
 	{

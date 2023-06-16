@@ -1,5 +1,0 @@
-<lcgdict>
-
-  <class name="mu2e::Mu2eEventHeader" />
-  <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
-</lcgdict>
