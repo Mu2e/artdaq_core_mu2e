@@ -3,7 +3,6 @@
 
 #include "artdaq-core-mu2e/Data/ArtFragment.hh"
 
-
 namespace mu2e {
 class STMFragment : public ArtFragment
 {
@@ -14,40 +13,11 @@ public:
 
   struct STMDataPacket
   {// Remeber testbeam data is little endian
-    uint16_t FixedHeaderWord[8];
-    /*    uint16_t sw_tHdr[20];
-    uint16_t sw_sHdr[8]; //Call this from XML? Worth calling the parameter indexes from XML too?
-    bool recombine = false;
-    // Software trigger header members
-    uint16_t sw_tHdr_testWord0 = sw_tHdr[0];
-    uint16_t sw_tHdr_testWord1 = sw_tHdr[1];
-    uint16_t sw_tHdr_dataSize1 = sw_tHdr[2];
-    uint16_t sw_tHdr_dataSize2 = sw_tHdr[3];
-    uint16_t sw_tHdr_sNum1 = sw_tHdr[4];
-    uint16_t sw_tHdr_sNum2 = sw_tHdr[5];
-    uint16_t sw_tHdr_TrigNum1 = sw_tHdr[6];
-    uint16_t sw_tHdr_TrigNum2 = sw_tHdr[7];
-    uint16_t sw_tHdr_MdChTp = sw_tHdr[8];
-    uint16_t sw_tHdr_TrigTime1 = sw_tHdr[9];
-    uint16_t sw_tHdr_TrigTime2 = sw_tHdr[10];
-    uint16_t sw_tHdr_TrigTime3 = sw_tHdr[11];
-    uint16_t sw_tHdr_TrigTime4 = sw_tHdr[12];
-    uint16_t sw_tHdr_ADCoffset1 = sw_tHdr[13];
-    uint16_t sw_tHdr_ADCoffset2 = sw_tHdr[14];
-    uint16_t sw_tHdr_DroppedPackets = sw_tHdr[15];
-    uint16_t sw_tHdr_unixTime1 = sw_tHdr[16];
-    uint16_t sw_tHdr_unixTime2 = sw_tHdr[17];
-    uint16_t sw_tHdr_unixTime3 = sw_tHdr[18];
-    uint16_t sw_tHdr_unixTime4 = sw_tHdr[19];
-    uint32_t sw_tHdr_dataSize = (sw_tHdr_dataSize1 << 16) | sw_tHdr_dataSize2;
-    uint32_t sw_tHdr_sliceNumber = (sw_tHdr_sNum1 << 16)| sw_tHdr_sNum2;*/
-
-    //    STMDataPacket() : FixedHeaderWord0(0), FixedHeaderWord1(0), FixedHeaderWord2(0), FixedHeaderWord3(0), FixedHeaderWord4(0), FixedHeaderWord5(0), FixedHeaderWord6(0), FixedHeaderWord7(0) { }
+    //uint16_t FixedHeaderWord[16];
+    std::vector<uint16_t> data;
     STMDataPacket()  { }
   };
 
-  //const std::size_t sw_tHdr_size = 20; // Number of words (uint16_t) in the trigger header.
-  //const std::size_t sw_sHdr_size = 8; //Number of words (uint16_t) in the slice header.
 /*
 	struct STMBoardID
 	{
@@ -74,20 +44,100 @@ public:
 			: ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
 	};
 */
+
+  class STM_tHdr{
+  public:
+    uint16_t sw_tHdr[20];
+    STM_tHdr(){};
+    
+    // Reverse order - data is little endian.
+    uint32_t testWord(){uint32_t tmp = (sw_tHdr[1] << 16) | sw_tHdr[0]; return tmp;};
+    uint32_t dataSize(){uint32_t tmp = (sw_tHdr[3] << 16) | sw_tHdr[2]; return tmp;};
+    uint32_t sliceNumber(){uint32_t tmp = ((sw_tHdr[5] << 16) | sw_tHdr[4]); return tmp;};
+    uint32_t triggerNumber(){uint32_t tmp = ((sw_tHdr[7] << 16) | sw_tHdr[6]); return tmp;};
+    uint16_t mode(){return (sw_tHdr[8] & 0b1111000000000000) >> 12;};
+    uint16_t channel(){return (sw_tHdr[8] & 0b0000111100000000) >> 8;};
+    uint16_t type(){return (sw_tHdr[8] & 0b0000000011111111);};
+    uint64_t triggerTime(){
+      uint64_t T1 = sw_tHdr[12], T2 = sw_tHdr[11], T3 = sw_tHdr[10], T4 = sw_tHdr[9], time;
+      T1 = T1 << 48;
+      T2 = T2 << 32;
+      T3 = T3 << 16;
+      time = T1 | T2 | T3 | T4;
+      return time;
+    };
+    uint32_t adcOffset(){uint32_t tmp = (sw_tHdr[14] << 16) | sw_tHdr[13]; return tmp;};
+    uint16_t droppedPackets(){return sw_tHdr[15];}
+    uint64_t unixTime(){
+      uint64_t T1 = sw_tHdr[19], T2 = sw_tHdr[18], T3 = sw_tHdr[17], T4 = sw_tHdr[16], time;
+      T1 = T1 << 48;
+      T2 = T2 << 32;
+      T3 = T3 << 16;
+      time = T1 | T2 | T3 | T4;
+      return time;
+    }; // Epoch time in milliseconds.
+  };
+  
+  class STM_sHdr{
+  public:
+    uint16_t sw_sHdr[8];
+    STM_sHdr(){};
+    
+    // Reverse order - data is little endian.
+    uint32_t sliceNumber(){uint32_t tmp = (sw_sHdr[1] << 16) | sw_sHdr[0]; return tmp;};
+    uint32_t sliceSize(){uint32_t tmp = (sw_sHdr[3] << 16) | sw_sHdr[2]; return tmp;};
+    uint64_t adcTime(){
+      uint64_t T1 = sw_sHdr[7], T2 = sw_sHdr[6], T3 = sw_sHdr[5], T4 = sw_sHdr[4], time;
+      T1 = T1 << 48;
+      T2 = T2 << 32;
+      T3 = T3 << 16;
+      time = T1 | T2 | T3 | T4;
+      return time;
+    };
+  };
+
+
   std::unique_ptr<STMDataPacket> GetSTMData(size_t blockIndex) const;
   //	std::unique_ptr<STMBoardID> GetSTMBoardID(size_t blockIndex) const;
   //	std::vector<std::pair<STMHitReadoutPacket, std::vector<uint16_t>>> GetSTMHits(size_t blockIndex) const;
   //	std::vector<std::pair<STMHitReadoutPacket, uint16_t>> GetSTMHitsForTrigger(size_t blockIndex) const;
 };
 
+  /*
   std::ostream& operator<<(std::ostream& os, const STMFragment::STMDataPacket& data) {
-    // Commented out for debug purposes
-    //    os << std::hex << data.FixedHeaderWord0 << ", " <<  data.FixedHeaderWord1 << ", " <<  data.FixedHeaderWord2 << ", " << data.FixedHeaderWord3 << std::endl;
     os << std::setw(4) << std::setfill('0') << std::right << std::hex << data.FixedHeaderWord[0] << ", " << data.FixedHeaderWord[1] << ", " << data.FixedHeaderWord[2] << ", " << data.FixedHeaderWord[3] << ", " << data.FixedHeaderWord[4] << ", " << data.FixedHeaderWord[5] << ", " << data.FixedHeaderWord[6] << ", " << data.FixedHeaderWord[7] << std::endl;
-    //os << std::hex << data.sw_tHdr[1] << std::endl;
     return os;
   }
+  */
+
+  std::ostream& operator<<(std::ostream& os, const STMFragment::STM_tHdr& tHdr){
+    os << std::dec << "Data size is " << ((tHdr.sw_tHdr[2] << 16) | tHdr.sw_tHdr[3]) << "\n Test word is " << std::hex << tHdr.sw_tHdr[0] << 16 << tHdr.sw_tHdr[1] << std::endl;
+    return os;
+  }
+static constexpr int sw_tHdr_size_bytes = sizeof(STMFragment::STM_tHdr);
+static constexpr int sw_tHdr_size_words = sw_tHdr_size_bytes/2;
+static constexpr int sw_sHdr_size_bytes = sizeof(STMFragment::STM_sHdr);
+static constexpr int sw_sHdr_size_words = sw_sHdr_size_bytes/2;
+
 }  // namespace mu2e
+
+
+
+
+
+
+
+
+    /*    uint16_t sw_tHdr[20];
+    uint16_t sw_sHdr[8]; //Call this from XML? Worth calling the parameter indexes from XML too?
+    bool recombine = false;
+    uint32_t sw_tHdr_dataSize = (sw_tHdr_dataSize1 << 16) | sw_tHdr_dataSize2;
+    uint32_t sw_tHdr_sliceNumber = (sw_tHdr_sNum1 << 16)| sw_tHdr_sNum2;*/
+
+    //    STMDataPacket() : FixedHeaderWord0(0), FixedHeaderWord1(0), FixedHeaderWord2(0), FixedHeaderWord3(0), FixedHeaderWord4(0), FixedHeaderWord5(0), FixedHeaderWord6(0), FixedHeaderWord7(0) { }
+  //const std::size_t sw_tHdr_size = 20; // Number of words (uint16_t) in the trigger header.
+  //const std::size_t sw_sHdr_size = 8; //Number of words (uint16_t) in the slice header.
+
 
     /*
       // Add to the STMDataPacket definition 
@@ -118,7 +168,7 @@ public:
       uint16_t* sw_tHdr_unixTime4 = &sw_tHdr[19];
       uint32_t sw_tHdr_dataSize = (&sw_tHdr_dataSize1 << 16) | &sw_tHdr_dataSize2;
       uint32_t sw_tHdr_sliceNumber = (&sw_tHdr_sNum1 << 16)| &sw_tHdr_sNum2;
-     
+      
       // Recombine words
       if(recombine){
         uint32_t sw_tHdr_testData = (&sw_tHdr_testWord0 << 16) | &sw_tHdr_testWord1;
