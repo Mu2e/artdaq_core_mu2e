@@ -1,11 +1,8 @@
 #include "artdaq-core-mu2e/Overlays/STMFragment.hh"
 
-std::unique_ptr<mu2e::STMFragment::STMDataPacket> mu2e::STMFragment::GetSTMData(size_t blockIndex) const
+
+std::ostream& operator<<(std::ostream& os, const mu2e::STMFragment::STM_tHdr& tHdr)
 {
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return nullptr;
-		
-	std::unique_ptr<STMDataPacket> output(nullptr);
-	output.reset(new STMDataPacket(*reinterpret_cast<STMDataPacket const*>(dataPtr->GetData())));
-	return output;
+	os << std::dec << "Data size is " << ((tHdr.sw_tHdr[2] << 16) | tHdr.sw_tHdr[3]) << "\n Test word is " << std::hex << tHdr.sw_tHdr[0] << 16 << tHdr.sw_tHdr[1] << std::endl;
+	return os;
 }
