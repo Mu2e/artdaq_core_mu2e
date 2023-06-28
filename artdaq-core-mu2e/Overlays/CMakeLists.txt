@@ -2,6 +2,7 @@ cet_make_library(LIBRARY_NAME Overlays
 SOURCE 
 FragmentType.cc 
 DTCEventFragment.cc
+STMFragment.cc
   LIBRARIES PUBLIC
   mu2e_pcie_utils::DTCInterface
   artdaq_core::artdaq-core_Data

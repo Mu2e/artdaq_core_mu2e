@@ -17,7 +17,8 @@ enum FragmentType : artdaq::Fragment::type_t
 	CAL = artdaq::Fragment::FirstUserFragmentType + 5,     // Calorimeter fragment
 	CRV = artdaq::Fragment::FirstUserFragmentType + 6,     // Cosmic Ray Veto fragment
 	DBG = artdaq::Fragment::FirstUserFragmentType + 7,     // Debug Packet Fragment
-	DTCEVT = artdaq::Fragment::FirstUserFragmentType + 8, // DTC Event Fragment
+	DTCEVT = artdaq::Fragment::FirstUserFragmentType + 8,  // DTC Event Fragment
+	STM = artdaq::Fragment::FirstUserFragmentType + 9,     // Stopping Target Monitor fragment
 	INVALID  // Should always be last.
 };
 
@@ -36,7 +37,8 @@ std::unordered_map<FragmentType, std::string> const names{
 	{FragmentType::CAL, "CAL"},
 	{FragmentType::CRV, "CRV"},
 	{FragmentType::DBG, "DBG"},
-	{FragmentType::DTCEVT, "DTCEVT"}
+	{FragmentType::DTCEVT, "DTCEVT"},
+	{FragmentType::STM, "STM"}
 };
 
 FragmentType toFragmentType(std::string t_string);
