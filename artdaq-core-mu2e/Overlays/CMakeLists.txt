@@ -1,4 +1,4 @@
-cet_make_library(LIBRARY_NAME Overlays
+cet_make_library(
 SOURCE 
 FragmentType.cc 
 DTCEventFragment.cc
@@ -15,7 +15,7 @@ STMFragment.cc
 
 include(ArtdaqCorePlugins)
 
-  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq_core_mu2e::Overlays )
+  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq_core_mu2e::artdaq-core-mu2e_Overlays )
 
 
 install_headers()
