@@ -31,13 +31,25 @@ struct EventHeader {
   EventHeader(){}
 
   EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags ):
-    ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags) {
+    ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags),
+    rnr_check(0), ndtc_check(0), dtc_check(0), ewt_check(0) {
+  }
+
+  EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags,
+	       uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck):
+    ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags),
+    rnr_check(rnrCheck), ndtc_check(ndtcCheck), dtc_check(dtcCheck), ewt_check(ewtCheck) {
   }
 
   EWT        ewt   = 0;  // Event Window Tag
   uint32_t   mode  = 0;  // Event Mode
   uint8_t   rfmTDC = 0;  // RF Marker TDC
   uint8_t    flags = 0;  // on-spill bit and reserved flags
+
+  uint8_t    rnr_check : 1; //Round-robin check
+  uint8_t    ndtc_check : 1; //cehck if nDTCs used in the event matches the configured value
+  uint8_t    dtc_check : 1; //Check we have all the DTCs used in the event
+  uint8_t    ewt_check : 1; //eventHeader EWT consistency with the subEvents header
 
   bool isOnSpill() const{
     return ( (flags & spillMask) == 1);
@@ -48,7 +60,13 @@ struct EventHeader {
   }
 
   bool isFlagBitSet( int bit) const;
-
+  
+  void initErrorChecks(){
+    rnr_check  = 1;
+    dtc_check  = 1;
+    ndtc_check = 1; 
+    ewt_check  = 1;
+  }
 };
 
   std::ostream& operator<<(std::ostream& os,
