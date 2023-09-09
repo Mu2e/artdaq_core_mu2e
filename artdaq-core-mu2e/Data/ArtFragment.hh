@@ -4,9 +4,9 @@
 #include "artdaq-core/Data/Fragment.hh"
 #include "artdaq-core/Data/dictionarycontrol.hh"
 #include "cetlib_except/exception.h"
-#if HIDE_FROM_ROOT
+// #if HIDE_FROM_ROOT
 #include "dtcInterfaceLib/DTC_Packets.h"
-#endif
+// #endif
 
 #include <iostream>
 
@@ -32,7 +32,7 @@ struct mu2e::ArtFragment
 		: data_(data) {
 	}
 
-#if HIDE_FROM_ROOT  // Hide most things from ROOT
+  // #if HIDE_FROM_ROOT  // Hide most things from ROOT
 	explicit ArtFragment(DTCLib::DTC_SubEvent const &se)
 	{
 		data_ = std::vector<uint8_t>(se.GetSubEventByteCount());
@@ -112,15 +112,14 @@ struct mu2e::ArtFragment
 		std::cout << std::endl;
 		return;
 	}
-#endif
+  // #endif
 	
-
 	mutable bool setup_{false};
 	std::vector<uint8_t> data_;
 
-#if HIDE_FROM_ROOT  // Hide most things from ROOT
-	mutable DTCLib::DTC_SubEvent event_;
-#endif
+  // #if HIDE_FROM_ROOT  // Hide most things from ROOT
+	mutable DTCLib::DTC_SubEvent event_;  //! presume transient
+  // #endif
 };
 
 #endif /* mu2e_artdaq_Overlays_ArtFragment_hh */
