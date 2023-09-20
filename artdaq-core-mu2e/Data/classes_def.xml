@@ -22,6 +22,10 @@
   <class name="std::vector<mu2e::CalorimeterFragment>" />
   <class name="art::Wrapper<mu2e::CalorimeterFragment>" />
   <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragment>>" />
+  <class name="mu2e::CalorimeterFragmentNew" />
+  <class name="std::vector<mu2e::CalorimeterFragmentNew>" />
+  <class name="art::Wrapper<mu2e::CalorimeterFragmentNew>" />
+  <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragmentNew>>" />
  <class name="mu2e::CRVFragment" />
   <class name="std::vector<mu2e::CRVFragment>" />
   <class name="art::Wrapper<mu2e::CRVFragment>" />

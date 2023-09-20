@@ -7,6 +7,7 @@
 #include "artdaq-core-mu2e/Data/ArtFragment.hh"
 #include "artdaq-core-mu2e/Data/TrackerFragment.hh"
 #include "artdaq-core-mu2e/Data/CalorimeterFragment.hh"
+#include "artdaq-core-mu2e/Data/CalorimeterFragmentNew.hh"
 #include "artdaq-core-mu2e/Data/CRVFragment.hh"
 
 #include "canvas/Persistency/Common/Wrapper.h"
