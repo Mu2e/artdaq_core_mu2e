@@ -35,7 +35,7 @@ public:
 
 	static_assert(sizeof(Metadata) == Metadata::size_words, "Metadata size changed!");
 
-	int nReg() { return artdaq_fragment_.dataSizeBytes() / (sizeof(uint32_t) + sizeof(uint32_t)); }
+	int nReg() { return artdaq_fragment_.dataSizeBytes() / sizeof(RegEntry)); }
 
 	int32_t version() { return artdaq_fragment_.metadata()->version; }
 
