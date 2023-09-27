@@ -10,20 +10,20 @@
   <class name="mu2e::Mu2eEventHeader" />
   <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
   
-  <class name="mu2e::ArtFragment" />
-  <class name="std::vector<mu2e::ArtFragment>" />
-  <class name="art::Wrapper<mu2e::ArtFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::ArtFragment>>" />
-  <class name="mu2e::TrackerFragment" />
-  <class name="std::vector<mu2e::TrackerFragment>" />
-  <class name="art::Wrapper<mu2e::TrackerFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::TrackerFragment>>" />
-  <class name="mu2e::CalorimeterFragment" />
-  <class name="std::vector<mu2e::CalorimeterFragment>" />
-  <class name="art::Wrapper<mu2e::CalorimeterFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragment>>" />
- <class name="mu2e::CRVFragment" />
-  <class name="std::vector<mu2e::CRVFragment>" />
-  <class name="art::Wrapper<mu2e::CRVFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::CRVFragment>>" />
+  <class name="mu2e::DTCDataDecoder" />
+  <class name="std::vector<mu2e::DTCDataDecoder>" />
+  <class name="art::Wrapper<mu2e::DTCDataDecoder>" />
+  <class name="art::Wrapper<std::vector<mu2e::DTCDataDecoder>>" />
+  <class name="mu2e::TrackerDataDecoder" />
+  <class name="std::vector<mu2e::TrackerDataDecoder>" />
+  <class name="art::Wrapper<mu2e::TrackerDataDecoder>" />
+  <class name="art::Wrapper<std::vector<mu2e::TrackerDataDecoder>>" />
+  <class name="mu2e::CalorimeterDataDecoder" />
+  <class name="std::vector<mu2e::CalorimeterDataDecoder>" />
+  <class name="art::Wrapper<mu2e::CalorimeterDataDecoder>" />
+  <class name="art::Wrapper<std::vector<mu2e::CalorimeterDataDecoder>>" />
+ <class name="mu2e::CRVDataDecoder" />
+  <class name="std::vector<mu2e::CRVDataDecoder>" />
+  <class name="art::Wrapper<mu2e::CRVDataDecoder>" />
+  <class name="art::Wrapper<std::vector<mu2e::CRVDataDecoder>>" />
 </lcgdict>

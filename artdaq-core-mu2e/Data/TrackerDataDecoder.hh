@@ -1,22 +1,22 @@
 
-#ifndef MU2E_ARTDAQ_CORE_DATA_TRACKERFRAGMENT_HH
-#define MU2E_ARTDAQ_CORE_DATA_TRACKERFRAGMENT_HH
+#ifndef ARTDAQ_CORE_MU2E_DATA_TRACKERDATADECODER_HH
+#define ARTDAQ_CORE_MU2E_DATA_TRACKERDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/ArtFragment.hh"
+#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
 
 #include <vector>
 
 namespace mu2e {
-class TrackerFragment : public ArtFragment
+class TrackerDataDecoder : public DTCDataDecoder
 {
 public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
 
-	TrackerFragment() : ArtFragment() {}
-	explicit TrackerFragment(std::vector<uint8_t> data);
+	TrackerDataDecoder()
+		: DTCDataDecoder() {}
+	explicit TrackerDataDecoder(std::vector<uint8_t> data);
 
-	#if HIDE_FROM_ROOT
-	explicit TrackerFragment(DTCLib::DTC_SubEvent const& evt);
+	explicit TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt);
 
 	struct TrackerDataPacketV0
 	{
@@ -289,8 +289,8 @@ private:
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 
 	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
-        #endif
+
 };
 }  // namespace mu2e
 
-#endif  // MU2E_ARTDAQ_CORE_DATA_TRACKERFRAGMENT_HH
+#endif  // ARTDAQ_CORE_MU2E_DATA_TRACKERDATADECODER_HH

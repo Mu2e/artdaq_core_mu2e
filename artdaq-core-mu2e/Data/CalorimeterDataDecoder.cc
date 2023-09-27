@@ -1,6 +1,6 @@
-#include "artdaq-core-mu2e/Data/CalorimeterFragment.hh"
+#include "artdaq-core-mu2e/Data/CalorimeterDataDecoder.hh"
 
-std::unique_ptr<mu2e::CalorimeterFragment::CalorimeterDataPacket> mu2e::CalorimeterFragment::GetCalorimeterData(size_t blockIndex) const
+std::unique_ptr<mu2e::CalorimeterDataDecoder::CalorimeterDataPacket> mu2e::CalorimeterDataDecoder::GetCalorimeterData(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
@@ -10,7 +10,7 @@ std::unique_ptr<mu2e::CalorimeterFragment::CalorimeterDataPacket> mu2e::Calorime
 	return output;
 }
 
-std::unique_ptr<mu2e::CalorimeterFragment::CalorimeterBoardID> mu2e::CalorimeterFragment::GetCalorimeterBoardID(size_t blockIndex) const
+std::unique_ptr<mu2e::CalorimeterDataDecoder::CalorimeterBoardID> mu2e::CalorimeterDataDecoder::GetCalorimeterBoardID(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
@@ -23,7 +23,7 @@ std::unique_ptr<mu2e::CalorimeterFragment::CalorimeterBoardID> mu2e::Calorimeter
 	return output;
 }
 
-std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, std::vector<uint16_t>>> mu2e::CalorimeterFragment::GetCalorimeterHits(size_t blockIndex) const
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket, std::vector<uint16_t>>> mu2e::CalorimeterDataDecoder::GetCalorimeterHits(size_t blockIndex) const
 {
 	std::vector<std::pair<CalorimeterHitReadoutPacket, std::vector<uint16_t>>> output;
 
@@ -57,7 +57,7 @@ std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, st
 	return output;
 }
 
-std::vector<std::pair<mu2e::CalorimeterFragment::CalorimeterHitReadoutPacket, uint16_t>> mu2e::CalorimeterFragment::GetCalorimeterHitsForTrigger(size_t blockIndex) const
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket, uint16_t>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
 {
 	std::vector<std::pair<CalorimeterHitReadoutPacket,uint16_t>> output;
 

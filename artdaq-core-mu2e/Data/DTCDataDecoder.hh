@@ -1,36 +1,32 @@
-#ifndef mu2e_artdaq_core_Overlays_ArtFragment_hh
-#define mu2e_artdaq_core_Overlays_ArtFragment_hh
+#ifndef ARTDAQ_CORE_MU2E_DATA_DTCDATADECODER_HH
+#define ARTDAQ_CORE_MU2E_DATA_DTCDATADECODER_HH
 
-#include "artdaq-core/Data/Fragment.hh"
-#include "artdaq-core/Data/dictionarycontrol.hh"
 #include "cetlib_except/exception.h"
 #include "dtcInterfaceLib/DTC_Packets.h"
 
 #include <iostream>
-
-#include <ostream>
 #include <vector>
 
-// Implementation of "ArtFragment", an artdaq::Fragment overlay class
+// Implementation of "DTCDataDecoder", an artdaq::Fragment overlay class
 // May contain multiple DataBlocks from the same ROC
 
 namespace mu2e {
-struct ArtFragment;
-using ArtFragments = std::vector<ArtFragment>;
+struct DTCDataDecoder;
+using DTCDataDecoders = std::vector<DTCDataDecoder>;
 
-// Let the "<<" operator dump the ArtFragment's data to stdout
-std::ostream &operator<<(std::ostream &, ArtFragment const &);
+// Let the "<<" operator dump the DTCDataDecoder's data to stdout
+std::ostream &operator<<(std::ostream &, DTCDataDecoder const &);
 }  // namespace mu2e
 
-struct mu2e::ArtFragment
+struct mu2e::DTCDataDecoder
 {
-	ArtFragment() {}
+	DTCDataDecoder() {}
 
-	explicit ArtFragment(std::vector<uint8_t> const& data)
+	explicit DTCDataDecoder(std::vector<uint8_t> const& data)
 		: data_(data) {
 	}
 
-	explicit ArtFragment(DTCLib::DTC_SubEvent const &se)
+	explicit DTCDataDecoder(DTCLib::DTC_SubEvent const &se)
 	{
 		data_ = std::vector<uint8_t>(se.GetSubEventByteCount());
 		memcpy(&data_[0], se.GetHeader(), sizeof(DTCLib::DTC_SubEventHeader));
@@ -116,4 +112,4 @@ struct mu2e::ArtFragment
 	mutable DTCLib::DTC_SubEvent event_;  //! presume transient
 };
 
-#endif /* mu2e_artdaq_Overlays_ArtFragment_hh */
+#endif /* mu2e_artdaq_Overlays_DTCDataDecoder_hh */

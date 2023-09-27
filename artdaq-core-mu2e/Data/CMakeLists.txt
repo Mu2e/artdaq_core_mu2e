@@ -5,10 +5,10 @@ RunHeader.cc
 SubRunHeader.cc
 TimeStamp.cc
 Mu2eEventHeader.cc
-ArtFragment.cc 
-CalorimeterFragment.cc 
-CRVFragment.cc 
-TrackerFragment.cc
+DTCDataDecoder.cc 
+CalorimeterDataDecoder.cc 
+CRVDataDecoder.cc 
+TrackerDataDecoder.cc
 LIBRARIES PUBLIC
   artdaq_core_mu2e::artdaq-core-mu2e_Overlays
   )

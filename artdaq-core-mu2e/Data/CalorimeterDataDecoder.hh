@@ -1,22 +1,21 @@
 
-#ifndef MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
-#define MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
+#ifndef ARTDAQ_CORE_MU2E_DATA_CALORIMETERDATADECODER_HH
+#define ARTDAQ_CORE_MU2E_DATA_CALORIMETERDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/ArtFragment.hh"
+#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
 
 namespace mu2e {
-class CalorimeterFragment : public ArtFragment
+class CalorimeterDataDecoder : public DTCDataDecoder
 {
 public:
 
-	CalorimeterFragment() : ArtFragment() {}
+	CalorimeterDataDecoder() : DTCDataDecoder() {}
 
-	CalorimeterFragment(std::vector<uint8_t> data)
-		: ArtFragment(data) {}
+	CalorimeterDataDecoder(std::vector<uint8_t> data)
+		: DTCDataDecoder(data) {}
 
-	#if HIDE_FROM_ROOT
-	explicit CalorimeterFragment(DTCLib::DTC_SubEvent const& f)
-		: ArtFragment(f) {}
+	explicit CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& f)
+		: DTCDataDecoder(f) {}
 
 
 	struct CalorimeterDataPacket
@@ -56,8 +55,7 @@ public:
 	std::unique_ptr<CalorimeterBoardID> GetCalorimeterBoardID(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitReadoutPacket, std::vector<uint16_t>>> GetCalorimeterHits(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitReadoutPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
-	#endif
 };
 }  // namespace mu2e
 
-#endif  // MU2E_ARTDAQ_CORE_OVERLAYS_CALORIMETERFRAGMENT_HH
+#endif  // ARTDAQ_CORE_MU2E_DATA_CALORIMETERDATADECODER_HH
