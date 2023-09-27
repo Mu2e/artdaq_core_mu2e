@@ -20,7 +20,7 @@ public:
 		static size_t const size_words = 4;  ///< Size of the Metadata struct, in bytes
 	};
 
-	Metadata create_metadata()
+	static Metadata create_metadata()
 	{
 		Metadata m;
 		m.version = CURRENT_VERSION;
