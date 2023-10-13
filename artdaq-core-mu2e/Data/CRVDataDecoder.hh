@@ -1,25 +1,24 @@
 
-#ifndef MU2E_ARTDAQ_CORE_OVERLAYS_CRVFRAGMENT_HH
-#define MU2E_ARTDAQ_CORE_OVERLAYS_CRVFRAGMENT_HH
+#ifndef ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
+#define ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/ArtFragment.hh"
+#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
 #include <memory>
 #include <vector>
 #include <bitset>
 
 namespace mu2e {
-class CRVFragment : public ArtFragment
+class CRVDataDecoder : public DTCDataDecoder
 {
 public:
-	CRVFragment()
-		: ArtFragment() {}
+	CRVDataDecoder()
+		: DTCDataDecoder() {}
 
-	CRVFragment(std::vector<uint8_t> data)
-		: ArtFragment(data) {}
+	CRVDataDecoder(std::vector<uint8_t> data)
+		: DTCDataDecoder(data) {}
 
-#if HIDE_FROM_ROOT
-	explicit CRVFragment(DTCLib::DTC_SubEvent const& f)
-		: ArtFragment(f)
+	explicit CRVDataDecoder(DTCLib::DTC_SubEvent const& f)
+		: DTCDataDecoder(f)
 	{}
 
 	struct CRVROCStatusPacket
@@ -111,8 +110,8 @@ public:
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
 	std::vector<CRVHit> GetCRVHits(size_t blockIndex) const;
-#endif
+
 };
 }  // namespace mu2e
 
-#endif  // MU2E_ARTDAQ_CORE_OVERLAYS_CRVFRAGMENT_HH
+#endif  // ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
