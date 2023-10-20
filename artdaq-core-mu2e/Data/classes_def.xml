@@ -10,24 +10,4 @@
   <class name="mu2e::Mu2eEventHeader" />
   <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
   
-  <class name="mu2e::ArtFragment" />
-  <class name="std::vector<mu2e::ArtFragment>" />
-  <class name="art::Wrapper<mu2e::ArtFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::ArtFragment>>" />
-  <class name="mu2e::TrackerFragment" />
-  <class name="std::vector<mu2e::TrackerFragment>" />
-  <class name="art::Wrapper<mu2e::TrackerFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::TrackerFragment>>" />
-  <class name="mu2e::CalorimeterFragment" />
-  <class name="std::vector<mu2e::CalorimeterFragment>" />
-  <class name="art::Wrapper<mu2e::CalorimeterFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragment>>" />
-  <class name="mu2e::CalorimeterFragmentNew" />
-  <class name="std::vector<mu2e::CalorimeterFragmentNew>" />
-  <class name="art::Wrapper<mu2e::CalorimeterFragmentNew>" />
-  <class name="art::Wrapper<std::vector<mu2e::CalorimeterFragmentNew>>" />
- <class name="mu2e::CRVFragment" />
-  <class name="std::vector<mu2e::CRVFragment>" />
-  <class name="art::Wrapper<mu2e::CRVFragment>" />
-  <class name="art::Wrapper<std::vector<mu2e::CRVFragment>>" />
 </lcgdict>
