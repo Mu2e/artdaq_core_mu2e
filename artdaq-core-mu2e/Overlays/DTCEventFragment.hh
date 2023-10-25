@@ -2,7 +2,7 @@
 #define artdaq_core_Data_Mu2eEventFragment_hh
 
 #include <memory>
-#include "dtcInterfaceLib/DTC_Packets.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets.h"
 #include "artdaq-core/Data/Fragment.hh"
 #include "cetlib_except/exception.h"
 
