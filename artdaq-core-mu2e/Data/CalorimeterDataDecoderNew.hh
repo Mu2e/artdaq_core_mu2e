@@ -48,40 +48,6 @@ class CalorimeterDataDecoderNew : public DTCDataDecoder
     };
 	  
 	  
-	  // Samples: each hit has a variable number of waveform samples stored contigously using many data packets
-	  /*struct CalorimeterSamplePacket
-	  {
-		  uint16_t SampleType0  : 12;
-		  uint16_t SampleType1 : 4;
-		  uint16_t SampleType2 : 8;
-		  uint16_t SampleType3 : 10;
-
-		  inline uint16_t SampleType0 () const { return Sample0; }
-		  inline uint16_t SampleType1 () const { return Sample1; }
-		  inline uint16_t SampleType2 () const { return Sample2; }
-		  inline uint16_t SampleType3 () const { return Sample3; }
-
-		  inline void SetWaveform(size_t index, uint16_t waveform)
-		  {
-			  switch (index)
-			  {
-				  case 0:
-					  SampleType0 = waveform & 0x3FF;
-					  break;
-				  case 1:
-					  SampleType1 = waveform & 0x3FF;
-					  break;
-				  case 2:
-					  SampleType2 = waveform & 0x3FF;
-					  break;
-			    case 3:
-					  SampleType3 = waveform & 0x3FF;
-					  break;
-			  }
-			  
-		  }
-	  };*/
-	  
 	  // CalorimeterFooterPacket: after transmission of all the hits the event is closed by a final packet containing the informaton about all the chanels that are reconstructed online in the FPGA:
     struct CalorimeterFooterPacket
     {
