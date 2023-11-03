@@ -73,7 +73,7 @@ enum DTC_PLL_ID : uint8_t
 	DTC_PLL_Link_5 = 5,
 	DTC_PLL_CFO_RX = 6,
 	DTC_PLL_CFO_TX = 7,
-	DTC_PLL_CFO_TXRX = 8,
+	DTC_PLL_EVB_TXRX = 8,
 	DTC_PLL_PunchedClock = 9,
 	DTC_PLL_Unused,
 };
