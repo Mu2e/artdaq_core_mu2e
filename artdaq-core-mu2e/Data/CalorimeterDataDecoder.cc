@@ -1,51 +1,69 @@
 #include "artdaq-core-mu2e/Data/CalorimeterDataDecoder.hh"
 
-std::unique_ptr<mu2e::CalorimeterDataDecoder::CalorimeterDataPacket> mu2e::CalorimeterDataDecoder::GetCalorimeterData(size_t blockIndex) const
+namespace mu2e {
+
+CalorimeterDataDecoder::CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& evt)
+	: DTCDataDecoder(evt)
 {
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return nullptr;
-		
-	std::unique_ptr<CalorimeterDataPacket> output(nullptr);
-	output.reset(new CalorimeterDataPacket(*reinterpret_cast<CalorimeterDataPacket const*>(dataPtr->GetData())));
-	return output;
+	if (block_count() > 0)
+	{
+		auto dataPtr = dataAtBlockIndex(0);// Return pointer to beginning of DataBlock at given DataBlock index( returns type DTCLib::DTC_DataBlock)
+		auto hdr = dataPtr->GetHeader(); // get the header
+		// check that the subsystem is the calo and the version is correct:
+		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter || hdr->GetVersion() > 1)
+		{
+			TLOG(TLVL_ERROR) << "CalorimeterDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Calorimeter) << "/[0,1])";
+		}
+	}
 }
 
-std::unique_ptr<mu2e::CalorimeterDataDecoder::CalorimeterBoardID> mu2e::CalorimeterDataDecoder::GetCalorimeterBoardID(size_t blockIndex) const
+CalorimeterDataDecoder::CalorimeterDataDecoder(std::vector<uint8_t> data)
+	: DTCDataDecoder(data)
 {
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return nullptr;
-
-	auto dataPacket = reinterpret_cast<CalorimeterDataPacket const*>(dataPtr->GetData());
-	auto pos = reinterpret_cast<uint16_t const*>(dataPacket + 1) + dataPacket->NumberOfHits;
-
-	std::unique_ptr<CalorimeterBoardID> output(nullptr);
-	output.reset(new CalorimeterBoardID(*reinterpret_cast<CalorimeterBoardID const*>(pos)));
-	return output;
+	if (block_count() > 0) //event_.GetDataBlockCount() > 0
+	{
+		auto dataPtr = dataAtBlockIndex(0);
+		auto hdr = dataPtr->GetHeader();
+		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter || hdr->GetVersion() > 1)
+		{
+			TLOG(TLVL_ERROR) << "CalorimeterDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Calorimeter) << "/[0,1])";
+		}
+	}
 }
 
-std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket, std::vector<uint16_t>>> mu2e::CalorimeterDataDecoder::GetCalorimeterHits(size_t blockIndex) const
-{
-	std::vector<std::pair<CalorimeterHitReadoutPacket, std::vector<uint16_t>>> output;
 
+// Get Calo Hit Data Packet
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitData(size_t blockIndex) const
+{
+  // a pair is created mapping the data packet to set of hits (?)
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> output;
+  
+  // get data block at given index
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return output;
 
-	static_assert(sizeof(CalorimeterBoardID) % 2 == 0);
-	static_assert(sizeof(CalorimeterHitReadoutPacket) % 2 == 0);
-
-	auto dataPacket = reinterpret_cast<CalorimeterDataPacket const*>(dataPtr->GetData());
-	auto boardID = reinterpret_cast<uint16_t const*>(dataPacket + 1) + dataPacket->NumberOfHits;
+	// check size of hit data packet
+	static_assert(sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) % 2 == 0);
+	
+	auto dataPacket = reinterpret_cast<CalorimeterHitDataPacket const*>(dataPtr->GetData());
+	
 	// pos is a uint16_t pointer after the BoardID in the data stream
-	uint16_t const* pos = boardID + (sizeof(CalorimeterBoardID) / sizeof(uint16_t));
+	uint16_t const* pos = 0;//assumes this is the first piece of information
 
-	for (size_t ii = 0; ii < dataPacket->NumberOfHits; ++ii) {
+	// loop over samples:
+	unsigned int count = 0;
+	while(count < dataPacket->NumberOfSamples){
+	  
 	  // Reinterpret pos as a pointer to a hit readout header
-		output.emplace_back(CalorimeterHitReadoutPacket(*reinterpret_cast<CalorimeterHitReadoutPacket const*>(pos)), std::vector<uint16_t>());
+	  	output.emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(pos)), std::vector<uint16_t>()); //Construct and insert element at the end, Converts between types by reinterpreting the underlying bit pattern. 
+		
 		// Step pos past the hit readout
-		pos += sizeof(CalorimeterHitReadoutPacket) / sizeof(uint16_t);
+		pos += sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) / sizeof(uint16_t);
 
 		// Setup waveform storage
+		// find number of samples from output
 		auto nSamples = output.back().first.NumberOfSamples;
+		// resize the vector part to nSamples
 		output.back().second.resize(nSamples);
 
 		// Copy waveform into output
@@ -53,31 +71,31 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket,
 
 		// Step pos past waveform
 		pos += nSamples;
+		count++;
 	}
 	return output;
 }
 
-std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket, uint16_t>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
 {
-	std::vector<std::pair<CalorimeterHitReadoutPacket,uint16_t>> output;
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket,uint16_t>> output;
 
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return output;
 
-	static_assert(sizeof(CalorimeterBoardID) % 2 == 0);
-	static_assert(sizeof(CalorimeterHitReadoutPacket) % 2 == 0);
+	static_assert(sizeof(CalorimeterHitDataPacket) % 2 == 0);
 
-	auto dataPacket = reinterpret_cast<CalorimeterDataPacket const*>(dataPtr->GetData());
-	auto boardID = reinterpret_cast<uint16_t const*>(dataPacket + 1) + dataPacket->NumberOfHits;
-	// pos is a uint16_t pointer after the BoardID in the data stream
-	uint16_t const* pos = boardID + (sizeof(CalorimeterBoardID) / sizeof(uint16_t));
+	auto dataPacket = reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(dataPtr->GetData());
+	
+	uint16_t const* pos = 0;
 
-	for (size_t ii = 0; ii < dataPacket->NumberOfHits; ++ii)
-	{
+	// loop over samples:
+	unsigned int count = 0;
+	while(count < dataPacket->NumberOfSamples){
 		// Reinterpret pos as a pointer to a hit readout header
-		output.emplace_back(CalorimeterHitReadoutPacket(*reinterpret_cast<CalorimeterHitReadoutPacket const*>(pos)), 0);
+		output.emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<CalorimeterHitDataPacket const*>(pos)), 0);
 		// Step pos past the hit readout
-		pos += sizeof(CalorimeterHitReadoutPacket) / sizeof(uint16_t);
+		pos += sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) / sizeof(uint16_t);
 
 		output.back().second = *(pos + output.back().first.IndexOfMaxDigitizerSample);
 
@@ -87,3 +105,5 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitReadoutPacket,
 	}
 	return output;
 }
+
+} // namespace mu2e

@@ -6,7 +6,7 @@ SubRunHeader.cc
 TimeStamp.cc
 Mu2eEventHeader.cc
 DTCDataDecoder.cc 
-CalorimeterDataDecoder.cc 
+CalorimeterDataDecoder.cc
 CRVDataDecoder.cc 
 TrackerDataDecoder.cc
 LIBRARIES PUBLIC
