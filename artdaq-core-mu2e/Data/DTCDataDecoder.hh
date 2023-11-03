@@ -2,7 +2,7 @@
 #define ARTDAQ_CORE_MU2E_DATA_DTCDATADECODER_HH
 
 #include "cetlib_except/exception.h"
-#include "dtcInterfaceLib/DTC_Packets.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets.h"
 
 #include <iostream>
 #include <vector>

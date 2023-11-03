@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
 find_package(cetmodules)
 
-project(artdaq_core_mu2e VERSION 2.00.00)
+project(artdaq_core_mu2e VERSION 2.01.00)
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -28,7 +28,6 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} BTYPE_UC )
 #cet_report_compiler_flags()
 
 find_package(artdaq_core 3.09.00 REQUIRED EXPORT)
-find_package(mu2e_pcie_utils 2.08.00 REQUIRED EXPORT)
 
 include(ArtDictionary)
 include(BuildPlugins)
