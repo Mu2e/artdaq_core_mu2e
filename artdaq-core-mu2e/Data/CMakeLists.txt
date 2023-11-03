@@ -7,7 +7,6 @@ TimeStamp.cc
 Mu2eEventHeader.cc
 DTCDataDecoder.cc 
 CalorimeterDataDecoder.cc
-CalorimeterDataDecoderNew.cc
 CRVDataDecoder.cc 
 TrackerDataDecoder.cc
 LIBRARIES PUBLIC
