@@ -33,10 +33,10 @@ CalorimeterDataDecoder::CalorimeterDataDecoder(std::vector<uint8_t> data)
 
 
 // Get Calo Hit Data Packet
-std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitData(size_t blockIndex) const
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitData(size_t blockIndex) const
 {
   // a pair is created mapping the data packet to set of hits (?)
-	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> output;
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> *output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>();
   
   // get data block at given index
 	auto dataPtr = dataAtBlockIndex(blockIndex);
@@ -55,19 +55,19 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, st
 	while(count < dataPacket->NumberOfSamples){
 	  
 	  // Reinterpret pos as a pointer to a hit readout header
-	  	output.emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(pos)), std::vector<uint16_t>()); //Construct and insert element at the end, Converts between types by reinterpreting the underlying bit pattern. 
+	  	output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(pos)), std::vector<uint16_t>()); //Construct and insert element at the end, Converts between types by reinterpreting the underlying bit pattern. 
 		
 		// Step pos past the hit readout
 		pos += sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) / sizeof(uint16_t);
 
 		// Setup waveform storage
 		// find number of samples from output
-		auto nSamples = output.back().first.NumberOfSamples;
+		auto nSamples = output->back().first.NumberOfSamples;
 		// resize the vector part to nSamples
-		output.back().second.resize(nSamples);
+		output->back().second.resize(nSamples);
 
 		// Copy waveform into output
-		memcpy(output.back().second.data(), pos, sizeof(uint16_t) * nSamples);
+		memcpy(output->back().second.data(), pos, sizeof(uint16_t) * nSamples);
 
 		// Step pos past waveform
 		pos += nSamples;
