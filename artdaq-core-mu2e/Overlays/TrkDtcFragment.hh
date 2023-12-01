@@ -35,25 +35,25 @@ public:
 
 	static_assert(sizeof(Metadata) == Metadata::size_words, "Metadata size changed!");
 
-	int nReg() { return artdaq_fragment_.dataSizeBytes() / sizeof(RegEntry); }
+	size_t nReg() const { return artdaq_fragment_.dataSizeBytes() / sizeof(RegEntry); }
 
-	int32_t version() { return artdaq_fragment_.metadata()->version; }
+	int32_t version() const { return artdaq_fragment_.metadata<Metadata>()->version; }
 
-	RegEntry getRegisterEntry(size_t index)
+	RegEntry getRegisterEntry(size_t index) const
 	{
 		if (index >= nReg())
 		{
 			TLOG(TLVL_ERROR, "TrkDtcFragment") << "Index " << index << " is out of range! (nReg=" << nReg() << ")";
 			return RegEntry();
 		}
-		return *(reinterpret_cast<RegEntry*>(artdaq_fragment_.dataBeginBytes()) + index);
+		return *(reinterpret_cast<RegEntry const*>(artdaq_fragment_.dataBeginBytes()) + index);
 	}
 
-	uint32_t reg(int index)
+	uint32_t reg(int index) const
 	{
 		return getRegisterEntry(index).address;
 	}
-	uint32_t val(int index) { return getRegisterEntry(index).value; }
+	uint32_t val(int index) const { return getRegisterEntry(index).value; }
 
 private:
 	artdaq::Fragment const& artdaq_fragment_;
