@@ -563,7 +563,7 @@ void DTCLib::DTC_DataRequestPacket::SetDebugPacketCount(uint16_t count)
 // 9-15 Reserved
 // ~~~~ DCS Packet Request or Software Data Request Packet ~~~~
 // [15:0]  DMA Byte Count High DMA Byte Count Low
-// [31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8] Packet Type (0x0) Hop Count [3:0]   |||| Common for all packets!
+// [31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8] Packet Type (0x0) [7:4] Hop Count [3:0]   |||| Common for all packets!
 // [47:32] Block Op Additional Packet Count [15:6] ROC Status [5:4] Op Code [3:0]		 |||| Low bytes of EWT in Data Request and Prefetch Packets
 // [63:48] Op1 Address [15:0]
 // [15:0]  Op1 Write Data [15:0] or Block Op Word Count [15:0]
