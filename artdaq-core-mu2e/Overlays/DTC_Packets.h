@@ -44,9 +44,9 @@ enum DTC_DCSOperationType : uint8_t
 	DTC_DCSOperationType_BlockWrite = 3,
 	DTC_DCSOperationType_DoubleRead = 4,
 	DTC_DCSOperationType_DoubleWrite = 5,
-	DTC_DCSOperationType_InvalidS2C = 0xD,
-	DTC_DCSOperationType_Timeout = 0xE,
-	DTC_DCSOperationType_Unknown = 0xF
+	DTC_DCSOperationType_InvalidS2C = 0xC, //1100 would otherwise be nonsense "ack of double read"
+	DTC_DCSOperationType_Timeout = 0xE, //1110 would otherwise be nonsense "ack of double block read"
+	DTC_DCSOperationType_Unknown = 0xF //reserved for software use as 'Unknown,' would otherwise be nonsense "ack of double block write"
 };
 
 /// <summary>
@@ -765,6 +765,12 @@ public:
 	explicit DTC_DCSReplyPacket(const DTC_DataPacket in);
 
 	/// <summary>
+	/// Get the value packet count field
+	/// </summary>
+	/// <returns>The number of packets in the block read</returns>
+	uint8_t GetDTCErrorBits() const { return DTCErrorBits_; }
+
+	/// <summary>
 	/// Get the DCS Operation Type
 	/// </summary>
 	/// <returns>DTC_DCSOperationType enumeration value</returns>
@@ -834,6 +840,7 @@ public:
 	std::string toPacketFormat() override;
 
 private:
+	uint8_t DTCErrorBits_;
 	DTC_DCSOperationType type_;
 	bool doubleOp_;
 	bool requestAck_;

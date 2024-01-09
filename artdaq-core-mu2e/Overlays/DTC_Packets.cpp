@@ -549,6 +549,39 @@ void DTCLib::DTC_DataRequestPacket::SetDebugPacketCount(uint16_t count)
 	debugPacketCount_ = count;
 }
 
+
+// ~~~ Packet Types ~~~ (**** can be sent s2c, --- can be sent by CFO, @@@ can be sent by ROC)
+// 0 DCS Request   ****
+// 1 Heartbeat (broadcast) ---
+// 2 Data Request ****
+// 3 Prefetch Request ****
+// 4 DCS Reply @@@
+// 5 Data Header @@@
+// 6 Data Payload @@@
+// 7 DCS Additional Block Write Payload  ****
+// 8 DCS Reply Additional Block Read Payload @@@
+// 9-15 Reserved
+// ~~~~ DCS Packet Request or Software Data Request Packet ~~~~
+// [15:0]  DMA Byte Count High DMA Byte Count Low
+// [31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8] Packet Type (0x0) Hop Count [3:0]   |||| Common for all packets!
+// [47:32] Block Op Additional Packet Count [15:6] ROC Status [5:4] Op Code [3:0]		 |||| Low bytes of EWT in Data Request and Prefetch Packets
+// [63:48] Op1 Address [15:0]
+// [15:0]  Op1 Write Data [15:0] or Block Op Word Count [15:0]
+// [31:16] Op2 Address [15:0] or Block Write Data0 [15:0]
+// [47:32] Op2 Write Data [15:0] or Block Write Data1 [15:0]
+// [63:48] Reserved or Block Write Data2 [15:0]
+
+// The DTC Error 4-bit field is defined as follows (these are flags identified at the DTC FPGA):
+// Bit Position	Definition
+// 0	SERDES PLL associated with the ROC has lost lock
+// 1	SERDES associated with the ROC has lost clock-data-recovery lock
+// 2	Invalid packet has been received from ROC
+// 3	Error in DTC handling of this ROC’s DCS requests has occurred
+
+// The ROC Status 2-bit field is defined as follows
+// 0	“DCS Request FIFO Empty” flag indicates that there are more data requests queued when value is low.
+// 1	“I am corrupt” flag indicates the ROC has lost DCS data or the ability to conduct DCS readout has been compromised.
+
 DTCLib::DTC_DCSReplyPacket::DTC_DCSReplyPacket(DTC_DataPacket in)
 	: DTC_DMAPacket(in)
 {
@@ -559,10 +592,16 @@ DTCLib::DTC_DCSReplyPacket::DTC_DCSReplyPacket(DTC_DataPacket in)
 		TLOG(TLVL_ERROR) << ex.what();
 		throw ex;
 	}
-	type_ = static_cast<DTC_DCSOperationType>(in.GetData()[4] & 0x3);
+	DTCErrorBits_ = (in.GetData()[1] >> 3)  & 0xF;
+
+	uint8_t tmpType = in.GetData()[4] & 0xF;
+	if(static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_InvalidS2C && 
+		static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_Timeout)
+		tmpType &= 0x3; //if known type, allow complex types in 4-bit nibble; otherwise, mask off	
+	type_ = static_cast<DTC_DCSOperationType>(tmpType);
 	doubleOp_ = (in.GetData()[4] & 0x4) == 0x4;
 	requestAck_ = (in.GetData()[4] & 0x8) == 0x8;
-
+	
 	dcsReceiveFIFOEmpty_ = (in.GetData()[4] & 0x10) == 0x10;
 	corruptFlag_ = (in.GetData()[4] & 0x20) == 0x20;
 
