@@ -9,34 +9,33 @@ class CaloTestDataDecoder : public DTCDataDecoder
 {
   public:
 
-	CaloTestDataDecoder() : DTCDataDecoder() {}
+    CaloTestDataDecoder() : DTCDataDecoder() {}
 
-	CaloTestDataDecoder(std::vector<uint8_t> data);
+    CaloTestDataDecoder(std::vector<uint8_t> data);
 
     explicit CaloTestDataDecoder(DTCLib::DTC_SubEvent const& f);
 
-    // CaloTestHitDataPacket: Each hit is readout as a variable length sequence of data packets
     struct CaloTestHitDataPacket
     {
-      uint16_t DetectorType : 3;
+      uint16_t HitTest0;
       CaloTestHitDataPacket()
-      : DetectorType(0) {}
+      : HitTest0(0) {}
     };
-	  
-	  
+
+
     struct CaloTestFooterPacket
     {
-      uint16_t DetectorType : 3; 
-      
+      uint16_t TestFooter; 
+
       CaloTestFooterPacket ()
-      : DetectorType(0) {}
+      : TestFooter(0) {}
 
     };
 
     std::vector<std::pair<CaloTestHitDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitData(size_t blockIndex) const;
     std::unique_ptr<CaloTestFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
     std::vector<std::pair<CaloTestHitDataPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
-    
+
   };
 }  // namespace mu2e
 #endif 
