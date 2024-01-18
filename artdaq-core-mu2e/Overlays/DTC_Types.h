@@ -44,6 +44,14 @@ enum DTC_Link_ID : uint8_t
 	DTC_Link_ALL = 255
 };
 
+
+enum DTC_ROC_Emulation_Type : uint8_t
+{
+	ROC_Internal_Emulation = 0,
+	ROC_FiberLoopback_Emulation = 1,
+	ROC_External_Emulation = 2
+};
+
 #ifndef __CLING__
 inline TraceStreamer& operator<<(TraceStreamer& ts, DTC_Link_ID const& link)
 {
