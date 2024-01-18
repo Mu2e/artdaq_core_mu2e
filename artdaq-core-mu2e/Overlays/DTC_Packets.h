@@ -364,6 +364,12 @@ public:
 	std::string headerPacketFormat() const;
 
 	/// <summary>
+	/// Returns if the DTC thinks the packet is valid
+	/// </summary>
+	/// <returns>The valid bit of the packet</returns>
+	bool isValid() const { return valid_; }
+
+	/// <summary>
 	/// Gets the block byte count
 	/// </summary>
 	/// <returns>Block byte count of DMA Header</returns>

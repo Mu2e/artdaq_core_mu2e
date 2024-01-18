@@ -592,7 +592,7 @@ DTCLib::DTC_DCSReplyPacket::DTC_DCSReplyPacket(DTC_DataPacket in)
 		TLOG(TLVL_ERROR) << ex.what();
 		throw ex;
 	}
-	DTCErrorBits_ = (in.GetData()[1] >> 3)  & 0xF;
+	DTCErrorBits_ = (in.GetData()[3] >> 3)  & 0xF; //[31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8] 
 
 	uint8_t tmpType = in.GetData()[4] & 0xF;
 	if(static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_InvalidS2C && 
