@@ -1174,7 +1174,6 @@ struct DTC_EventMode
 	bool isOnSpillFlagSet() const 			{return mode4 & 1;}
 	bool isSubRunBitSet() const 			{return mode4 & 2;}
 	bool isPredictiveSubRunBitSet() const 	{return mode4 & 4;}
-	uint8_t getDeliveryRingRFMarkerTDC() const 	{return mode4 >> 8;}
 };
 
 struct DTC_EVBStatus
