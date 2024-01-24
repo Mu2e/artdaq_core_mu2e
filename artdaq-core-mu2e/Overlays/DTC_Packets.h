@@ -174,18 +174,18 @@ public:
 	DTC_DataPacket& operator=(DTC_DataPacket&& in) = default;
 
 	/// <summary>
-	/// Set the given word of the DataPacket.
+	/// Set the given byte of the DataPacket.
 	/// No-op if the DataPacket is in overlay mode
 	/// </summary>
-	/// <param name="index">Index of the word to change</param>
-	/// <param name="data">Value of the word</param>
-	void SetWord(uint16_t index, uint8_t data);
+	/// <param name="index">Index of the byte to change</param>
+	/// <param name="data">Value of the byte</param>
+	void SetByte(uint16_t index, uint8_t data);
 	/// <summary>
-	/// Gets the current value of the given word
+	/// Gets the current value of the given byte
 	/// </summary>
-	/// <param name="index">Index of the word</param>
-	/// <returns>Value of the word</returns>
-	uint8_t GetWord(uint16_t index) const;
+	/// <param name="index">Index of the byte</param>
+	/// <returns>Value of the byte</returns>
+	uint8_t GetByte(uint16_t index) const;
 	/// <summary>
 	/// Creates a JSON representation of the DTC_DataPacket
 	/// </summary>
