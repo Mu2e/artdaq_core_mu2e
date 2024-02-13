@@ -1038,26 +1038,7 @@ void DTCLib::DTC_Event::UpdateHeader()
 	TLOG(TLVL_TRACE) << "Inclusive Event Byte Count is now " << header_.inclusive_event_byte_count;
 }
 
-// size_t WriteDMABufferSizeWords(std::ostream& output, bool includeDMAWriteSize, size_t data_size, std::streampos& pos, bool restore_pos)
-// {
-// 	auto pos_save = output.tellp();
-// 	output.seekp(pos);
-// 	size_t bytes_written = 0;
-// 	if (includeDMAWriteSize)
-// 	{
-// 		uint64_t dmaWriteSize = data_size + sizeof(uint64_t) + sizeof(uint64_t);
-// 		output.write(reinterpret_cast<const char*>(&dmaWriteSize), sizeof(uint64_t));
-// 		bytes_written += sizeof(uint64_t);
-// 	}
-
-// 	uint64_t dmaSize = data_size + sizeof(uint64_t);
-// 	output.write(reinterpret_cast<const char*>(&dmaSize), sizeof(uint64_t));
-// 	bytes_written += sizeof(uint64_t);
-// 	if (restore_pos) {
-// 		output.seekp(pos_save);
-// 	}
-// 	return bytes_written;
-// }
+//moved WriteDMABufferSizeWords to DTC_Types.cpp
 
 void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 {
