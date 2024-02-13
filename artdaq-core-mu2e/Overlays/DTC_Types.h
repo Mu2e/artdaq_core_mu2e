@@ -117,6 +117,8 @@ enum DTC_DebugType
 	DTC_DebugType_Invalid = 5,
 };
 
+size_t WriteDMABufferSizeWords(std::ostream& output, bool includeDMAWriteSize, size_t data_size, std::streampos& pos, bool restore_pos);
+
 /// <summary>
 /// The DTC_DebugTypeConverter converts a DTC_DebugType enumeration value to string or JSON representation
 /// </summary>

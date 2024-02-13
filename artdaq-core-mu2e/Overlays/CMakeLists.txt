@@ -3,6 +3,7 @@ cet_make_library(
       FragmentType.cc 
       DTCEventFragment.cc
       STMFragment.cc
+      CFO_Packets.cpp
       DTC_Packets.cpp
       DTC_Types.cpp
     LIBRARIES PUBLIC

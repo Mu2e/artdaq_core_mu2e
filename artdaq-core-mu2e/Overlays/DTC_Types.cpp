@@ -112,6 +112,27 @@ DTCLib::DTC_SimMode DTCLib::DTC_SimModeConverter::ConvertToSimMode(std::string m
 	}
 }
 
+size_t DTCLib::WriteDMABufferSizeWords(std::ostream& output, bool includeDMAWriteSize, size_t data_size, std::streampos& pos, bool restore_pos)
+{
+	auto pos_save = output.tellp();
+	output.seekp(pos);
+	size_t bytes_written = 0;
+	if (includeDMAWriteSize)
+	{
+		uint64_t dmaWriteSize = data_size + sizeof(uint64_t) + sizeof(uint64_t);
+		output.write(reinterpret_cast<const char*>(&dmaWriteSize), sizeof(uint64_t));
+		bytes_written += sizeof(uint64_t);
+	}
+
+	uint64_t dmaSize = data_size + sizeof(uint64_t);
+	output.write(reinterpret_cast<const char*>(&dmaSize), sizeof(uint64_t));
+	bytes_written += sizeof(uint64_t);
+	if (restore_pos) {
+		output.seekp(pos_save);
+	}
+	return bytes_written;
+}
+
 DTCLib::DTC_EventWindowTag::DTC_EventWindowTag()
 	: event_tag_(0) {}
 
