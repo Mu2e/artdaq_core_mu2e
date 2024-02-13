@@ -846,38 +846,7 @@ DTCLib::DTC_SubEvent::DTC_SubEvent(const void* data)
 {
 	memcpy(&header_, data, sizeof(header_));
 	TLOG(TLVL_TRACE) << "Header of DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
-	// Moved to SetupSubEvent() to allow for SubEvents to cross DMA transfers
-
-	// ptr += sizeof(header_);
-
-	// std::stringstream testss;
-	// testss << "bytes=" << sizeof(header_) << " 0x";
-	// for(size_t i = 0; i < sizeof(header_); ++i)
-	// 	testss << std::hex << std::setprecision(2) << std::setfill('0') << (uint16_t)ptr[i] << ' ';
-	// TLOG(TLVL_TRACE + 5) <<	testss.str();
-
-	// TLOG(TLVL_TRACE + 5) << "Found sub event inclusive byte count as: " <<
-	// 	header_.inclusive_subevent_byte_count;
-
-	// size_t byte_count = sizeof(header_);
-	// while (byte_count < header_.inclusive_subevent_byte_count)
-	// {
-	// 	TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_subevent_byte_count << ", creating block";
-	// 	try {
-	// 		data_blocks_.emplace_back(static_cast<const void*>(ptr));
-	// 		auto data_block_byte_count = data_blocks_.back().byteSize;
-	// 		byte_count += data_block_byte_count;
-	// 		ptr += data_block_byte_count;
-	// 	}
-	// 	catch (DTC_WrongPacketTypeException const& ex) {
-	// 		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the sub event at location 0x" << std::hex << byte_count;
-	// 		throw;
-	// 	}
-	// 	catch (DTC_WrongPacketSizeException const& ex) {
-	// 		TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up the sub event at location 0x" << std::hex << byte_count;
-	// 		throw;
-	// 	}
-	// }
+	// Moved remainder to SetupSubEvent() to allow for SubEvents to cross DMA transfers
 }
 
 DTCLib::DTC_SubEvent::DTC_SubEvent(size_t data_size)
