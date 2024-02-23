@@ -84,13 +84,15 @@ std::string DTCLib::DTC_DataPacket::toJSON() const
 std::string DTCLib::DTC_DataPacket::toPacketFormat() const
 {
 	std::stringstream ss;
-	ss << std::setfill('0') << std::hex;
-	for (uint16_t ii = 0; ii < dataSize_ - 1; ii += 2)
+	ss << "\"data\": [";
+	ss << std::hex << std::setfill('0');
+	uint16_t jj = 0;
+	for (uint16_t ii = 0; ii < dataSize_ - 2; ii += 2)
 	{
-		ss << "0x" << std::setw(2) << static_cast<int>(dataPtr_[ii + 1]) << " ";
-		ss << "" << std::setw(2) << static_cast<int>(dataPtr_[ii]) << "\n";
+		ss << "0x" << std::setw(4) << static_cast<int>(reinterpret_cast<uint16_t const*>(dataPtr_)[jj]) << ",";
+		++jj;
 	}
-	ss << std::dec;
+	ss << "0x" << std::setw(4) << static_cast<int>(reinterpret_cast<uint16_t const*>(dataPtr_)[jj]) << "]";
 	return ss.str();
 }
 
@@ -141,9 +143,9 @@ DTCLib::DTC_DMAPacket::DTC_DMAPacket(const DTC_DataPacket in)
 {
 	auto word2 = in.GetData()[2];
 	uint8_t hopCount = word2 & 0xF;
-	uint8_t packetType = word2 >> 4;
+	uint8_t packetType = (word2 >> 4) & 0xF;
 	auto word3 = in.GetData()[3];
-	uint8_t linkID = word3 & 0xF;
+	uint8_t linkID = word3 & 0x7;
 	valid_ = (word3 & 0x80) == 0x80;
 	subsystemID_ = (word3 >> 4) & 0x7;
 
@@ -679,6 +681,7 @@ std::string DTCLib::DTC_DCSReplyPacket::toJSON()
 std::string DTCLib::DTC_DCSReplyPacket::toPacketFormat()
 {
 	std::stringstream ss;
+	
 	ss << headerPacketFormat() << std::hex << std::setfill('0');
 
 	auto firstWord = (packetCount_ & 0x3FC) >> 2;
@@ -838,31 +841,18 @@ bool DTCLib::DTC_DataHeaderPacket::Equals(const DTC_DataHeaderPacket& other) con
 	return ConvertToDataPacket() == other.ConvertToDataPacket();
 }
 
-DTCLib::DTC_SubEvent::DTC_SubEvent(const uint8_t* ptr)
-	: header_(), data_blocks_()
+DTCLib::DTC_SubEvent::DTC_SubEvent(const void* data)
+	: header_(), data_blocks_(), buffer_ptr_(data)
 {
-	memcpy(&header_, ptr, sizeof(header_));
-	ptr += sizeof(header_);
+	memcpy(&header_, data, sizeof(header_));
+	TLOG(TLVL_TRACE) << "Header of DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
+	// Moved remainder to SetupSubEvent() to allow for SubEvents to cross DMA transfers
+}
 
-	size_t byte_count = sizeof(header_);
-	while (byte_count < header_.inclusive_subevent_byte_count)
-	{
-		TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_subevent_byte_count << ", creating block";
-		try {
-			data_blocks_.emplace_back(static_cast<const void*>(ptr));
-			auto data_block_byte_count = data_blocks_.back().byteSize;
-			byte_count += data_block_byte_count;
-			ptr += data_block_byte_count;
-		}
-		catch (DTC_WrongPacketTypeException const& ex) {
-			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the sub event at location 0x" << std::hex << byte_count;
-			throw;
-		}
-		catch (DTC_WrongPacketSizeException const& ex) {
-			TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up the sub event at location 0x" << std::hex << byte_count;
-			throw;
-		}
-	}
+DTCLib::DTC_SubEvent::DTC_SubEvent(size_t data_size)
+	: allocBytes(new std::vector<uint8_t>(data_size)), header_(), data_blocks_(), buffer_ptr_(allocBytes->data())
+{
+	TLOG(TLVL_TRACE) << "Empty DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
 }
 
 DTCLib::DTC_EventWindowTag DTCLib::DTC_SubEvent::GetEventWindowTag() const
@@ -908,6 +898,7 @@ DTCLib::DTC_Event::DTC_Event(const void* data)
 	: header_(), sub_events_(), buffer_ptr_(data)
 {
 	memcpy(&header_, data, sizeof(header_));
+	TLOG(TLVL_TRACE) << "Header of DTC_Event created, copy in data and call SetupEvent to finalize";
 }
 
 DTCLib::DTC_Event::DTC_Event(size_t data_size)
@@ -927,22 +918,91 @@ void DTCLib::DTC_Event::SetupEvent()
 	while (byte_count < header_.inclusive_event_byte_count)
 	{
 		TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
-		try {
+		try 
+		{
 			sub_events_.emplace_back(ptr);
 			byte_count += sub_events_.back().GetSubEventByteCount();
+			if(sub_events_.back().GetSubEventByteCount() == 0)
+			{
+				auto ex = DTC_WrongPacketSizeException(sizeof(DTC_SubEventHeader), sub_events_.back().GetSubEventByteCount());
+				TLOG(TLVL_ERROR) << "Invalid empty sub event byte count interpretation!";
+				throw ex;
+			}
+			TLOG(TLVL_TRACE + 5) << "Found sub event byte_count of " << sub_events_.back().GetSubEventByteCount();
 		}
-		catch (DTC_WrongPacketTypeException const& ex) {
+		catch (DTC_WrongPacketTypeException const& ex) 
+		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
 			break;
 		}
-		catch (DTC_WrongPacketSizeException const& ex) {
+		catch (DTC_WrongPacketSizeException const& ex) 
+		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
 			break;
 		}
 	}
-}
+} //end SetupEvent()
+
+void DTCLib::DTC_SubEvent::SetupSubEvent()
+{
+	auto ptr = reinterpret_cast<const uint8_t*>(buffer_ptr_);
+
+	memcpy(&header_, ptr, sizeof(header_));
+
+	//printout SubEvent header
+	{
+		std::stringstream testss;
+		testss << "subevent header bytes=" << sizeof(header_) << ": 0x ";
+		for(size_t i = 0; i < sizeof(header_); i+=4)
+			testss << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+		TLOG(TLVL_TRACE + 5) <<	testss.str();
+	}
+	ptr += sizeof(header_); //moving ptr past subevent header
+
+
+	TLOG(TLVL_TRACE + 5) << "Found sub event inclusive byte count as: " <<
+		header_.inclusive_subevent_byte_count << " 0x" << 
+		std::hex << std::setw(4) << std::setfill('0') << header_.inclusive_subevent_byte_count << ". i.e., " << std::dec << 
+				(header_.inclusive_subevent_byte_count - sizeof(header_))/16 << " subevent packets.";
+
+	size_t byte_count = sizeof(header_);
+	while (byte_count < header_.inclusive_subevent_byte_count)
+	{
+		TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_subevent_byte_count << ", creating block";
+		try 
+		{
+			data_blocks_.emplace_back(static_cast<const void*>(ptr));
+			auto data_block_byte_count = data_blocks_.back().byteSize;
+			byte_count += data_block_byte_count;
+			TLOG(TLVL_TRACE + 5) << "Found ROC fragment block of byte_count " << data_block_byte_count << " 0x" << 
+				std::hex << data_block_byte_count << " (i.e., " << std::dec << 
+				data_block_byte_count/16 << " fragment packets).";
+
+			//printout ROC fragment data block
+			{
+				std::stringstream testss;
+				testss << "ROC fragment bytes=" << data_block_byte_count << " 0x ";
+				for(size_t i = 0; i < data_block_byte_count; i+=4)
+					testss << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+				TLOG(TLVL_TRACE + 5) <<	testss.str();
+			}
+			ptr += data_block_byte_count; //moving ptr past the ROC fragment data block
+		}
+		catch (DTC_WrongPacketTypeException const& ex)
+		{
+			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a ROC Fragment in the sub event at location 0x" << std::hex << byte_count;
+			throw;
+		}
+		catch (DTC_WrongPacketSizeException const& ex) 
+		{
+			TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up a ROC Fragment in the sub event at location 0x" << std::hex << byte_count;
+			throw;
+		}
+	}
+	
+} //end SetupSubEvent()
 
 DTCLib::DTC_EventWindowTag DTCLib::DTC_Event::GetEventWindowTag() const
 {
@@ -978,26 +1038,7 @@ void DTCLib::DTC_Event::UpdateHeader()
 	TLOG(TLVL_TRACE) << "Inclusive Event Byte Count is now " << header_.inclusive_event_byte_count;
 }
 
-size_t WriteDMABufferSizeWords(std::ostream& output, bool includeDMAWriteSize, size_t data_size, std::streampos& pos, bool restore_pos)
-{
-	auto pos_save = output.tellp();
-	output.seekp(pos);
-	size_t bytes_written = 0;
-	if (includeDMAWriteSize)
-	{
-		uint64_t dmaWriteSize = data_size + sizeof(uint64_t) + sizeof(uint64_t);
-		output.write(reinterpret_cast<const char*>(&dmaWriteSize), sizeof(uint64_t));
-		bytes_written += sizeof(uint64_t);
-	}
-
-	uint64_t dmaSize = data_size + sizeof(uint64_t);
-	output.write(reinterpret_cast<const char*>(&dmaSize), sizeof(uint64_t));
-	bytes_written += sizeof(uint64_t);
-	if (restore_pos) {
-		output.seekp(pos_save);
-	}
-	return bytes_written;
-}
+//moved WriteDMABufferSizeWords to DTC_Types.cpp
 
 void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 {

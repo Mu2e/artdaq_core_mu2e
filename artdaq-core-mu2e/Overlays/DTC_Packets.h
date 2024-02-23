@@ -1030,6 +1030,11 @@ struct DTC_DataBlock
 		return hdr;
 	}
 
+	inline const void* GetRawBufferPointer() const
+	{
+		assert(byteSize >= 16);
+		return static_cast<const void*>(reinterpret_cast<const uint8_t*>(blockPointer));
+	}
 	inline const void* GetData() const
 	{
 		assert(byteSize > 16);
@@ -1094,17 +1099,21 @@ public:
 	/// Construct a DTC_SubEvent using a pointer to data. Flag will be set that the packet is read-only.
 	/// </summary>
 	/// <param name="ptr">Pointer to data</param>
-	explicit DTC_SubEvent(const uint8_t* ptr);
+	explicit DTC_SubEvent(const void* data);
+	explicit DTC_SubEvent(size_t data_size);
 
 	DTC_SubEvent()
-		: header_(), data_blocks_() {}
+		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
 
+
+	void SetupSubEvent();
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
 	void SetEventWindowTag(DTC_EventWindowTag const& tag);
 	void SetEventMode(DTC_EventMode const& mode);
 	uint8_t GetDTCID() const;
+	const void* GetRawBufferPointer() const { return buffer_ptr_; }
 
 	std::vector<DTC_DataBlock> const& GetDataBlocks() const
 	{
@@ -1135,8 +1144,10 @@ public:
 	void UpdateHeader();
 
 private:
+	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
 	DTC_SubEventHeader header_;
 	std::vector<DTC_DataBlock> data_blocks_;
+	const void* buffer_ptr_;
 };
 
 struct DTC_EventHeader
