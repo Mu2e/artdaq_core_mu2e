@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <sstream>
 
+
 DTCLib::DTC_DataPacket::DTC_DataPacket()
 {
 	memPacket_ = false;
@@ -147,7 +148,7 @@ DTCLib::DTC_DMAPacket::DTC_DMAPacket(const DTC_DataPacket in)
 	auto word3 = in.GetData()[3];
 	uint8_t linkID = word3 & 0x7;
 	valid_ = (word3 & 0x80) == 0x80;
-	subsystemID_ = (word3 >> 4) & 0x7;
+	subsystemID_ = (in.GetData()[5] >> 5) & 0x7;
 
 	byteCount_ = in.GetData()[0] + (in.GetData()[1] << 8);
 	hopCount_ = hopCount;
@@ -763,7 +764,7 @@ DTCLib::DTC_DataPacket DTCLib::DTC_DCSReplyPacket::ConvertToDataPacket() const
 	return output;
 }
 
-DTCLib::DTC_DataHeaderPacket::DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, DTC_DataStatus status,
+DTCLib::DTC_DataHeaderPacket::DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, uint8_t status,
 	uint8_t dtcid, DTC_Subsystem subsystemid, uint8_t packetVersion, DTC_EventWindowTag event_tag,
 	uint8_t evbMode)
 	: DTC_DMAPacket(DTC_PacketType_DataHeader, link, (1 + packetCount) * 16, true, subsystemid), packetCount_(packetCount), event_tag_(event_tag), status_(status), dataPacketVersion_(packetVersion), dtcId_(dtcid), evbMode_(evbMode) {}
@@ -780,9 +781,9 @@ DTCLib::DTC_DataHeaderPacket::DTC_DataHeaderPacket(DTC_DataPacket in)
 		throw ex;
 	}
 	auto arr = in.GetData();
-	packetCount_ = arr[4] + (arr[5] << 8);
+	packetCount_ = arr[4] + ((arr[5]&7) << 8);
 	event_tag_ = DTC_EventWindowTag(arr, 6);
-	status_ = DTC_DataStatus(arr[12]);
+	status_ = arr[12];
 	dataPacketVersion_ = arr[13];
 	dtcId_ = arr[14];
 	evbMode_ = arr[15];
@@ -954,7 +955,8 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 	//printout SubEvent header
 	{
 		std::stringstream testss;
-		testss << "subevent header bytes=" << sizeof(header_) << ": 0x ";
+		testss << "subevent header Tag=" << GetEventWindowTag().GetEventWindowTag(true) << " (0x" << std::hex << 
+			GetEventWindowTag().GetEventWindowTag(true) << ") bytes=" << std::dec << sizeof(header_) << ": 0x ";
 		for(size_t i = 0; i < sizeof(header_); i+=4)
 			testss << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
 		TLOG(TLVL_TRACE + 5) <<	testss.str();
