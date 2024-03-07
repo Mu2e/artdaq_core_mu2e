@@ -25,13 +25,21 @@ enum DTC_PacketType : uint8_t
 
 /// <summary>
 /// Possible values for the Status word of the Data Header packet
+//Bit Position	Definition
+// 0	“Event Window has Data” flag indicates detector data present, else No Data for Event Window.
+// 1	“Invalid Event Window Request” flag indicates the ROC did not receive a Heartbeat packet corresponding to this Data Request.
+// 2	“I am corrupt” flag indicates the ROC has lost data or the ability to conduct detector readout has been compromised.
+// 3	“Timeout” flag indicates ROC retrieval of data did not respond before timeout occurred.
+// 4	“Overflow” flag indicates data is good, but not all data could be sent.
+// 7:5	Reserved
 /// </summary>
-enum DTC_DataStatus
-{
-	DTC_DataStatus_Valid = 0,
-	DTC_DataStatus_NoValid = 1,
-	DTC_DataStatus_Invalid = 2,
-};
+static const uint8_t DTC_DataStatus_Valid = 0;
+// enum DTC_DataStatus //It is a bit mask, can implement easily with enum
+// {
+// 	DTC_DataStatus_Valid = 0,
+// 	DTC_DataStatus_NoValid = 1,
+// 	DTC_DataStatus_Invalid = 2,
+// };
 
 /// <summary>
 /// Possible values for the Op word of the DCS Request packet.
@@ -877,7 +885,7 @@ public:
 	/// <param name="packetVersion">Version of data format</param>
 	/// <param name="event_tag">Timestamp of Data Packet (Default: DTC_Timetstamp())</param>
 	/// <param name="evbMode">EVB Mode byte (Default: 0)</param>
-	DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, DTC_DataStatus status, uint8_t dtcid, DTC_Subsystem subsystemid,
+	DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, uint8_t status, uint8_t dtcid, DTC_Subsystem subsystemid,
 						 uint8_t packetVersion, DTC_EventWindowTag event_tag = DTC_EventWindowTag(), uint8_t evbMode = 0);
 	/// <summary>
 	/// Default Copy Constructor
@@ -941,7 +949,7 @@ public:
 	/// Get the Data Status of the Data Block
 	/// </summary>
 	/// <returns>DTC_DataStatus enumeration value</returns>
-	DTC_DataStatus GetStatus() const { return status_; }
+	uint8_t GetStatus() const { return status_; }
 
 	/// <summary>
 	/// Convert the DTC_DataHeaderPacket to JSON representation
@@ -978,7 +986,7 @@ public:
 private:
 	uint16_t packetCount_;
 	DTC_EventWindowTag event_tag_;
-	DTC_DataStatus status_;
+	uint8_t status_;
 	uint8_t dataPacketVersion_;
 	uint8_t dtcId_;
 	uint8_t evbMode_;
