@@ -1,6 +1,6 @@
-#include "artdaq-core-mu2e/Data/CRVFragment.hh"
+#include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
 
-std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRVROCStatusPacket(size_t blockIndex) const
+std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacket> mu2e::CRVDataDecoder::GetCRVROCStatusPacket(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
@@ -10,7 +10,7 @@ std::unique_ptr<mu2e::CRVFragment::CRVROCStatusPacket> mu2e::CRVFragment::GetCRV
 	return output;
 }
 
-std::vector<mu2e::CRVFragment::CRVHit> mu2e::CRVFragment::GetCRVHits(size_t blockIndex) const
+std::vector<mu2e::CRVDataDecoder::CRVHit> mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return std::vector<CRVHit>();
@@ -19,7 +19,7 @@ std::vector<mu2e::CRVFragment::CRVHit> mu2e::CRVFragment::GetCRVHits(size_t bloc
         size_t eventSize = 2*crvRocHdr->ControllerEventWordCount;
         size_t pos = sizeof(CRVROCStatusPacket);
 
-        std::vector<mu2e::CRVFragment::CRVHit> output;
+        std::vector<mu2e::CRVDataDecoder::CRVHit> output;
         while(pos<eventSize)
         {
           output.resize(output.size()+1);

@@ -1,11 +1,10 @@
-#include "artdaq-core-mu2e/Data/TrackerFragment.hh"
+#include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
 
 #include <vector>
-#include "TrackerFragment.hh"
 
 namespace mu2e {
-TrackerFragment::TrackerFragment(DTCLib::DTC_SubEvent const& evt)
-	: ArtFragment(evt)
+TrackerDataDecoder::TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt)
+	: DTCDataDecoder(evt)
 {
 	if (block_count() > 0)
 	{
@@ -13,13 +12,13 @@ TrackerFragment::TrackerFragment(DTCLib::DTC_SubEvent const& evt)
 		auto hdr = dataPtr->GetHeader();
 		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
 		{
-			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
+			TLOG(TLVL_ERROR) << "TrackerDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
 		}
 	}
 }
 
-TrackerFragment::TrackerFragment(std::vector<uint8_t> data)
-	: ArtFragment(data)
+TrackerDataDecoder::TrackerDataDecoder(std::vector<uint8_t> data)
+	: DTCDataDecoder(data)
 {
 	if (block_count() > 0)
 	{
@@ -27,12 +26,12 @@ TrackerFragment::TrackerFragment(std::vector<uint8_t> data)
 		auto hdr = dataPtr->GetHeader();
 		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
 		{
-			TLOG(TLVL_ERROR) << "TrackerFragment CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
+			TLOG(TLVL_ERROR) << "TrackerDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
 		}
 	}
 }
 
-TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockIndex, bool readWaveform) const
+TrackerDataDecoder::tracker_data_t TrackerDataDecoder::GetTrackerData(size_t blockIndex, bool readWaveform) const
 {
 	tracker_data_t output;
 
@@ -66,7 +65,7 @@ TrackerFragment::tracker_data_t TrackerFragment::GetTrackerData(size_t blockInde
 	return output;
 }
 
-std::vector<uint16_t> TrackerFragment::GetWaveformV0(TrackerDataPacketV0 const* trackerPacket) const
+std::vector<uint16_t> TrackerDataDecoder::GetWaveformV0(TrackerDataPacketV0 const* trackerPacket) const
 {
 	std::vector<uint16_t> output(15);
 	output[0] = trackerPacket->ADC00;
@@ -88,7 +87,7 @@ std::vector<uint16_t> TrackerFragment::GetWaveformV0(TrackerDataPacketV0 const* 
 	return output;
 }
 
-std::vector<uint16_t> TrackerFragment::GetWaveform(TrackerDataPacket const* trackerHeaderPacket) const
+std::vector<uint16_t> TrackerDataDecoder::GetWaveform(TrackerDataPacket const* trackerHeaderPacket) const
 {
 	auto adcs = trackerHeaderPacket->NumADCPackets;
 	std::vector<uint16_t> output(3 + 12 * adcs);
@@ -123,7 +122,7 @@ std::vector<uint16_t> TrackerFragment::GetWaveform(TrackerDataPacket const* trac
 	return output;
 }
 
-const TrackerFragment::TrackerDataPacket* TrackerFragment::Upgrade(const TrackerFragment::TrackerDataPacketV0* input) const
+const TrackerDataDecoder::TrackerDataPacket* TrackerDataDecoder::Upgrade(const TrackerDataDecoder::TrackerDataPacketV0* input) const
 {
 	if (input == nullptr) return nullptr;
 

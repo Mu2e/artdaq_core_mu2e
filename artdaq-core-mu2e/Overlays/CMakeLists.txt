@@ -1,12 +1,14 @@
 cet_make_library(
-SOURCE 
-FragmentType.cc 
-DTCEventFragment.cc
-STMFragment.cc
-  LIBRARIES PUBLIC
-  mu2e_pcie_utils::DTCInterface
-  artdaq_core::artdaq-core_Data
-  )
+    SOURCE 
+      FragmentType.cc 
+      DTCEventFragment.cc
+      STMFragment.cc
+      CFO_Packets.cpp
+      DTC_Packets.cpp
+      DTC_Types.cpp
+    LIBRARIES PUBLIC
+      artdaq_core::artdaq-core_Data
+)
 
 #get_cmake_property(_variableNames VARIABLES)
 #foreach (_variableName ${_variableNames})
