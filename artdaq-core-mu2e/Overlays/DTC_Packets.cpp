@@ -168,7 +168,7 @@ std::string DTCLib::DTC_DMAPacket::headerJSON() const
 	ss << "\t\"isValid\": " << valid_ << ",\n";
 	ss << "\t\"subsystemID\": " << std::hex << "0x" << static_cast<int>(subsystemID_) << ",\n";
 	ss << "\t\"linkID\": " << std::dec << linkID_ << ",\n";
-	ss << "\t\"packetType\": " << packetType_ << ",\n";
+	ss << "\t\"packetType\": " << static_cast<int>(packetType_) << ",\n";
 	ss << "\t\"hopCount\": " << std::hex << "0x" << static_cast<int>(hopCount_);
 
 	return ss.str();
@@ -922,6 +922,7 @@ void DTCLib::DTC_Event::SetupEvent()
 		try 
 		{
 			sub_events_.emplace_back(ptr);
+                        sub_events_.back().SetupSubEvent();
 			byte_count += sub_events_.back().GetSubEventByteCount();
 			if(sub_events_.back().GetSubEventByteCount() == 0)
 			{
