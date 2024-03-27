@@ -10,17 +10,17 @@
 namespace mu2e {
 
 
-class CRVGRDataDecoder : public DTCDataDecoder
+class CRVGRDataDecoder //: public DTCDataDecoder
 {
 public:
-	CRVGRDataDecoder()
-		: DTCDataDecoder() {}
+	//CRVGRDataDecoder()
+	//	: DTCDataDecoder() {}
 
-	CRVGRDataDecoder(std::vector<uint8_t> data)
-		: DTCDataDecoder(data) {}
+	//CRVGRDataDecoder(std::vector<uint8_t> data)
+	//	: DTCDataDecoder(data) {}
 
 	explicit CRVGRDataDecoder(DTCLib::DTC_SubEvent const& f)
-		: DTCDataDecoder(f)
+		: event_(f) //DTCDataDecoder(f)
 	{}
 
     struct CRVGRRawPacket {
@@ -43,42 +43,43 @@ public:
 			, w7(0) 
 			{}
 	};
-	std::unique_ptr<CRVGRRawPacket> GetCRVGRRawPacket(size_t blockIndex) const;
+	const CRVGRRawPacket& GetCRVGRRawPacket(size_t blockIndex) const;
 
 	struct CRVGRStatusPacket{
-		
-		uint16_t CRCErrorCnt : 8;
+		uint16_t PLLlock : 1;
+		uint16_t unused : 3;
 		uint16_t LossCnt : 4;  // == 0x06
-        uint16_t unused : 3;
-        uint16_t PLLlock : 1;
+		uint16_t CRCErrorCnt : 8;
 		uint16_t EventWindowTag0;
         uint16_t EventWindowTag1;
-        uint16_t unused2 : 12;
+		uint16_t unused2_2 : 4;
+		uint16_t unused3 : 3;
         uint16_t BeamOn : 1;
-        uint16_t unused3 : 3;
+		uint16_t unused2 : 8;
         uint16_t lastWindow;
-        uint16_t unused4 : 8;
         uint16_t MarkerDelayCnt : 8;
-        uint16_t unused5 :8 ;
+		uint16_t unused4 : 8;
         uint16_t HeartBeatCnt : 8;
+		uint16_t unused5 :8 ;
         uint16_t InjectionTs;
 
 		CRVGRStatusPacket()
-			: CRCErrorCnt(0)
-			, LossCnt(0)
+			: PLLlock(0)
 			, unused(0)
-			, PLLlock(0)
+			, LossCnt(0)
+			, CRCErrorCnt(0)
 			, EventWindowTag0(0)
 			, EventWindowTag1(0)
-			, unused2(0)
-			, BeamOn(0)
+			, unused2_2(0)
 			, unused3(0)
+			, BeamOn(0)
+			, unused2(0)
 			, lastWindow(0)
-			, unused4(0)
 			, MarkerDelayCnt(0)
-                        , unused5(0)
-                        , HeartBeatCnt(0)
-                        , InjectionTs(0)
+			, unused4(0)
+            , HeartBeatCnt(0)
+			, unused5(0)
+            , InjectionTs(0)
 		{}
         uint32_t GetEventWindowTag() const {
             uint32_t EventWindowTag = EventWindowTag1;
@@ -88,7 +89,10 @@ public:
         }
 	};
 
-	std::unique_ptr<CRVGRStatusPacket> GetCRVGRStatusPacket(size_t blockIndex) const;
+	const CRVGRStatusPacket& GetCRVGRStatusPacket(size_t blockIndex) const;
+
+	private:
+	const DTCLib::DTC_SubEvent& event_;
 };
 
 std::ostream& operator<<(std::ostream& os,
