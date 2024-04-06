@@ -164,12 +164,12 @@ DTCLib::DTC_DMAPacket::DTC_DMAPacket(const DTC_DataPacket in)
 std::string DTCLib::DTC_DMAPacket::headerJSON() const
 {
 	std::stringstream ss;
-	ss << "\t\"byteCount\": " << std::hex << "0x" << static_cast<int>(byteCount_) << ",\n";
-	ss << "\t\"isValid\": " << valid_ << ",\n";
-	ss << "\t\"subsystemID\": " << std::hex << "0x" << static_cast<int>(subsystemID_) << ",\n";
-	ss << "\t\"linkID\": " << std::dec << linkID_ << ",\n";
-	ss << "\t\"packetType\": " << static_cast<int>(packetType_)<< ",\n";
-	ss << "\t\"hopCount\": " << std::hex << "0x" << static_cast<int>(hopCount_);
+	ss << "\t\"byteCount\": " << std::hex << "0x" << static_cast<int>(byteCount_);
+	ss << ",\n\t\"isValid\": " << valid_;
+	ss << ",\n\t\"subsystemID\": " << std::hex << "0x" << static_cast<int>(subsystemID_);
+	ss << ",\n\t\"linkID\": " << std::dec << linkID_;
+	ss << ",\n\t\"packetType\": " << static_cast<int>(packetType_);
+	ss << ",\n\t\"hopCount\": " << std::hex << "0x" << static_cast<int>(hopCount_);
 
 	return ss.str();
 }
@@ -190,9 +190,9 @@ std::string DTCLib::DTC_DMAPacket::headerPacketFormat() const
 std::string DTCLib::DTC_DMAPacket::toJSON()
 {
 	std::stringstream ss;
-	ss << "\"DMAPacket\": {";
+	ss << "\"DMAPacket\": {\n";
 	ss << headerJSON();
-	ss << "}";
+	ss << "\n}";
 	return ss.str();
 }
 
@@ -247,29 +247,28 @@ DTCLib::DTC_DCSRequestPacket::DTC_DCSRequestPacket(DTC_DataPacket in)
 std::string DTCLib::DTC_DCSRequestPacket::toJSON()
 {
 	std::stringstream ss;
-	ss << "\"DCSRequestPacket\": {";
-	ss << headerJSON() << ", ";
-	ss << "\"Operation Type\":" << DTC_DCSOperationTypeConverter(type_) << ", ";
-	ss << "\"Request Acknowledgement\":" << (requestAck_ ? "\"true\"" : "\"false\"") << ", ";
-	ss << "\"Address1\": " << static_cast<int>(address1_) << ", ";
+	ss << "\"DCSRequestPacket\": {\n";
+	ss << headerJSON();
+	ss << ",\n\"Operation Type\":" << DTC_DCSOperationTypeConverter(type_);
+	ss << ",\n\"Request Acknowledgement\":" << (requestAck_ ? "\"true\"" : "\"false\"");
+	ss << ",\n\"Address1\": " << static_cast<int>(address1_);
 	if (type_ != DTC_DCSOperationType_BlockWrite)
 	{
-		ss << "\"Data1\": " << static_cast<int>(data1_) << ", ";
-		ss << "\"Address2\": " << static_cast<int>(address2_) << ", ";
-		ss << "\"Data2\": " << static_cast<int>(data2_);
+		ss << ",\n\"Data1\": " << static_cast<int>(data1_);
+		ss << ",\n\"Address2\": " << static_cast<int>(address2_);
+		ss << ",\n\"Data2\": " << static_cast<int>(data2_);
 	}
 	else
 	{
 		auto counter = 0;
-		ss << ", \"Block Word Count\": " << static_cast<int>(data1_);
+		ss << ",\n\"Block Word Count\": " << static_cast<int>(data1_);
 		for (auto& word : blockWriteData_)
 		{
-			ss << ", "
-				<< "\"Block Write word " << counter << "\":" << static_cast<int>(word);
+			ss << ",\n\"Block Write word " << counter << "\":" << static_cast<int>(word);
 			counter++;
 		}
 	}
-	ss << "}";
+	ss << "\n}";
 
 	return ss.str();
 }
@@ -650,32 +649,31 @@ DTCLib::DTC_DCSReplyPacket::DTC_DCSReplyPacket(DTC_DataPacket in)
 std::string DTCLib::DTC_DCSReplyPacket::toJSON()
 {
 	std::stringstream ss;
-	ss << "\"DCSReplyPacket\": {";
-	ss << headerJSON() << ", ";
-	ss << "\"Operation Type\":" << DTC_DCSOperationTypeConverter(type_) << ", ";
-	ss << "\"Double Operation\":" << (doubleOp_ ? "\"true\"" : "\"false\"") << ", ";
-	ss << "\"Request Acknowledgement\":" << (requestAck_ ? "\"true\"" : "\"false\"") << ", ";
-	ss << "\"DCS Request FIFO Empty\": " << (dcsReceiveFIFOEmpty_ ? "\"true\"" : "\"false\"") << ", ";
-	ss << "\"Corrupt Flag\": " << (corruptFlag_ ? "\"true\"" : "\"false\"") << ", ";
-	ss << "\"Address1\": " << static_cast<int>(address1_) << ", ";
+	ss << "\"DCSReplyPacket\": {\n";
+	ss << headerJSON();
+	ss << ",\n\"Operation Type\":" << DTC_DCSOperationTypeConverter(type_);
+	ss << ",\n\"Double Operation\":" << (doubleOp_ ? "\"true\"" : "\"false\"");
+	ss << ",\n\"Request Acknowledgement\":" << (requestAck_ ? "\"true\"" : "\"false\"");
+	ss << ",\n\"DCS Request FIFO Empty\": " << (dcsReceiveFIFOEmpty_ ? "\"true\"" : "\"false\"");
+	ss << ",\n\"Corrupt Flag\": " << (corruptFlag_ ? "\"true\"" : "\"false\"");
+	ss << ",\n\"Address1\": " << static_cast<int>(address1_);
 	if (type_ != DTC_DCSOperationType_BlockRead)
 	{
-		ss << "\"Data1\": " << static_cast<int>(data1_) << ", ";
-		ss << "\"Address2\": " << static_cast<int>(address2_) << ", ";
-		ss << "\"Data2\": " << static_cast<int>(data2_);
+		ss << ",\n\"Data1\": " << static_cast<int>(data1_);
+		ss << ",\n\"Address2\": " << static_cast<int>(address2_);
+		ss << ",\n\"Data2\": " << static_cast<int>(data2_);
 	}
 	else
 	{
-		ss << "\"Block Word Count\": " << static_cast<int>(data1_);
+		ss << ",\n\"Block Word Count\": " << static_cast<int>(data1_);
 		auto counter = 0;
 		for (auto& word : blockReadData_)
 		{
-			ss << ", "
-				<< "\"Block Read word " << counter << "\":" << static_cast<int>(word);
+			ss << ",\n\"Block Read word " << counter << "\":" << static_cast<int>(word);
 			counter++;
 		}
 	}
-	ss << "}";
+	ss << "\n}";
 	return ss.str();
 }
 
@@ -801,13 +799,14 @@ std::string DTCLib::DTC_DataHeaderPacket::toJSON()
 {
 	std::stringstream ss;
 	ss << "\"DataHeaderPacket\": {\n";
-	ss << headerJSON() << ",\n";
-	ss << "\t\"packetCount\": " << std::dec << static_cast<int>(packetCount_) << ",\n";
-	ss << event_tag_.toJSON() << ",\n";
-	ss << "\t\"status\": " << std::dec << static_cast<int>(status_) << ",\n";
-	ss << "\t\"packetVersion\": " << std::hex << static_cast<int>(dataPacketVersion_) << ",\n";
-	ss << "\t\"DTC ID\": " << std::dec << static_cast<int>(dtcId_) << ",\n";
-	ss << "\t\"evbMode\": " << std::hex << "0x" << static_cast<int>(evbMode_) << "\n}";
+	ss << headerJSON();
+	ss << ",\n\t\"packetCount\": " << std::dec << static_cast<int>(packetCount_);
+	ss << ",\n" << event_tag_.toJSON();
+	ss << ",\n\t\"status\": " << std::dec << static_cast<int>(status_);
+	ss << ",\n\t\"packetVersion\": " << std::hex << static_cast<int>(dataPacketVersion_);
+	ss << ",\n\t\"DTC ID\": " << std::dec << static_cast<int>(dtcId_);
+	ss << ",\n\t\"evbMode\": " << std::hex << "0x" << static_cast<int>(evbMode_);
+	ss << "\n}";
 	return ss.str();
 }
 
@@ -842,12 +841,20 @@ bool DTCLib::DTC_DataHeaderPacket::Equals(const DTC_DataHeaderPacket& other) con
 	return ConvertToDataPacket() == other.ConvertToDataPacket();
 }
 
+const uint8_t DTCLib::DTC_SubEvent::REQUIRED_SUBEVENT_FORMAT_VERSION = 1;
+
 DTCLib::DTC_SubEvent::DTC_SubEvent(const void* data)
 	: header_(), data_blocks_(), buffer_ptr_(data)
 {
 	memcpy(&header_, data, sizeof(header_));
 	TLOG(TLVL_TRACE) << "Header of DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
 	// Moved remainder to SetupSubEvent() to allow for SubEvents to cross DMA transfers
+	if(header_.subevent_format_version != REQUIRED_SUBEVENT_FORMAT_VERSION)
+	{
+		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" <<
+			 std::hex << header_.subevent_format_version << ". Check that your DTC FPGA version matches the software expecation.";
+		throw DTC_WrongPacketTypeException(REQUIRED_SUBEVENT_FORMAT_VERSION,header_.subevent_format_version);
+	}
 }
 
 DTCLib::DTC_SubEvent::DTC_SubEvent(size_t data_size)
@@ -952,6 +959,12 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 	auto ptr = reinterpret_cast<const uint8_t*>(buffer_ptr_);
 
 	memcpy(&header_, ptr, sizeof(header_));
+	if(header_.subevent_format_version != REQUIRED_SUBEVENT_FORMAT_VERSION)
+	{
+		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" <<
+			 std::hex << header_.subevent_format_version << ". Check that your DTC FPGA version matches the software expecation.";
+		throw DTC_WrongPacketTypeException(REQUIRED_SUBEVENT_FORMAT_VERSION,header_.subevent_format_version);
+	}
 
 	//printout SubEvent header
 	{
@@ -1108,22 +1121,30 @@ std::string DTCLib::DTC_SubEventHeader::toJson() const
 	std::ostringstream oss;
 
 	oss << "\"DTC_SubEventHeader\": {\n";
-	oss << "\t\"inclusive_subevent_byte_count\": " << inclusive_subevent_byte_count << ",\n";
-	oss << "\t\"event_tag_low\": " << event_tag_low << ",\n";
-	oss << "\t\"event_tag_high\": " << event_tag_high << ",\n";
-	oss << "\t\"num_rocs\": " << num_rocs << ",\n";
-	oss << "\t\"event_mode\": 0x" << std::hex << event_mode << ",\n";
-	oss << "\t\"dtc_mac\": " << dtc_mac << ",\n";
-	oss << "\t\"partition_id\": " << partition_id << ",\n";
-	oss << "\t\"evb_mode\": " << evb_mode << ",\n";
-	oss << "\t\"source_dtc_id\": " << source_dtc_id << ",\n";
-	oss << "\t\"link0_status\": " << link0_status << ",\n";
-	oss << "\t\"link1_status\": " << link1_status << ",\n";
-	oss << "\t\"link2_status\": " << link2_status << ",\n";
-	oss << "\t\"link3_status\": " << link3_status << ",\n";
-	oss << "\t\"link4_status\": " << link4_status << ",\n";
-	oss << "\t\"link5_status\": " << link5_status << ",\n";
-	oss << "\t\"emtdc\": " << emtdc << "\n}";
+	oss << "\t\"inclusive_subevent_byte_count\": " << inclusive_subevent_byte_count;
+	oss << ",\n\t\"event_tag_low\": " << event_tag_low;
+	oss << ",\n\t\"event_tag_high\": " << event_tag_high;
+	oss << ",\n\t\"num_rocs\": " << num_rocs;
+	oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode;
+	oss << ",\n\t\"dtc_mac\": " << dtc_mac;
+	oss << ",\n\t\"partition_id\": " << partition_id;
+	oss << ",\n\t\"evb_mode\": " << evb_mode;
+	oss << ",\n\t\"source_dtc_id\": " << source_dtc_id;
+	oss << ",\n\t\"link0_status\": " << link0_status;
+	oss << ",\n\t\"link1_status\": " << link1_status;
+	oss << ",\n\t\"link2_status\": " << link2_status;
+	oss << ",\n\t\"link3_status\": " << link3_status;
+	oss << ",\n\t\"link4_status\": " << link4_status;
+	oss << ",\n\t\"link5_status\": " << link5_status;
+	oss << ",\n\t\"subevent_format_version\": " << subevent_format_version;
+	oss << ",\n\t\"emtdc\": " << emtdc;
+	oss << ",\n\t\"link0_drp_rx_latency\": " << link0_drp_rx_latency;
+	oss << ",\n\t\"link1_drp_rx_latency\": " << link1_drp_rx_latency;
+	oss << ",\n\t\"link2_drp_rx_latency\": " << link2_drp_rx_latency;
+	oss << ",\n\t\"link3_drp_rx_latency\": " << link3_drp_rx_latency;
+	oss << ",\n\t\"link4_drp_rx_latency\": " << link4_drp_rx_latency;
+	oss << ",\n\t\"link5_drp_rx_latency\": " << link5_drp_rx_latency;
+	oss << "\n}";
 
 	return oss.str();
 }
@@ -1133,17 +1154,18 @@ std::string DTCLib::DTC_EventHeader::toJson() const
 	std::ostringstream oss;
 
 	oss << "\"DTC_EventHeader\": {\n";
-	oss << "\t\"inclusive_event_byte_count\": " << inclusive_event_byte_count << ",\n";
-	oss << "\t\"event_tag_low\": " << event_tag_low << ",\n";
-	oss << "\t\"event_tag_high\": " << event_tag_high << ",\n";
-	oss << "\t\"num_dtcs\": " << num_dtcs << ",\n";
-	oss << "\t\"event_mode\": 0x" << std::hex << event_mode << ",\n";
-	oss << "\t\"dtc_mac\": " << dtc_mac << ",\n";
-	oss << "\t\"partition_id\": " << partition_id << ",\n";
-	oss << "\t\"evb_mode\": " << evb_mode << ",\n";
-	oss << "\t\"evb_id\": " << evb_id << ",\n";
-	oss << "\t\"evb_status\": " << evb_status << ",\n";
-	oss << "\t\"emtdc\": " << emtdc << "\n}";
+	oss << "\t\"inclusive_event_byte_count\": " << inclusive_event_byte_count;
+	oss << ",\n\t\"event_tag_low\": " << event_tag_low;
+	oss << ",\n\t\"event_tag_high\": " << event_tag_high;
+	oss << ",\n\t\"num_dtcs\": " << num_dtcs;
+	oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode;
+	oss << ",\n\t\"dtc_mac\": " << dtc_mac;
+	oss << ",\n\t\"partition_id\": " << partition_id;
+	oss << ",\n\t\"evb_mode\": " << evb_mode;
+	oss << ",\n\t\"evb_id\": " << evb_id;
+	oss << ",\n\t\"evb_status\": " << evb_status;
+	oss << ",\n\t\"emtdc\": " << emtdc;
+	oss << "\n}";
 
 	return oss.str();
 }

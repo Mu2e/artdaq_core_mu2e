@@ -1072,8 +1072,17 @@ struct DTC_SubEventHeader
 	uint64_t link3_status : 8;
 	uint64_t link4_status : 8;
 	uint64_t link5_status : 8;
-	uint64_t reserved3 : 8;
+	uint64_t subevent_format_version : 8;
 	uint64_t emtdc : 8;
+
+	uint64_t link0_drp_rx_latency : 16;
+	uint64_t link1_drp_rx_latency : 16;
+	uint64_t link2_drp_rx_latency : 16;
+	uint64_t link3_drp_rx_latency : 16;
+	uint64_t link4_drp_rx_latency : 16;
+	uint64_t link5_drp_rx_latency : 16;
+	uint64_t reserved3 : 32;
+	
 
 	DTC_SubEventHeader()
 		: inclusive_subevent_byte_count(0)
@@ -1093,8 +1102,15 @@ struct DTC_SubEventHeader
 		, link3_status(0)
 		, link4_status(0)
 		, link5_status(0)
-		, reserved3(0)
+		, subevent_format_version(0)
 		, emtdc(0)
+		, link0_drp_rx_latency(0)
+		, link1_drp_rx_latency(0)
+		, link2_drp_rx_latency(0)
+		, link3_drp_rx_latency(0)
+		, link4_drp_rx_latency(0)
+		, link5_drp_rx_latency(0)
+		, reserved3(0)
 	{}
 
 	std::string toJson() const;
@@ -1103,6 +1119,8 @@ struct DTC_SubEventHeader
 class DTC_SubEvent
 {
 public:
+	static const uint8_t REQUIRED_SUBEVENT_FORMAT_VERSION;
+	
 	/// <summary>
 	/// Construct a DTC_SubEvent using a pointer to data. Flag will be set that the packet is read-only.
 	/// </summary>
