@@ -775,7 +775,7 @@ DTCLib::DTC_DataHeaderPacket::DTC_DataHeaderPacket(DTC_DataPacket in)
 		auto ex = DTC_WrongPacketTypeException(DTC_PacketType_DataHeader, packetType_);
 		TLOG(TLVL_ERROR) << "Unexpected packet type encountered: " + std::to_string(packetType_) + " != " + std::to_string(DTC_PacketType_DataHeader) +
 			" (expected)";
-		TLOG(TLVL_DEBUG) << "Packet contents: " << in.toJSON();
+		TLOG(TLVL_ERROR) << "Packet contents: " << in.toJSON();
 		throw ex;
 	}
 	auto arr = in.GetData();
