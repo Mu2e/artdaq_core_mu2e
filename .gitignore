@@ -6,3 +6,4 @@ obj
 *.vcxproj*
 CMakePresets.json
 spack-*
+build-linux-*
