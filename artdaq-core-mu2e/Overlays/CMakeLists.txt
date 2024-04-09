@@ -18,6 +18,7 @@ cet_make_library(
       DTC_Types/DTC_CharacterNotInTableError.cpp
       DTC_Types/DTC_DebugType.cpp
       DTC_Types/DTC_EventWindowTag.cpp
+      DTC_Types/DTC_Link_ID.cpp
       DTC_Types/DTC_RXStatus.cpp
       DTC_Types/DTC_SERDESRXDisparityError.cpp
       DTC_Types/DTC_SimMode.cpp

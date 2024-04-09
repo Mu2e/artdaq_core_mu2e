@@ -3,6 +3,8 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Utilities.h"
 
+#include "TRACE/tracemf.h"
+
 DTCLib::DTC_Event::DTC_Event(const void* data)
 	: header_(), sub_events_(), buffer_ptr_(data)
 {

@@ -4,6 +4,8 @@
 
 #include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
 
+#include <messagefacility/MessageLogger/MessageLogger.h> // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
+
 #include <vector>
 
 namespace mu2e {
