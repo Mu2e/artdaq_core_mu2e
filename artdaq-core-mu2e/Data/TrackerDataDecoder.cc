@@ -1,5 +1,7 @@
 #include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
 
+#include "TRACE/tracemf.h"
+
 #include <vector>
 
 namespace mu2e {

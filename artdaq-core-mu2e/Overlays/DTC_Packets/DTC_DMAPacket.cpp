@@ -1,5 +1,8 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
 
+#include <iomanip>
+#include <sstream>
+
 DTCLib::DTC_DMAPacket::DTC_DMAPacket(DTC_PacketType type, DTC_Link_ID link, uint16_t byteCount, bool valid, uint8_t subsystemID, uint8_t hopCount)
 	: byteCount_(byteCount), valid_(valid), subsystemID_(subsystemID), linkID_(link), packetType_(type), hopCount_(hopCount) {}
 

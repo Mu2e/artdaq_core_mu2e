@@ -1,12 +1,6 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Types_Utilities_h
 #define artdaq_core_mu2e_Overlays_DTC_Types_Utilities_h
 
-#ifndef __CLING__
-#include "TRACE/tracemf.h"
-#else
-#define TLVL_INFO    2
-#endif
-
 #include <ostream>
 #include <string>
 #include <utility> // std::pair
@@ -53,8 +47,8 @@ struct Utilities
 	/// <param name="ptr">Pointer to the buffer</param>
 	/// <param name="sz">Size of the buffer</param>
 	/// <param name="quietCount">Number of lines to print at the begin/end. Default is 0, which prints entire buffer</param>
-	/// <param name="tlvl">TLVL to use for printing (Default TLVL_INFO)</param>
-	static void PrintBuffer(const void* ptr, size_t sz, size_t quietCount = 0, int tlvl = TLVL_INFO);
+	/// <param name="tlvl">TLVL to use for printing (Default 2, or TLVL_INFO)</param>
+	static void PrintBuffer(const void* ptr, size_t sz, size_t quietCount = 0, int tlvl = 2 /*TLVL_INFO*/);
 
 	static unsigned getOptionValue(int* index, char** argv[]);
 	static unsigned long long getOptionValueLong(int* index, char** argv[]);
