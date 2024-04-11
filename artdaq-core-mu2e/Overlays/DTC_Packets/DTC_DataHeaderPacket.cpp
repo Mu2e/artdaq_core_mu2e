@@ -2,6 +2,8 @@
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 
+#include "TRACE/tracemf.h"
+
 DTCLib::DTC_DataHeaderPacket::DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, uint8_t status,
 	uint8_t dtcid, DTC_Subsystem subsystemid, uint8_t packetVersion, DTC_EventWindowTag event_tag,
 	uint8_t evbMode)

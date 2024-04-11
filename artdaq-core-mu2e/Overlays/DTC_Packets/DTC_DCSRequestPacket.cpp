@@ -2,7 +2,10 @@
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 
+#include "TRACE/tracemf.h"
+
 #include <cassert>
+#include <iomanip>
 
 DTCLib::DTC_DCSRequestPacket::DTC_DCSRequestPacket()
 	: DTC_DMAPacket(DTC_PacketType_DCSRequest, DTC_Link_Unused), type_(DTC_DCSOperationType_Unknown), packetCount_(0), address1_(0), data1_(0), address2_(0), data2_(0) {}

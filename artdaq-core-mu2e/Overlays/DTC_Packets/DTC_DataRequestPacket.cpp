@@ -2,6 +2,8 @@
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 
+#include "TRACE/tracemf.h"
+
 DTCLib::DTC_DataRequestPacket::DTC_DataRequestPacket(DTC_Link_ID link, bool debug, uint16_t debugPacketCount,
 	DTC_DebugType type)
 	: DTC_DMAPacket(DTC_PacketType_DataRequest, link), event_tag_(), debug_(debug), debugPacketCount_(debugPacketCount), type_(type) {}

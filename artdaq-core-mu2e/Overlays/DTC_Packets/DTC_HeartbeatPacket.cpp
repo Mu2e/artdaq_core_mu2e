@@ -2,6 +2,10 @@
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 
+#include "TRACE/tracemf.h"
+
+#include <sstream>
+
 DTCLib::DTC_HeartbeatPacket::DTC_HeartbeatPacket(DTC_Link_ID link)
 	: DTC_DMAPacket(DTC_PacketType_Heartbeat, link), event_tag_(), eventMode_(), deliveryRingTDC_()
 {

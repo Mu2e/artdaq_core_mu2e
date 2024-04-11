@@ -1,5 +1,7 @@
 #include "artdaq-core-mu2e/Data/CalorimeterDataDecoder.hh"
 
+#include "TRACE/tracemf.h"
+
 namespace mu2e {
 
 CalorimeterDataDecoder::CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& evt)

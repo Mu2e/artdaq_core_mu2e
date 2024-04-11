@@ -1,6 +1,10 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Utilities.h"
 
+#include "TRACE/tracemf.h"
+
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 
 size_t DTCLib::Utilities::WriteDMABufferSizeWords(std::ostream& output, bool includeDMAWriteSize, size_t data_size, std::streampos& pos, bool restore_pos)
 {

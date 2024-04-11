@@ -2,6 +2,9 @@
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"
 
+#include "TRACE/tracemf.h"
+
+#include <iomanip>
 
 // ~~~ Packet Types ~~~ (**** can be sent s2c, --- can be sent by CFO, @@@ can be sent by ROC)
 // 0 DCS Request   ****
