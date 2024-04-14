@@ -41,12 +41,14 @@ struct mu2e::DTCDataDecoder
 		
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
+                event_.SetupSubEvent();
 		setup_ = true;
 	}
 
 	void setup_event() const {
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
+                event_.SetupSubEvent();
 		setup_ = true;
 		}
 
