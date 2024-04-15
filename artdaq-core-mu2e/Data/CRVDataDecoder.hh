@@ -11,14 +11,15 @@ namespace mu2e {
 class CRVDataDecoder : public DTCDataDecoder
 {
 public:
-	CRVDataDecoder()
-		: DTCDataDecoder() {}
+	//CRVDataDecoder()
+	//	: DTCDataDecoder() {}
 
-	CRVDataDecoder(std::vector<uint8_t> data)
-		: DTCDataDecoder(data) {}
+	//CRVDataDecoder(std::vector<uint8_t> data)
+	//	: DTCDataDecoder(data) {}
 
 	explicit CRVDataDecoder(DTCLib::DTC_SubEvent const& f)
-		: DTCDataDecoder(f)
+		//: DTCDataDecoder(f)
+		: event_(f)
 	{}
 
 	struct CRVROCStatusPacket
@@ -108,10 +109,17 @@ public:
         typedef std::vector<CRVHitWaveformSample> CRVHitWaveform;
         typedef std::pair<CRVHitInfo,CRVHitWaveform> CRVHit;
 
-	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
+    const CRVROCStatusPacket& GetCRVROCStatusPacket(size_t blockIndex) const;
 	std::vector<CRVHit> GetCRVHits(size_t blockIndex) const;
 
+	private:
+	const DTCLib::DTC_SubEvent& event_;
+
 };
+	std::ostream& operator<<(std::ostream& os,
+			   CRVDataDecoder::CRVROCStatusPacket const& status );
+	std::ostream& operator<<(std::ostream& os,
+			   CRVDataDecoder::CRVHit const& hit );
 }  // namespace mu2e
 
 #endif  // ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
