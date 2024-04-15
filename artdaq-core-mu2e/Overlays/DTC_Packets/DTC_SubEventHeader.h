@@ -32,13 +32,14 @@ struct DTC_SubEventHeader
 	uint64_t subevent_format_version : 8;
 	uint64_t emtdc : 8;
 
+	uint64_t link4_drp_rx_latency : 16;
+	uint64_t link5_drp_rx_latency : 16;
+	uint64_t reserved3 : 32;
 	uint64_t link0_drp_rx_latency : 16;
 	uint64_t link1_drp_rx_latency : 16;
 	uint64_t link2_drp_rx_latency : 16;
 	uint64_t link3_drp_rx_latency : 16;
-	uint64_t link4_drp_rx_latency : 16;
-	uint64_t link5_drp_rx_latency : 16;
-	uint64_t reserved3 : 32;
+
 	
 
 	DTC_SubEventHeader()
@@ -61,13 +62,13 @@ struct DTC_SubEventHeader
 		, link5_status(0)
 		, subevent_format_version(0)
 		, emtdc(0)
+		, link4_drp_rx_latency(0)
+		, link5_drp_rx_latency(0)
+		, reserved3(0)
 		, link0_drp_rx_latency(0)
 		, link1_drp_rx_latency(0)
 		, link2_drp_rx_latency(0)
 		, link3_drp_rx_latency(0)
-		, link4_drp_rx_latency(0)
-		, link5_drp_rx_latency(0)
-		, reserved3(0)
 	{}
 
 	inline std::string toJson() const
