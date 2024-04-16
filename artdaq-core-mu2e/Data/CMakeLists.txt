@@ -8,7 +8,6 @@ Mu2eEventHeader.cc
 DTCDataDecoder.cc 
 CalorimeterDataDecoder.cc
 CRVDataDecoder.cc 
-CRVGRDataDecoder.cc 
 TrackerDataDecoder.cc
 LIBRARIES PUBLIC
   artdaq_core_mu2e::artdaq-core-mu2e_Overlays
