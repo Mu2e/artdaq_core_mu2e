@@ -1,4 +1,4 @@
-//#pragma message "DTC_Packets.h is deprecated, please update to use artdaq-core-mu2e/Overlays/DTC_Packets/*.h"
+#pragma message "DTC_Packets.h is deprecated, please update to use artdaq-core-mu2e/Overlays/DTC_Packets/*.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataBlock.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataHeaderPacket.h"

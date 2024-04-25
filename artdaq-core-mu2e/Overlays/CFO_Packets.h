@@ -1,4 +1,4 @@
-// #pragma message "CFO_Packets.h is deprecated, please update to use artdaq-core-mu2e/Overlays/CFO_Packets/*.h"
+#pragma message "CFO_Packets.h is deprecated, please update to use artdaq-core-mu2e/Overlays/CFO_Packets/*.h"
 
 #include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_DMAPacket.h"
