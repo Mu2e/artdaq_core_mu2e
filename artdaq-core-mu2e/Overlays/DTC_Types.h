@@ -1,4 +1,4 @@
-// #pragma message "DTC_Types.h is deprecated, please update to use artdaq-core-mu2e/Overlays/DTC_Types/*.h"
+#pragma message "DTC_Types.h is deprecated, please update to use artdaq-core-mu2e/Overlays/DTC_Types/*.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_CharacterNotInTableError.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
