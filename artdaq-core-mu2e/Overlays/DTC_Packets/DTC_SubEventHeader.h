@@ -39,7 +39,6 @@ struct DTC_SubEventHeader
 	uint64_t link1_drp_rx_latency : 16;
 	uint64_t link2_drp_rx_latency : 16;
 	uint64_t link3_drp_rx_latency : 16;
-
 	
 
 	DTC_SubEventHeader()

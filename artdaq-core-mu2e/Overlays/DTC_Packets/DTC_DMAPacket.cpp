@@ -73,7 +73,7 @@ std::string DTCLib::DTC_DMAPacket::headerPacketFormat() const
 	ss << std::setw(1) << static_cast<int>(valid_) << " "
 		<< std::setw(2) << std::dec << static_cast<int>(subsystemID_) << std::hex << " "
 		<< "0x" << std::setw(2) << linkID_ << "\t";
-	ss << "0x" << std::setw(2) << packetType_ << "0x" << std::setw(2) << 0 << std::endl;
+	ss << "0x" << std::setw(2) << static_cast<int>(packetType_) << "0x" << std::setw(2) << 0 << std::endl;
 	return ss.str();
 }
 

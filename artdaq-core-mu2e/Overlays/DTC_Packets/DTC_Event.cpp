@@ -28,7 +28,7 @@ void DTCLib::DTC_Event::SetupEvent()
 	size_t byte_count = sizeof(header_);
 	while (byte_count < header_.inclusive_event_byte_count)
 	{
-		TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
+		TLOG(TLVL_DEBUG + 6) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
 		try 
 		{
 			sub_events_.emplace_back(ptr);
@@ -40,7 +40,7 @@ void DTCLib::DTC_Event::SetupEvent()
 				TLOG(TLVL_ERROR) << "Invalid empty sub event byte count interpretation!";
 				throw ex;
 			}
-			TLOG(TLVL_TRACE + 5) << "Found sub event byte_count of " << sub_events_.back().GetSubEventByteCount();
+			TLOG(TLVL_DEBUG + 6) << "Found sub event byte_count of " << sub_events_.back().GetSubEventByteCount();
 		}
 		catch (DTC_WrongPacketTypeException const& ex) 
 		{
@@ -111,7 +111,8 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 			}
 		}
 	}
-	else {
+	else 
+	{
 		TLOG(TLVL_TRACE) << "Event spans multiple buffers, beginning write";
 		auto buffer_start = o.tellp();
 		size_t bytes_written = Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, header_.inclusive_event_byte_count, buffer_start, false);
@@ -122,7 +123,8 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 
 		for (auto& subevt : sub_events_)
 		{
-			if (bytes_written + buffer_data_size + sizeof(DTC_SubEventHeader) > MAX_DMA_SIZE) {
+			if (bytes_written + buffer_data_size + sizeof(DTC_SubEventHeader) > MAX_DMA_SIZE)
+			{
 				TLOG(TLVL_TRACE) << "Starting new buffer, writing size words " << buffer_data_size << " to old buffer";
 				Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, buffer_data_size, buffer_start, true);
 				buffer_start = o.tellp();
@@ -135,7 +137,8 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 			buffer_data_size += sizeof(DTC_SubEventHeader);
 			for (auto& blk : subevt.GetDataBlocks())
 			{
-				if (bytes_written + buffer_data_size + blk.byteSize > MAX_DMA_SIZE) {
+				if (bytes_written + buffer_data_size + blk.byteSize > MAX_DMA_SIZE) 
+				{
 					TLOG(TLVL_TRACE) << "Starting new buffer, writing size words " << buffer_data_size << " to old buffer";
 					Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, buffer_data_size, buffer_start, true);
 					buffer_start = o.tellp();
