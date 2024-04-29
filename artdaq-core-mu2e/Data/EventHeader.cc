@@ -25,8 +25,11 @@ namespace mu2e {
 
     os <<  "EWT: "           << std::setw(ewt_decimal_digits) << eh.ewt
        << " Event Mode: "    << buf1
-       << " RF_Marker_TDC: " << int(eh.rfmTDC)
-       << " Flags: "         << buf2;
+       << " RF0_est: "       << unsigned(eh.rfmTDC_est)
+       << " Flags: "         << buf2
+       << " Duration: "      << unsigned(eh.eventDuration)
+       << " RF0_meas: "      << unsigned(eh.rfmTDC_measured);
+
     return os;
   }
 
