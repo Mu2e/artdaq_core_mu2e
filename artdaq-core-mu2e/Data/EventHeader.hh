@@ -31,14 +31,12 @@ struct EventHeader {
 
   EventHeader(){}
 
-  EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags ):
-    ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags),
+  EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags ): ewt(ewt), mode(mode), rfmTDC_est(rfmTDC), flags(flags),
     rnr_check(0), ndtc_check(0), dtc_check(0), ewt_check(0) {
   }
 
   EventHeader( EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags,
-	       uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck):
-    ewt(ewt), mode(mode), rfmTDC(rfmTDC), flags(flags),
+	       uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck): ewt(ewt), mode(mode), rfmTDC_est(rfmTDC), flags(flags),
     rnr_check(rnrCheck), ndtc_check(ndtcCheck), dtc_check(dtcCheck), ewt_check(ewtCheck) {
   }
 
