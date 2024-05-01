@@ -31,7 +31,7 @@ void CFOLib::CFO_Event::SetupEvent()
 	// size_t byte_count = sizeof(header_);
 	// while (byte_count < header_.inclusive_event_byte_count)
 	// {
-	// 	TLOG(TLVL_TRACE + 5) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
+	// 	TLOG(TLVL_DEBUG + 6) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
 	// 	try {
 	// 		sub_events_.emplace_back(ptr);
 	// 		byte_count += sub_events_.back().GetSubEventByteCount();
