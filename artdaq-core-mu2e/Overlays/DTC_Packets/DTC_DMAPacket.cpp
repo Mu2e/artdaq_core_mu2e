@@ -1,5 +1,7 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
 
+#include "TRACE/trace.h"
+
 #include <iomanip>
 #include <sstream>
 
