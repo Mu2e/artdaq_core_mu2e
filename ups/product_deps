@@ -17,7 +17,9 @@ bindir      fq_dir      bin
 
 # for e20:s116
 product				version		optional
-artdaq_core                     v3_10_03
+artdaq_core                     v3_10_03        s132
+artdaq_core                     v3_10_03        s131
+artdaq_core                     v3_10_01
 cetmodules			v3_24_01	-	only_for_build
 end_product_list
 
