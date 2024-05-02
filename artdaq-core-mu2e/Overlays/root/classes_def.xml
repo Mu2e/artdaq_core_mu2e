@@ -1,0 +1,48 @@
+<lcgdict>
+
+<!-- /DTC_Types -->
+
+  <class name="DTCLib::DTC_CharacterNotInTableError" />
+  <class name="DTCLib::DTC_DCSOperationTypeConverter" />
+  <class name="DTCLib::DTC_DDRFlags" />
+  <class name="DTCLib::DTC_DebugTypeConverter" />
+  <class name="DTCLib::DTC_EVBStatus" />
+  <class name="DTCLib::DTC_EventMode" />
+  <class name="DTCLib::DTC_EventWindowTag" />
+  <class name="DTCLib::DTC_LinkEnableMode" />
+  <class name="DTCLib::DTC_LinkStatus" />
+
+  <class name="DTCLib::DTC_PRBSModeConverter" />
+  <class name="DTCLib::DTC_RXBufferStatusConverter" />
+  <class name="DTCLib::DTC_RXStatusConverter" />
+  <class name="DTCLib::DTC_SERDESLoopbackModeConverter" />
+  <class name="DTCLib::DTC_SimModeConverter" />
+
+  <class name="DTCLib::DTC_WrongVersionException" />
+  <class name="DTCLib::DTC_WrongPacketTypeException" />
+  <class name="DTCLib::DTC_WrongPacketSizeException" />
+  <class name="DTCLib::DTC_IOErrorException" />
+  <class name="DTCLib::DTC_DataCorruptionException" />
+
+  <class name="DTCLib::DTC_SERDESRXDisparityError" />
+
+  <class name="DTCLib::Utilities" />
+
+<!-- /DTC_Packets -->
+
+  <class name="DTCLib::DTC_DataBlock" />
+  <class name="DTCLib::DTC_DataHeaderPacket" />
+  <class name="DTCLib::DTC_DataPacket" />
+  <class name="DTCLib::DTC_DataRequestPacket" />
+
+  <class name="DTCLib::DTC_DCSReplyPacket" />
+  <class name="DTCLib::DTC_DCSRequestPacket" />
+  <class name="DTCLib::DTC_DMAPacket" />
+  <class name="DTCLib::DTC_HeartbeatPacket" />
+
+  <class name="DTCLib::DTC_Event" />
+  <class name="DTCLib::DTC_EventHeader" />
+  <class name="DTCLib::DTC_SubEvent" />
+  <class name="DTCLib::DTC_SubEventHeader" />
+
+</lcgdict>
