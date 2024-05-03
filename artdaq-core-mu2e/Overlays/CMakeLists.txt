@@ -38,4 +38,9 @@ include(ArtdaqCorePlugins)
 
 
 install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types)
-install_source(SUBDIRS CFO_Packets DTC_Packets DTC_Types)
+install_source (SUBDIRS CFO_Packets DTC_Packets DTC_Types)
+
+if($ENV{BUILD_ROOT_INTERFACE})
+  message(-- artdaq-core-mu2e/Overlays::BUILD_ROOT_INTERFACE=$ENV{BUILD_ROOT_INTERFACE})
+  add_subdirectory(root)
+endif()
