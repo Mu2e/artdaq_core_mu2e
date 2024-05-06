@@ -159,9 +159,15 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 
 			if(data_blocks_.back().GetHeader()->GetLinkID() != roc_fragi)
 			{
-				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a ROC #" << roc_fragi <<
+				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Index, occurred while setting up a ROC #" << roc_fragi <<
 					" header packet.";
 				throw DTC_WrongPacketTypeException(roc_fragi, data_blocks_.back().GetHeader()->GetLinkID());		
+			}
+			if(data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true) != GetEventWindowTag().GetEventWindowTag(true))
+			{
+				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Event Tag, occurred while setting up a ROC #" << roc_fragi <<
+					" header packet.";
+				throw DTC_WrongPacketTypeException(GetEventWindowTag().GetEventWindowTag(true), data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true));		
 			}
 
 			ptr += data_block_byte_count; //moving ptr past the ROC fragment data block
