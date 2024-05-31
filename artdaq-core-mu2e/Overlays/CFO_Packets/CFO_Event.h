@@ -1,7 +1,7 @@
 #ifndef artdaq_core_mu2e_Overlays_CFO_Packets_CFO_Event_h
 #define artdaq_core_mu2e_Overlays_CFO_Packets_CFO_Event_h
 
-#include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_EventHeader.h"
+#include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_EventRecord.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventMode.h"
@@ -23,21 +23,21 @@ public:
 	/// <param name="data">Pointer data</param>
 	explicit CFO_Event(const void* data);
 
-	explicit CFO_Event(size_t data_size);
+	// explicit CFO_Event(size_t data_size);
 
 	CFO_Event()
-		:  // header_(), sub_events_(),
-		buffer_ptr_(nullptr)
+		:  record_()//, sub_events_(),
+		// buffer_ptr_(nullptr)
 	{}
 
-	static const int MAX_DMA_SIZE = 0x8000;  // 32k
+	// static const int MAX_DMA_SIZE = 0x8000;  // 32k
 
-	void SetupEvent();
-	size_t GetEventByteCount() const { return 16; }  // header_.inclusive_event_byte_count; }
+	// void SetupEvent();
+	size_t GetEventByteCount() const { return sizeof(record_); }
 	DTCLib::DTC_EventWindowTag GetEventWindowTag() const;
 	void SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag);
 	void SetEventMode(DTCLib::DTC_EventMode const& mode);
-	const void* GetRawBufferPointer() const { return buffer_ptr_; }
+	const void* GetRawBufferPointer() const { return &record_; }
 
 	// std::vector<DTC_SubEvent> const& GetSubEvents() const
 	// {
@@ -105,13 +105,12 @@ public:
 	// DTC_EventHeader* GetHeader() { return &header_; }
 
 	// void UpdateHeader();
-	void WriteEvent(std::ostream& output, bool includeDMAWriteSize = true);
+	// void WriteEvent(std::ostream& output, bool includeDMAWriteSize = true);
 
 private:
-	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
-	CFO_EventHeader header_;
-	// std::vector<DTC_SubEvent> sub_events_;
-	const void* buffer_ptr_;
+	// std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
+	CFO_EventRecord record_;
+	// const void* buffer_ptr_;
 };
 
 }  // namespace CFOLib
