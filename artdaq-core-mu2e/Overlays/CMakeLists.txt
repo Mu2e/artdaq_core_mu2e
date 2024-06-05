@@ -3,9 +3,26 @@ cet_make_library(
       FragmentType.cc 
       DTCEventFragment.cc
       STMFragment.cc
-      CFO_Packets.cpp
-      DTC_Packets.cpp
-      DTC_Types.cpp
+      CFO_Packets/CFO_DataPacket.cpp
+      CFO_Packets/CFO_DMAPacket.cpp
+      CFO_Packets/CFO_Event.cpp
+      DTC_Packets/DTC_DataHeaderPacket.cpp
+      DTC_Packets/DTC_DataPacket.cpp
+      DTC_Packets/DTC_DataRequestPacket.cpp
+      DTC_Packets/DTC_DCSReplyPacket.cpp
+      DTC_Packets/DTC_DCSRequestPacket.cpp
+      DTC_Packets/DTC_DMAPacket.cpp
+      DTC_Packets/DTC_Event.cpp
+      DTC_Packets/DTC_HeartbeatPacket.cpp
+      DTC_Packets/DTC_SubEvent.cpp
+      DTC_Types/DTC_CharacterNotInTableError.cpp
+      DTC_Types/DTC_DebugType.cpp
+      DTC_Types/DTC_EventWindowTag.cpp
+      DTC_Types/DTC_Link_ID.cpp
+      DTC_Types/DTC_RXStatus.cpp
+      DTC_Types/DTC_SERDESRXDisparityError.cpp
+      DTC_Types/DTC_SimMode.cpp
+      DTC_Types/Utilities.cpp
     LIBRARIES PUBLIC
       artdaq_core::artdaq-core_Data
 )
@@ -20,5 +37,10 @@ include(ArtdaqCorePlugins)
   cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq_core_mu2e::artdaq-core-mu2e_Overlays )
 
 
-install_headers()
-install_source()
+install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types)
+install_source (SUBDIRS CFO_Packets DTC_Packets DTC_Types)
+
+if($ENV{BUILD_ROOT_INTERFACE})
+  message(-- artdaq-core-mu2e/Overlays::BUILD_ROOT_INTERFACE=$ENV{BUILD_ROOT_INTERFACE})
+  add_subdirectory(root)
+endif()

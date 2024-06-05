@@ -2,7 +2,9 @@
 #define ARTDAQ_CORE_MU2E_DATA_DTCDATADECODER_HH
 
 #include "cetlib_except/exception.h"
-#include "artdaq-core-mu2e/Overlays/DTC_Packets.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_SubEventHeader.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_SubEvent.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataBlock.h"
 
 #include <iostream>
 #include <vector>
@@ -39,12 +41,14 @@ struct mu2e::DTCDataDecoder
 		
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
+                event_.SetupSubEvent();
 		setup_ = true;
 	}
 
 	void setup_event() const {
 		auto ptr = data_.data();
 		event_ = DTCLib::DTC_SubEvent(ptr);	
+                event_.SetupSubEvent();
 		setup_ = true;
 		}
 

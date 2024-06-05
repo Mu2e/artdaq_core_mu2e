@@ -17,7 +17,9 @@ bindir      fq_dir      bin
 
 # for e20:s116
 product				version		optional
-artdaq_core                     v3_10_01
+artdaq_core                     v3_10_03        s132
+artdaq_core                     v3_10_03        s131
+artdaq_core                     v3_10_01        -default-
 cetmodules			v3_24_01	-	only_for_build
 end_product_list
 
@@ -30,6 +32,18 @@ end_product_list
 # a "-" means the dependent product is not required by the parent and will not be setup
 
 qualifier       artdaq_core
+e28:s132:debug  e28:s132:debug
+e28:s132:prof   e28:s132:prof
+
+e28:s131:debug  e28:s131:debug
+e28:s131:prof   e28:s131:prof
+e26:s131:debug  e26:s131:debug
+e26:s131:prof   e26:s131:prof
+e20:s131:debug  e20:s131:debug
+e20:s131:prof   e20:s131:prof
+c14:s131:debug  c14:s131:debug
+c14:s131:prof   c14:s131:prof
+
 e28:s130:debug  e28:s130:debug
 e28:s130:prof   e28:s130:prof
 e26:s130:debug  e26:s130:debug
