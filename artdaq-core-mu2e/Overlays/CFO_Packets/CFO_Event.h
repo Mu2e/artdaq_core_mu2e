@@ -38,6 +38,7 @@ public:
 	void SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag);
 	void SetEventMode(DTCLib::DTC_EventMode const& mode);
 	const void* GetRawBufferPointer() const { return &record_; }
+	const CFO_EventRecord& GetEventRecord() const { return record_; }
 
 	// std::vector<DTC_SubEvent> const& GetSubEvents() const
 	// {
