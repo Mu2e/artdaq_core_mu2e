@@ -80,7 +80,7 @@ struct DTC_SubEventHeader
 		oss << ",\n\t\"event_tag_low\": " << event_tag_low;
 		oss << ",\n\t\"event_tag_high\": " << event_tag_high;
 		oss << ",\n\t\"num_rocs\": " << num_rocs;
-		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode;
+		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode << std::dec;
 		oss << ",\n\t\"dtc_mac\": " << dtc_mac;
 		oss << ",\n\t\"partition_id\": " << partition_id;
 		oss << ",\n\t\"evb_mode\": " << evb_mode;
