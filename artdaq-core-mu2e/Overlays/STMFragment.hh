@@ -27,8 +27,12 @@ namespace mu2e {
       return reinterpret_cast<int16_t const*>(GetTHdr()+1);
     }
 
+    int16_t const* EvLen() const {
+      return reinterpret_cast<int16_t const*>(GetTHdr()+2);
+    }
+
     int16_t const* DataBegin() const {
-      return reinterpret_cast<int16_t const*>(GetTHdr()+2);// + fw_tHdr_Len);
+      return reinterpret_cast<int16_t const*>(GetTHdr()+3);// + fw_tHdr_Len);
     }
     
   private:
