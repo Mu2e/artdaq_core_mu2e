@@ -50,18 +50,25 @@ public:
 	}
 	void AddDataBlock(DTC_DataBlock blk)
 	{
-		data_blocks_.push_back(blk);
+		auto block_id = blk.GetHeader()->GetLinkID();
+		auto insert_iter = data_blocks_.begin();
+        while (insert_iter != data_blocks_.end()) {
+			if (block_id < insert_iter->GetHeader()->GetLinkID()) break;
+			++insert_iter;
+        }
+		data_blocks_.insert(insert_iter, blk);
 		header_.num_rocs++;
 		UpdateHeader();
 	}
 
-	DTC_Subsystem GetSubsystem() const { return static_cast<DTC_Subsystem>((header_.source_dtc_id & 0x70) >> 4); }
+	DTC_Subsystem GetSubsystem() const { return static_cast<DTC_Subsystem>(header_.source_subsystem); }
 	void SetDTCMAC(uint8_t mac) {
 		header_.dtc_mac = mac;
 	}
 	void SetSourceDTC(uint8_t id, DTC_Subsystem subsystem = DTC_Subsystem_Other)
 	{
-		header_.source_dtc_id = (id & 0xf) + ((static_cast<int>(subsystem) & 0x7) << 4);
+		header_.source_dtc_id = id;
+		header_.source_subsystem = static_cast<uint8_t>(subsystem);
 	}
 	const DTC_SubEventHeader* GetHeader() const { return &header_; }
 	void UpdateHeader();

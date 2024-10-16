@@ -5,6 +5,9 @@
 #include <iomanip>
 #include <sstream>
 
+// For generated DTC_SubEvent objects
+#define CURRENT_SUBEVENT_FORMAT_VERSION 1
+
 namespace DTCLib {
 
 struct DTC_SubEventHeader
@@ -21,7 +24,8 @@ struct DTC_SubEventHeader
 	uint64_t partition_id : 8;
 	uint64_t evb_mode : 8;
 	uint64_t source_dtc_id : 8;
-	uint64_t reserved2 : 32;
+	uint64_t source_subsystem : 3;
+	uint64_t reserved2 : 29;
 
 	uint64_t link0_status : 8;
 	uint64_t link1_status : 8;
@@ -60,7 +64,7 @@ struct DTC_SubEventHeader
 		, link3_status(0)
 		, link4_status(0)
 		, link5_status(0)
-		, subevent_format_version(0)
+		, subevent_format_version(CURRENT_SUBEVENT_FORMAT_VERSION)
 		, emtdc(0)
 		, link4_drp_rx_latency(0)
 		, link5_drp_rx_latency(0)

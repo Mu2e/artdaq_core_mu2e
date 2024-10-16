@@ -81,10 +81,10 @@ public:
 	}
 	DTC_SubEvent* GetSubEventByDTCID(uint8_t dtc, DTC_Subsystem subsys)
 	{
-		auto dtcid = (dtc & 0xF) + ((static_cast<uint8_t>(subsys) & 0x7) << 4);
 		for (size_t ii = 0; ii < sub_events_.size(); ++ii)
 		{
-			if (sub_events_[ii].GetDTCID() == dtcid) return &sub_events_[ii];
+			if (sub_events_[ii].GetDTCID() == dtc && sub_events_[ii].GetSubsystem() == static_cast<uint8_t>(subsys))
+                return &sub_events_[ii];
 		}
 		return nullptr;
 	}
