@@ -6,13 +6,13 @@
 #include <messagefacility/MessageLogger/MessageLogger.h> // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
 
 namespace mu2e {
-class CalorimeterDataDecoder : public DTCDataDecoder
-{
+  class CalorimeterDataDecoder : public DTCDataDecoder
+  {
   public:
 
-	CalorimeterDataDecoder() : DTCDataDecoder() {}
+    CalorimeterDataDecoder() : DTCDataDecoder() {}
 
-	CalorimeterDataDecoder(std::vector<uint8_t> data);
+    CalorimeterDataDecoder(std::vector<uint8_t> data);
 
     explicit CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& f);
 
@@ -45,11 +45,11 @@ class CalorimeterDataDecoder : public DTCDataDecoder
       uint8_t IndexOfMaxDigitizerSample;
 
       CalorimeterHitDataPacket()
-      : DetectorType(0), BoardID(0), ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
+	: DetectorType(0), BoardID(0), ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
     };
 	  
 	  
-	  // CalorimeterFooterPacket: after transmission of all the hits the event is closed by a final packet containing the informaton about all the chanels that are reconstructed online in the FPGA:
+    // CalorimeterFooterPacket: after transmission of all the hits the event is closed by a final packet containing the informaton about all the chanels that are reconstructed online in the FPGA:
     struct CalorimeterFooterPacket
     {
       uint16_t DetectorType : 3; // subdetector type e.g. CALO=0, CAPHRI = 1, TRAD = 2, LASER = 3
@@ -64,7 +64,7 @@ class CalorimeterDataDecoder : public DTCDataDecoder
       uint16_t DIRACE;
       uint16_t DIRACF;
       CalorimeterFooterPacket ()
-      : DetectorType(0), BoardID(0), unused(0), ChannelStatusFlagA(0), ChannelStatusFlagC(0) {}
+	: DetectorType(0), BoardID(0), unused(0), ChannelStatusFlagA(0), ChannelStatusFlagC(0) {}
 
     };
 
