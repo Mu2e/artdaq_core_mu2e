@@ -1,15 +1,16 @@
 cet_make_library(
-SOURCE 
-EventHeader.cc
-RunHeader.cc
-SubRunHeader.cc
-TimeStamp.cc
-Mu2eEventHeader.cc
-DTCDataDecoder.cc 
-CalorimeterDataDecoder.cc
-CRVDataDecoder.cc 
-TrackerDataDecoder.cc
-LIBRARIES PUBLIC
+  SOURCE 
+  EventHeader.cc
+  RunHeader.cc
+  SubRunHeader.cc
+  TimeStamp.cc
+  Mu2eEventHeader.cc
+  DTCDataDecoder.cc 
+  CalorimeterDataDecoder.cc
+  CalorimeterTestDataDecoder.cc
+  CRVDataDecoder.cc 
+  TrackerDataDecoder.cc
+  LIBRARIES PUBLIC
   artdaq_core_mu2e::artdaq-core-mu2e_Overlays
   )
 
