@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+// These are the different types of fragments that are needed
+// to decode the Mu2e data formats
+//
+// See: docdb-XXXX for format details
+
 mu2e::FragmentType mu2e::toFragmentType(std::string t_string)
 {
 	std::transform(t_string.begin(), t_string.end(), t_string.begin(), toupper);
