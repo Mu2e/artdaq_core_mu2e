@@ -33,6 +33,7 @@ public:
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
+	void SetupSimEvent(DTC_EventWindowTag const& tag, DTC_EventMode const& mode, size_t data_size);
 	void SetEventWindowTag(DTC_EventWindowTag const& tag);
 	void SetEventMode(DTC_EventMode const& mode);
 	uint8_t GetDTCID() const;

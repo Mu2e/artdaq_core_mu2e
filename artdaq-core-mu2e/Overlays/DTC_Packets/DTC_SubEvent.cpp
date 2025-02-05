@@ -39,6 +39,56 @@ DTCLib::DTC_EventWindowTag DTCLib::DTC_SubEvent::GetEventWindowTag() const
 	return DTC_EventWindowTag(header_.event_tag_low, header_.event_tag_high);
 }
 
+void DTCLib::DTC_SubEvent::SetupSimEvent(DTC_EventWindowTag const& tag, DTC_EventMode const& mode,
+	size_t data_size)
+{
+	auto ptr = reinterpret_cast<const uint8_t*>(buffer_ptr_);
+	memcpy(&header_, ptr, sizeof(header_));
+	
+	header_.subevent_format_version = REQUIRED_SUBEVENT_FORMAT_VERSION;
+	SetEventWindowTag(tag);
+	SetEventMode(mode);
+	header_.inclusive_subevent_byte_count = data_size;
+
+
+	TLOG(TLVL_DEBUG + 6) << "Found sub event inclusive byte count as: " <<
+		header_.inclusive_subevent_byte_count << " 0x" << 
+		std::hex << std::setw(4) << std::setfill('0') << header_.inclusive_subevent_byte_count << ". i.e., " << std::dec << std::setw(0) << 
+				(header_.inclusive_subevent_byte_count - sizeof(header_))/16 << " subevent packets.";
+
+	ptr += sizeof(header_); //moving ptr past subevent header
+
+	size_t num_of_packets = (header_.inclusive_subevent_byte_count - sizeof(header_))/16;
+	size_t packets_per_roc = num_of_packets/6;
+	TLOG(TLVL_DEBUG + 6) << "num_of_packets = " << num_of_packets;
+	TLOG(TLVL_DEBUG + 6) << "packets_per_roc = " << packets_per_roc;
+
+	for(int i=0; i>6; ++i)
+	{
+		size_t packets_this_roc = packets_per_roc;
+		if(i == 5) packets_this_roc = num_of_packets;
+		if(packets_this_roc > 2023) packets_this_roc = 0; //assume wrapped around negative
+		TLOG(TLVL_TRACE) << "Setup ROC-" << i << " data header. packets_this_roc = " << 
+			packets_this_roc;
+
+		
+		*((uint16_t *)(&(ptr[1*2]))) = 0x8000 | (i << 8) | (5<<4); //packet type Data Header 0x5
+		*((uint16_t *)(&(ptr[2*2]))) = packets_this_roc; //packet count
+		*((uint16_t *)(&(ptr[3*2]))) = tag.GetEventWindowTag(true); //packet count
+		*((uint16_t *)(&(ptr[4*2]))) = tag.GetEventWindowTag(true)>>16; //packet count
+		*((uint16_t *)(&(ptr[5*2]))) = tag.GetEventWindowTag(true)>>32; //packet count
+	
+
+		// std::shared_ptr<DTC_DataHeaderPacket> GetHeader()
+		// data_blocks_.emplace_back(static_cast<const void*>(ptr));
+		// 	auto data_block_byte_count = data_blocks_.back().byteSize;
+		// 	byte_count += data_block_byte_count;
+		// 	TLOG(TLVL_DEBUG + 6) << "Found ROC fragment #" << static_cast<int>(roc_fragi) << " block of byte_count " << data_block_byte_count << " 0x" << 
+		// 		std::hex << data_block_byte_count << " (i.e., " << std::dec << 
+		// 		data_block_byte_count/16 << " fragment packets).";
+	}
+}
+
 void DTCLib::DTC_SubEvent::SetEventWindowTag(DTC_EventWindowTag const& tag)
 {
 	uint64_t tag_word = tag.GetEventWindowTag(true);
