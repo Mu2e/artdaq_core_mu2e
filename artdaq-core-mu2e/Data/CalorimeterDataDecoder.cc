@@ -200,6 +200,11 @@ namespace mu2e {
       return output;
     }
 
+    if(dataBlock->GetHeader()->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter) {
+      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : this block is from different subsystem: " << dataBlock->GetHeader()->GetSubsystem();
+      return output;
+    }
+
     DTCLib::DTC_DataHeaderPacket* blockHeader = dataBlock->GetHeader().get();
     size_t blockSize = dataBlock->byteSize;
     size_t nPackets = blockHeader->GetPacketCount();
@@ -312,6 +317,47 @@ namespace mu2e {
 
     if (dataSize%4 != 0){ //Data not multiple of 32-bit words
       TLOG(TLVL_WARNING) << "CalorimeterDataDecoder::GetCalorimeterCountersData : data size (" << dataSize << ") is not multiple of 32-bit";
+      return output;
+    }
+    
+    uint16_t nCounters = dataSize / 4;
+    //Create output 
+    output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterCountersDataPacket(), std::vector<uint32_t>(nCounters));
+    output->back().first.numberOfCounters = nCounters;
+
+    //Get data in 32-bit words
+    auto data32bitPtr = reinterpret_cast<const uint32_t *>(blockDataPtr);
+    for (uint word=0; word<nCounters; word++){
+      output->back().second[word] = (*(data32bitPtr + word));
+    }
+
+    return output;
+  }
+
+
+  // Get EmulatedROC Counters Data Packet
+  std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterCountersDataPacket, std::vector<uint32_t>>>* mu2e::CalorimeterDataDecoder::GetEmulatedCountersData(size_t blockIndex) const
+  {
+    std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterCountersDataPacket, std::vector<uint32_t>>> *output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterCountersDataPacket, std::vector<uint32_t>>>();
+  
+    // get data block at given index
+    DTCLib::DTC_DataBlock const * dataBlock = dataAtBlockIndex(blockIndex);
+    if (dataBlock == nullptr) return output;
+
+    DTCLib::DTC_DataHeaderPacket* blockHeader = dataBlock->GetHeader().get();
+    size_t blockSize = dataBlock->byteSize;
+    size_t nPackets = blockHeader->GetPacketCount();
+    size_t dataSize = blockSize - 16;
+
+    auto blockDataPtr = dataBlock->GetData();
+
+    if (nPackets == 0){ //Empty packet
+      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetEmulatedCountersData : no packets -- disabled ROC?";
+      return output;
+    }
+
+    if (dataSize%4 != 0){ //Data not multiple of 32-bit words
+      TLOG(TLVL_WARNING) << "CalorimeterDataDecoder::GetEmulatedCountersData : data size (" << dataSize << ") is not multiple of 32-bit";
       return output;
     }
     

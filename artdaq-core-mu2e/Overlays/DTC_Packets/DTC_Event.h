@@ -84,20 +84,32 @@ public:
 		for (size_t ii = 0; ii < sub_events_.size(); ++ii)
 		{
 			if (sub_events_[ii].GetDTCID() == dtc && sub_events_[ii].GetSubsystem() == static_cast<uint8_t>(subsys))
-                return &sub_events_[ii];
+				return &sub_events_[ii];
 		}
 		return nullptr;
 	}
 
 	std::vector<DTC_SubEvent> GetSubsystemData(DTC_Subsystem subsys) const {
 		std::vector<DTC_SubEvent> output;
-
 		for(auto& subevt : sub_events_) {
-			if(subevt.GetSubsystem() == subsys) {
+			if(subevt.HasSubsystem(subsys)) {
 				output.push_back(subevt);
 			}
 		}
+		return output;
+	}
 
+	std::vector<DTC_DataBlock> GetSubsystemBlocks(DTC_Subsystem subsys) const {
+		std::vector<DTC_DataBlock> output;
+		for(auto& subevt : sub_events_) {
+			if(subevt.HasSubsystem(subsys)) {
+				for(auto& datablock : subevt.GetDataBlocks()) {
+					if(datablock.GetHeader()->GetSubsystem() == subsys) {
+						output.push_back(datablock);
+					}
+				}
+			}
+		}
 		return output;
 	}
 
