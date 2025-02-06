@@ -78,15 +78,8 @@ void DTCLib::DTC_SubEvent::SetupSimEvent(DTC_EventWindowTag const& tag, DTC_Even
 		*((uint16_t *)(&(ptr[4*2]))) = tag.GetEventWindowTag(true)>>16; //packet count
 		*((uint16_t *)(&(ptr[5*2]))) = tag.GetEventWindowTag(true)>>32; //packet count
 	
-
-		// std::shared_ptr<DTC_DataHeaderPacket> GetHeader()
-		// data_blocks_.emplace_back(static_cast<const void*>(ptr));
-		// 	auto data_block_byte_count = data_blocks_.back().byteSize;
-		// 	byte_count += data_block_byte_count;
-		// 	TLOG(TLVL_DEBUG + 6) << "Found ROC fragment #" << static_cast<int>(roc_fragi) << " block of byte_count " << data_block_byte_count << " 0x" << 
-		// 		std::hex << data_block_byte_count << " (i.e., " << std::dec << 
-		// 		data_block_byte_count/16 << " fragment packets).";
-	}
+		ptr += 16*1 + 16*packets_this_roc; //move ptr past ROC header + data
+	} //end ROC loop
 }
 
 void DTCLib::DTC_SubEvent::SetEventWindowTag(DTC_EventWindowTag const& tag)
