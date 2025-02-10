@@ -50,7 +50,7 @@ DTCLib::DTC_DCSRequestPacket::DTC_DCSRequestPacket(DTC_DataPacket in)
 		data2_ = in.GetData()[12] + (in.GetData()[13] << 8);
 	}
 
-	std::cout << "Constructor copy: " << toJSON() << std::endl;
+	TLOG(TLVL_TRACE) << "Constructor copy: " << toJSON() << std::endl;
 }
 
 std::string DTCLib::DTC_DCSRequestPacket::toJSON()
