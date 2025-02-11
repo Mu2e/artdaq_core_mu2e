@@ -12,6 +12,7 @@ struct DTC_EventMode
 	uint8_t mode2{0};
 	uint8_t mode3{0};
 	uint8_t mode4{0};
+	uint8_t deliveryRingTDC{0};
 
 	void GetEventMode(const uint8_t* arr, size_t start = 0) const
 	{
@@ -22,9 +23,10 @@ struct DTC_EventMode
 		const_cast<uint8_t*>(arr)[start + 4] = mode4;
 	}
 	
-	bool isOnSpillFlagSet() const 			{return mode4 & 1;}
-	bool isSubRunBitSet() const 			{return mode4 & 2;}
-	bool isPredictiveSubRunBitSet() const 	{return mode4 & 4;}
+	bool 	isOnSpillFlagSet() const 			{return mode4 & 1;}
+	bool 	isSubRunBitSet() const 				{return mode4 & 2;}
+	bool 	isPredictiveSubRunBitSet() const 	{return mode4 & 4;}
+	uint8_t getDeliveryRingTDC() const 			{return deliveryRingTDC; /* could be a more complex conversion in the future */}
 };
 
 }  // namespace DTCLib
