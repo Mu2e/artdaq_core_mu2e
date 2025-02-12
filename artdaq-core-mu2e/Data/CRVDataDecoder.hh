@@ -109,7 +109,7 @@ public:
         typedef std::pair<CRVHitInfo,CRVHitWaveform> CRVHit;
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
-	std::vector<CRVHit> GetCRVHits(size_t blockIndex) const;
+        bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
 
 };
   using CRVDataDecoders = std::vector<CRVDataDecoder>;
