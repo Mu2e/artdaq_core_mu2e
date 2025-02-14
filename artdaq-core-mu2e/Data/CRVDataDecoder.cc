@@ -10,26 +10,26 @@ std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacket> mu2e::CRVDataDecoder::
 	return output;
 }
 
-std::vector<mu2e::CRVDataDecoder::CRVHit> mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex) const
+bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDataDecoder::CRVHit> &crvHits) const
 {
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return std::vector<CRVHit>();
+        crvHits.clear();
+        auto dataPtr = dataAtBlockIndex(blockIndex);
+        if (dataPtr == nullptr) return false;
 
-	auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
+        auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
         size_t eventSize = 2*crvRocHdr->ControllerEventWordCount;
         size_t pos = sizeof(CRVROCStatusPacket);
 
-        std::vector<mu2e::CRVDataDecoder::CRVHit> output;
         while(pos<eventSize)
         {
-          output.resize(output.size()+1);
+          crvHits.resize(crvHits.size()+1);
 
-	  memcpy(&output.back().first, reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, sizeof(CRVHitInfo));
+          memcpy(&crvHits.back().first, reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, sizeof(CRVHitInfo));
           pos += sizeof(CRVHitInfo);
 
-          size_t nWaveformSamples = output.back().first.NumSamples;
-          output.back().second.resize(nWaveformSamples);
-	  memcpy(&output.back().second[0], reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, nWaveformSamples*sizeof(CRVHitWaveformSample));
+          size_t nWaveformSamples = crvHits.back().first.NumSamples;
+          crvHits.back().second.resize(nWaveformSamples);
+          memcpy(&crvHits.back().second[0], reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, nWaveformSamples*sizeof(CRVHitWaveformSample));
           pos += sizeof(CRVHitWaveformSample)*nWaveformSamples;
 
           if(pos>eventSize)
@@ -40,8 +40,11 @@ std::vector<mu2e::CRVDataDecoder::CRVHit> mu2e::CRVDataDecoder::GetCRVHits(size_
             std::cerr << "TriggerCount " << crvRocHdr->TriggerCount << std::endl;
             std::cerr << "EventWindowTag " << crvRocHdr->GetEventWindowTag() << std::endl;
             std::cerr << "************************************************" << std::endl;
+
+            crvHits.clear();
+            return false;
           }
         }
 
-	return output;
+        return true;
 }
