@@ -5,6 +5,9 @@
 #include <iomanip>
 #include <sstream>
 
+// For generated DTC_SubEvent objects
+#define CURRENT_SUBEVENT_FORMAT_VERSION 1
+
 namespace DTCLib {
 
 struct DTC_SubEventHeader
@@ -21,7 +24,14 @@ struct DTC_SubEventHeader
 	uint64_t partition_id : 8;
 	uint64_t evb_mode : 8;
 	uint64_t source_dtc_id : 8;
-	uint64_t reserved2 : 32;
+
+	uint64_t link0_subsystem : 3;
+	uint64_t link1_subsystem : 3;
+	uint64_t link2_subsystem : 3;
+	uint64_t link3_subsystem : 3;
+	uint64_t link4_subsystem : 3;
+	uint64_t link5_subsystem : 3;
+	uint64_t reserved2 : 14;
 
 	uint64_t link0_status : 8;
 	uint64_t link1_status : 8;
@@ -53,6 +63,12 @@ struct DTC_SubEventHeader
 		, partition_id(0)
 		, evb_mode(0)
 		, source_dtc_id(0)
+		, link0_subsystem(0)
+		, link1_subsystem(0)
+		, link2_subsystem(0)
+		, link3_subsystem(0)
+		, link4_subsystem(0)
+		, link5_subsystem(0)
 		, reserved2(0)
 		, link0_status(0)
 		, link1_status(0)
@@ -60,7 +76,7 @@ struct DTC_SubEventHeader
 		, link3_status(0)
 		, link4_status(0)
 		, link5_status(0)
-		, subevent_format_version(0)
+		, subevent_format_version(CURRENT_SUBEVENT_FORMAT_VERSION)
 		, emtdc(0)
 		, link4_drp_rx_latency(0)
 		, link5_drp_rx_latency(0)
@@ -80,11 +96,17 @@ struct DTC_SubEventHeader
 		oss << ",\n\t\"event_tag_low\": " << event_tag_low;
 		oss << ",\n\t\"event_tag_high\": " << event_tag_high;
 		oss << ",\n\t\"num_rocs\": " << num_rocs;
-		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode;
+		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode << std::dec;
 		oss << ",\n\t\"dtc_mac\": " << dtc_mac;
 		oss << ",\n\t\"partition_id\": " << partition_id;
 		oss << ",\n\t\"evb_mode\": " << evb_mode;
 		oss << ",\n\t\"source_dtc_id\": " << source_dtc_id;
+		oss << ",\n\t\"link0_subsystem\": " << link0_subsystem;
+		oss << ",\n\t\"link1_subsystem\": " << link1_subsystem;
+		oss << ",\n\t\"link2_subsystem\": " << link2_subsystem;
+		oss << ",\n\t\"link3_subsystem\": " << link3_subsystem;
+		oss << ",\n\t\"link4_subsystem\": " << link4_subsystem;
+		oss << ",\n\t\"link5_subsystem\": " << link5_subsystem;
 		oss << ",\n\t\"link0_status\": " << link0_status;
 		oss << ",\n\t\"link1_status\": " << link1_status;
 		oss << ",\n\t\"link2_status\": " << link2_status;

@@ -84,7 +84,6 @@ public:
 private:
 	DTC_EventWindowTag event_tag_;
 	DTC_EventMode eventMode_;
-	uint8_t deliveryRingTDC_;
 };
 
 }  // namespace DTCLib

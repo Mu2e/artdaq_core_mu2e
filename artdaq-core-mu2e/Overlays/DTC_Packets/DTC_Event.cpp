@@ -9,7 +9,7 @@ DTCLib::DTC_Event::DTC_Event(const void* data)
 	: header_(), sub_events_(), buffer_ptr_(data)
 {
 	memcpy(&header_, data, sizeof(header_));
-	TLOG(TLVL_TRACE) << "Header of DTC_Event created, copy in data and call SetupEvent to finalize";
+	TLOG(TLVL_TRACE) << "Header of DTC_Event " << GetEventWindowTag().GetEventWindowTag(true) << " created, copy in data and call SetupEvent to finalize";
 }
 
 DTCLib::DTC_Event::DTC_Event(size_t data_size)
@@ -33,6 +33,7 @@ void DTCLib::DTC_Event::SetupEvent()
 		{
 			sub_events_.emplace_back(ptr);
 			sub_events_.back().SetupSubEvent();
+			ptr += sub_events_.back().GetSubEventByteCount();
 			byte_count += sub_events_.back().GetSubEventByteCount();
 			if(sub_events_.back().GetSubEventByteCount() == 0)
 			{
@@ -88,11 +89,12 @@ void DTCLib::DTC_Event::UpdateHeader()
 		sub_evt.UpdateHeader();
 		header_.inclusive_event_byte_count += sub_evt.GetSubEventByteCount();
 	}
-	TLOG(TLVL_TRACE) << "Inclusive Event Byte Count is now " << header_.inclusive_event_byte_count;
+	TLOG(TLVL_TRACE) << "Inclusive Event Byte Count is now " << header_.inclusive_event_byte_count << " for event " << GetEventWindowTag().GetEventWindowTag(true);
 }
 
 void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 {
+	TLOG(TLVL_TRACE) << "Updating header byte counts";
 	UpdateHeader();
 
 	if (header_.inclusive_event_byte_count + sizeof(uint64_t) + (includeDMAWriteSize ? sizeof(uint64_t) : 0) < MAX_DMA_SIZE) {
@@ -100,14 +102,19 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 		auto pos = o.tellp();
 		Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, header_.inclusive_event_byte_count, pos, false);
 
+        TLOG(TLVL_TRACE) << "Writing DTC_EventHeader for event " << GetEventWindowTag().GetEventWindowTag(true) << " sz=" << sizeof(DTC_EventHeader);
 		o.write(reinterpret_cast<const char*>(&header_), sizeof(DTC_EventHeader));
 
 		for (auto& subevt : sub_events_)
 		{
+			TLOG(TLVL_TRACE) << "Writing DTC_SubEventHeader for DTC " << static_cast<int>(subevt.GetDTCID()) << " sz=" << sizeof(DTC_SubEventHeader);
 			o.write(reinterpret_cast<const char*>(subevt.GetHeader()), sizeof(DTC_SubEventHeader));
+			auto ii = 0;
 			for (auto& blk : subevt.GetDataBlocks())
 			{
+				TLOG(TLVL_TRACE) << "Writing Data Block " << ii << ", roc=" << blk.GetHeader()->GetLinkID() << ", sz=" << blk.byteSize;
 				o.write(static_cast<const char*>(blk.blockPointer), blk.byteSize);
+				++ii;
 			}
 		}
 	}

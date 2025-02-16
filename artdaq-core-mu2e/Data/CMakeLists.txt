@@ -1,21 +1,21 @@
 cet_make_library(
-SOURCE 
-EventHeader.cc
-RunHeader.cc
-SubRunHeader.cc
-TimeStamp.cc
-Mu2eEventHeader.cc
-DTCDataDecoder.cc 
-CalorimeterDataDecoder.cc
-CRVDataDecoder.cc 
-TrackerDataDecoder.cc
-LIBRARIES PUBLIC
+  SOURCE 
+  EventHeader.cc
+  RunHeader.cc
+  SubRunHeader.cc
+  TimeStamp.cc
+  Mu2eEventHeader.cc
+  DTCDataDecoder.cc 
+  CalorimeterDataDecoder.cc
+  CRVDataDecoder.cc 
+  TrackerDataDecoder.cc
+  LIBRARIES PUBLIC
   artdaq_core_mu2e::artdaq-core-mu2e_Overlays
   )
 
 include(ArtDictionary)
 
-art_dictionary(DICTIONARY_LIBRARIES
+art_dictionary(NO_CHECK_CLASS_VERSION DICTIONARY_LIBRARIES
   artdaq_core_mu2e::artdaq-core-mu2e_Data
 )
 

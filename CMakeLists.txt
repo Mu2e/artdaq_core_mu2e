@@ -10,10 +10,11 @@ cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
 find_package(cetmodules)
 
-project(artdaq_core_mu2e VERSION 3.01.00)
+project(artdaq_core_mu2e VERSION 3.04.00)
 
 include(CetCMakeEnv)
 cet_cmake_env()
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 cet_set_compiler_flags(DIAGS VIGILANT
  WERROR

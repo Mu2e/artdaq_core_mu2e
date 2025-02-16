@@ -70,7 +70,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	{
 		header_.inclusive_subevent_byte_count += block.byteSize;
 	}
-	TLOG(TLVL_TRACE) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count;
+	TLOG(TLVL_TRACE) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
 void DTCLib::DTC_SubEvent::SetupSubEvent()
@@ -159,14 +159,12 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 
 			if(data_blocks_.back().GetHeader()->GetLinkID() != roc_fragi)
 			{
-				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Index, occurred while setting up a ROC #" << roc_fragi <<
-					" header packet.";
+				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Index, occurred while setting up a ROC header packet. Expected " << static_cast<int>(roc_fragi) << ", but data stream contained " << static_cast<int>(data_blocks_.back().GetHeader()->GetLinkID());
 				throw DTC_WrongPacketTypeException(roc_fragi, data_blocks_.back().GetHeader()->GetLinkID());		
 			}
 			if(data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true) != GetEventWindowTag().GetEventWindowTag(true))
 			{
-				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Event Tag, occurred while setting up a ROC #" << roc_fragi <<
-					" header packet.";
+				TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException, mismatch of ROC Event Tag, occurred while setting up a ROC #" << static_cast<int>(roc_fragi) << " header packet. Expected " << GetEventWindowTag().GetEventWindowTag(true) << ", but data stream contained " << data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true);
 				throw DTC_WrongPacketTypeException(GetEventWindowTag().GetEventWindowTag(true), data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true));		
 			}
 

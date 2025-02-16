@@ -14,14 +14,17 @@ size_t DTCLib::Utilities::WriteDMABufferSizeWords(std::ostream& output, bool inc
 	if (includeDMAWriteSize)
 	{
 		uint64_t dmaWriteSize = data_size + sizeof(uint64_t) + sizeof(uint64_t);
+		TLOG(TLVL_TRACE) << "Writing DMA Write Size (" << dmaWriteSize << ") for Detector Emulator";
 		output.write(reinterpret_cast<const char*>(&dmaWriteSize), sizeof(uint64_t));
 		bytes_written += sizeof(uint64_t);
 	}
 
 	uint64_t dmaSize = data_size + sizeof(uint64_t);
+	TLOG(TLVL_TRACE) << "Writing DMA Size (" << dmaSize << ")";
 	output.write(reinterpret_cast<const char*>(&dmaSize), sizeof(uint64_t));
 	bytes_written += sizeof(uint64_t);
 	if (restore_pos) {
+		TLOG(TLVL_TRACE) << "Reverting write pointer";
 		output.seekp(pos_save);
 	}
 	return bytes_written;
