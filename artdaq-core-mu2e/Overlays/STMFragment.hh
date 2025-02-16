@@ -28,12 +28,12 @@ namespace mu2e {
   class STMFragment
   {
   public:
-    
+
     //static const fw_tHdr tHdr;
-    
+
     explicit STMFragment(artdaq::Fragment const& f)
       : artdaq_fragment_(f) {}
-        
+
     int16_t const* GetTHdr() const {
       return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
     }
@@ -46,7 +46,7 @@ namespace mu2e {
      int16_t const* DataType() const {
        //return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.ZSflag_PreVal);
        //return reinterpret_cast<int16_t const*>(GetTHdr()+22);
-       
+
        // Dont have data type in Header yet for now assume it is Raw data
        return reinterpret_cast<int16_t const*>(GetTHdr()+22);
      }
@@ -59,7 +59,7 @@ namespace mu2e {
     int16_t const* DataBegin() const {
       return reinterpret_cast<int16_t const*>(GetTHdr()+32);
     }
-    
+
   private:
     artdaq::Fragment const& artdaq_fragment_;
   };
