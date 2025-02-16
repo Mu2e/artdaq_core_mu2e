@@ -201,7 +201,7 @@ namespace mu2e {
     }
 
     if(dataBlock->GetHeader()->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter) {
-      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : this block is from different subsystem: " << dataBlock->GetHeader()->GetSubsystem();
+      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : this block is from different subsystem: " << dataBlock->GetHeader()->GetSubsystem() << ", skipping...";
       return output;
     }
 
@@ -213,7 +213,7 @@ namespace mu2e {
     auto blockDataPtr = dataBlock->GetData();
 
     if (nPackets == 0){ //Empty packet
-      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : no packets in block " << blockIndex << " -- disabled ROC?\n";
+      TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : no packets in block " << blockIndex << " -- disabled ROC?\n";
       return output;
     }
     
@@ -224,7 +224,7 @@ namespace mu2e {
       
       //Make sure first word is 0xAAA
       if (reader[0] != 0xAAA){
-        TLOG(TLVL_ERROR) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : in block " << blockIndex << " hit " << output->size() << " BeginMarker is " << std::hex << reader[0] << std::dec << " instead of 0xAAA\n";
+        TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : in block " << blockIndex << " hit " << output->size() << " BeginMarker is " << std::hex << reader[0] << std::dec << " instead of 0xAAA\n";
         //Return minimal hit and stop decoding this ROC
         output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
         output->back().first.BeginMarker = reader[0];
@@ -243,7 +243,7 @@ namespace mu2e {
 
       //0xFFF not found
       if (lastSampleMarkerIndex == -1){
-        TLOG(TLVL_ERROR) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : LastSampleMarker 0xFFF not found in the payload!" << std::endl;
+        TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : LastSampleMarker 0xFFF not found in the payload!" << std::endl;
         //Return minimal hit and stop decoding this ROC
         output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
         output->back().first.LastSampleMarker = 0;
@@ -275,7 +275,7 @@ namespace mu2e {
 
       //Waveform reading check
       if (output->back().first.NumberOfSamples != nSamples){
-        TLOG(TLVL_ERROR) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : "
+        TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : "
                          << "in block " << blockIndex << " hit " << output->size()
                          << " NumberOfSamples is " << output->back().first.NumberOfSamples
                          << " but waveform is " << nSamples << " samples long\n";
@@ -311,7 +311,7 @@ namespace mu2e {
     auto blockDataPtr = dataBlock->GetData();
 
     if (nPackets == 0){ //Empty packet
-      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterCountersData : no packets -- disabled ROC?";
+      TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterCountersData : no packets -- disabled ROC?";
       return output;
     }
 
@@ -352,7 +352,7 @@ namespace mu2e {
     auto blockDataPtr = dataBlock->GetData();
 
     if (nPackets == 0){ //Empty packet
-      TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetEmulatedCountersData : no packets -- disabled ROC?";
+      TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetEmulatedCountersData : no packets -- disabled ROC?";
       return output;
     }
 
