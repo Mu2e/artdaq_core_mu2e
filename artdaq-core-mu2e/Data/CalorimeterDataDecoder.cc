@@ -271,7 +271,7 @@ namespace mu2e {
       output->back().first.ErrorFlags = reader[lastSampleMarkerIndex+1];
       output->back().first.Time = reader[lastSampleMarkerIndex+2] | (reader[lastSampleMarkerIndex+3] << 12) ;
       output->back().first.IndexOfMaxDigitizerSample = reader[lastSampleMarkerIndex+4];
-      output->back().first.NumberOfSamples = reader[lastSampleMarkerIndex+5];    
+      output->back().first.NumberOfSamples = reader[lastSampleMarkerIndex+5];
 
       //Waveform reading check
       if (output->back().first.NumberOfSamples != nSamples){
@@ -282,12 +282,10 @@ namespace mu2e {
         return output;
       }
 
-      //Advance to the next 16-byte packet
+      //Advance to the next packet
       size_t totalWordsRead = lastSampleMarkerIndex+6;
-      size_t nTwoPacketsRead = totalWordsRead/21; //There are 21 12-bit words every 2 packets
-      float nBytesRead = totalWordsRead*1.5 + (0.5*nTwoPacketsRead); //12 bits for every word + 4 extra bits every 2 packets
-      uint8_t hitPackets = uint8_t(std::ceil(nBytesRead/16)); //number of 16-byte packets this hit occupied
-      blockPos += hitPackets*16; //advance by 16 bytes per packet
+      size_t nTwoPacketsRead = int(std::ceil(float(totalWordsRead)/21.)); //There are 21 12-bit words every 2 packets
+      blockPos += nTwoPacketsRead*32; //32 bytes per 2 packets;
     }
 
     return output;
