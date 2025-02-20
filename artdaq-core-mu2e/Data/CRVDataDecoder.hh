@@ -137,8 +137,8 @@ public:
                 uint16_t PLL : 4;
                 uint16_t CRC : 8;
 
-                uint16_t injectionTime;
                 uint16_t injectionWindow;
+                uint16_t injectionTime;
                 uint16_t word7;
 
 		CRVGlobalRunInfo()
@@ -150,8 +150,8 @@ public:
 			, unused(0)
 			, PLL(0)
 			, CRC(0)
-			, injectionTime(0)
 			, injectionWindow(0)
+			, injectionTime(0)
 			, word7(0)
 		{}
         };
@@ -167,13 +167,15 @@ public:
            CRVROCStatusPacket    _ROCstatus;
            CRVGlobalRunInfo      _globalRunInfo;
            CRVGlobalRunPayload   _globalRunPayload;
+
            CRVGlobalRunData() : _ROCstatus(), _globalRunInfo(), _globalRunPayload() {}
+
            CRVGlobalRunData(const CRVROCStatusPacket &ROCstatus, const CRVGlobalRunInfo &globalRunInfo, const CRVGlobalRunPayload &globalRunPayload) :
                             _ROCstatus(ROCstatus), _globalRunInfo(globalRunInfo), _globalRunPayload(globalRunPayload) {}
         };
         typedef std::vector<CRVGlobalRunData> CRVGlobalRunDataCollection;
 
-        //access functions (used for CrvDigis and GlobalRun
+        //access functions (used for CrvDigis and GlobalRun)
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
         bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
