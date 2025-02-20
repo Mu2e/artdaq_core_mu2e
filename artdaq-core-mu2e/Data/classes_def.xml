@@ -24,4 +24,17 @@
   <class name="std::vector<mu2e::CRVDataDecoder>" />
   <class name="art::Wrapper<std::vector<mu2e::CRVDataDecoder>>"/>
 
+  <class name="mu2e::CRVDataDecoder::CRVGlobalRunDataCollection" />
+  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunDataCollection>" />
+  <class name="std::vector<mu2e::CRVDataDecoder::CRVGlobalRunData>" />
+  <class name="art::Wrapper<std::vector<mu2e::CRVDataDecoder::CRVGlobalRunData>>" />
+  <class name="mu2e::CRVDataDecoder::CRVGlobalRunData" />
+  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunData>" />
+  //<class name="mu2e::CRVDataDecoder::CRVGlobalRunPayload" />
+  //<class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunPayload>" />
+  <class name="mu2e::CRVDataDecoder::CRVGlobalRunInfo" />
+  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunInfo>" />
+  <class name="mu2e::CRVDataDecoder::CRVROCStatusPacket" />
+  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVROCStatusPacket>" />
+
 </lcgdict>
