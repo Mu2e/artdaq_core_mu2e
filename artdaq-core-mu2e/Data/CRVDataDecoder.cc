@@ -1,5 +1,6 @@
 #include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
 
+//for CrvDigis and global run
 std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacket> mu2e::CRVDataDecoder::GetCRVROCStatusPacket(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
@@ -10,6 +11,7 @@ std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacket> mu2e::CRVDataDecoder::
 	return output;
 }
 
+//for CrvDigis
 bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDataDecoder::CRVHit> &crvHits) const
 {
         crvHits.clear();
@@ -44,6 +46,42 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
             crvHits.clear();
             return false;
           }
+        }
+
+        return true;
+}
+
+//for global run
+bool mu2e::CRVDataDecoder::GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const
+{
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return false;
+
+        auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
+        size_t eventSize = 2*crvRocHdr->ControllerEventWordCount;
+        if(sizeof(CRVROCStatusPacket)+sizeof(CRVGlobalRunInfo)>eventSize) return false;
+
+        memcpy(&globalRunInfo, reinterpret_cast<const uint8_t*>(dataPtr->GetData())+sizeof(CRVROCStatusPacket), sizeof(CRVGlobalRunInfo));
+        return true;
+}
+
+bool mu2e::CRVDataDecoder::GetCRVGlobalRunPayload(size_t blockIndex, std::vector<uint16_t> &globalRunPayload) const
+{
+        globalRunPayload.clear();
+        auto dataPtr = dataAtBlockIndex(blockIndex);
+        if (dataPtr == nullptr) return false;
+
+        auto crvRocHdr = reinterpret_cast<CRVROCStatusPacket const*>(dataPtr->GetData());
+        size_t eventSize = 2*crvRocHdr->ControllerEventWordCount;
+        size_t pos = sizeof(CRVROCStatusPacket)+sizeof(CRVGlobalRunInfo);
+        if(pos>eventSize) return false;
+
+        size_t payloadSize = (eventSize-pos)/2;
+        globalRunPayload.resize(payloadSize);
+        for(size_t i=0; i<payloadSize; ++i)
+        {
+          memcpy(&globalRunPayload.at(i), reinterpret_cast<const uint8_t*>(dataPtr->GetData())+pos, sizeof(uint16_t));
+          pos+=sizeof(uint16_t);
         }
 
         return true;
