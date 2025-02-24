@@ -18,9 +18,9 @@ enum DTC_DCSOperationType : uint8_t
 	DTC_DCSOperationType_BlockWrite = 3,
 	DTC_DCSOperationType_DoubleRead = 4,
 	DTC_DCSOperationType_DoubleWrite = 5,
-	DTC_DCSOperationType_InvalidS2C = 0xC, //1100 would otherwise be nonsense "ack of double read"
-	DTC_DCSOperationType_Timeout = 0xE, //1110 would otherwise be nonsense "ack of double block read"
-	DTC_DCSOperationType_Unknown = 0xF //reserved for software use as 'Unknown,' would otherwise be nonsense "ack of double block write"
+	DTC_DCSOperationType_InvalidS2C = 0xC,  // 1100 would otherwise be nonsense "ack of double read"
+	DTC_DCSOperationType_Timeout = 0xE,     // 1110 would otherwise be nonsense "ack of double block read"
+	DTC_DCSOperationType_Unknown = 0xF      // reserved for software use as 'Unknown,' would otherwise be nonsense "ack of double block write"
 };
 
 /// <summary>
@@ -99,7 +99,6 @@ struct DTC_DCSOperationTypeConverter
 		return stream;
 	}
 };
-
 
 }  // namespace DTCLib
 

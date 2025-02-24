@@ -5,17 +5,17 @@
 #include <iomanip>
 #include <sstream>
 
-CFOLib::CFO_DMAPacket::CFO_DMAPacket(CFO_PacketType type, 
-	//DTC_Link_ID link, 
-	uint16_t byteCount, bool valid
-	//, uint8_t subsystemID, uint8_t hopCount
-	)
-	: byteCount_(byteCount), valid_(valid), 
-	//subsystemID_(subsystemID), 
-	//linkID_(link), 
+CFOLib::CFO_DMAPacket::CFO_DMAPacket(CFO_PacketType type,
+									 // DTC_Link_ID link,
+									 uint16_t byteCount, bool valid
+									 //, uint8_t subsystemID, uint8_t hopCount
+									 )
+	: byteCount_(byteCount), valid_(valid),
+	// subsystemID_(subsystemID),
+	// linkID_(link),
 	packetType_(type)
-	//, hopCount_(hopCount) 
-	{}
+//, hopCount_(hopCount)
+{}
 
 CFOLib::CFO_DataPacket CFOLib::CFO_DMAPacket::ConvertToDataPacket() const
 {
@@ -25,9 +25,9 @@ CFOLib::CFO_DataPacket CFOLib::CFO_DMAPacket::ConvertToDataPacket() const
 	auto word0B = static_cast<uint8_t>(byteCount_ >> 8);
 	output.SetByte(0, word0A);
 	output.SetByte(1, word0B);
-	auto word1A = 0; //static_cast<uint8_t>(hopCount_ & 0xF);
+	auto word1A = 0;  // static_cast<uint8_t>(hopCount_ & 0xF);
 	word1A += static_cast<uint8_t>(packetType_) << 4;
-	uint8_t word1B = //static_cast<uint8_t>(linkID_ & 0x7) + 
+	uint8_t word1B =  // static_cast<uint8_t>(linkID_ & 0x7) +
 		(valid_ ? 0x80 : 0x0)
 		// + ((subsystemID_ & 0x7) << 4);
 		;
@@ -38,7 +38,7 @@ CFOLib::CFO_DataPacket CFOLib::CFO_DMAPacket::ConvertToDataPacket() const
 		output.SetByte(i, 0);
 	}
 
-	//std::cout << "ConvertToDataPacket: \n"
+	// std::cout << "ConvertToDataPacket: \n"
 	//		  << output.toPacketFormat() << std::endl;
 
 	return output;
@@ -50,7 +50,7 @@ CFOLib::CFO_DMAPacket::CFO_DMAPacket(const CFO_DataPacket in)
 	// uint8_t hopCount = word2 & 0xF;
 	uint8_t packetType = word2 >> 4;
 	auto word3 = in.GetData()[3];
-	//uint8_t linkID = word3 & 0xF;
+	// uint8_t linkID = word3 & 0xF;
 	valid_ = (word3 & 0x80) == 0x80;
 	// subsystemID_ = (word3 >> 4) & 0x7;
 
@@ -83,11 +83,11 @@ std::string CFOLib::CFO_DMAPacket::headerPacketFormat() const
 	std::stringstream ss;
 	ss << std::setfill('0') << std::hex;
 	ss << "0x" << std::setw(6) << ((byteCount_ & 0xFF00) >> 8) << "\t"
-		<< "0x" << std::setw(6) << (byteCount_ & 0xFF) << std::endl;
+	   << "0x" << std::setw(6) << (byteCount_ & 0xFF) << std::endl;
 	ss << std::setw(1) << static_cast<int>(valid_) << " "
-		//<< std::setw(2) << std::dec << static_cast<int>(subsystemID_) << std::hex << " "
-		//<< "0x" << std::setw(2) << linkID_ 
-		<< "\t";
+	   //<< std::setw(2) << std::dec << static_cast<int>(subsystemID_) << std::hex << " "
+	   //<< "0x" << std::setw(2) << linkID_
+	   << "\t";
 	ss << "0x" << std::setw(2) << packetType_ << "0x" << std::setw(2) << 0 << std::endl;
 	return ss.str();
 }

@@ -29,7 +29,7 @@ public:
 	DTC_Event()
 		: header_(), sub_events_(), buffer_ptr_(nullptr) {}
 
-	static const int MAX_DMA_SIZE = 0x8000;	// 32k
+	static const int MAX_DMA_SIZE = 0x8000;  // 32k
 
 	void SetupEvent();
 	size_t GetEventByteCount() const { return header_.inclusive_event_byte_count; }
@@ -89,22 +89,30 @@ public:
 		return nullptr;
 	}
 
-	std::vector<DTC_SubEvent> GetSubsystemData(DTC_Subsystem subsys) const {
+	std::vector<DTC_SubEvent> GetSubsystemData(DTC_Subsystem subsys) const
+	{
 		std::vector<DTC_SubEvent> output;
-		for(auto& subevt : sub_events_) {
-			if(subevt.HasSubsystem(subsys)) {
+		for (auto& subevt : sub_events_)
+		{
+			if (subevt.HasSubsystem(subsys))
+			{
 				output.push_back(subevt);
 			}
 		}
 		return output;
 	}
 
-	std::vector<DTC_DataBlock> GetSubsystemBlocks(DTC_Subsystem subsys) const {
+	std::vector<DTC_DataBlock> GetSubsystemBlocks(DTC_Subsystem subsys) const
+	{
 		std::vector<DTC_DataBlock> output;
-		for(auto& subevt : sub_events_) {
-			if(subevt.HasSubsystem(subsys)) {
-				for(auto& datablock : subevt.GetDataBlocks()) {
-					if(datablock.GetHeader()->GetSubsystem() == subsys) {
+		for (auto& subevt : sub_events_)
+		{
+			if (subevt.HasSubsystem(subsys))
+			{
+				for (auto& datablock : subevt.GetDataBlocks())
+				{
+					if (datablock.GetHeader()->GetSubsystem() == subsys)
+					{
 						output.push_back(datablock);
 					}
 				}

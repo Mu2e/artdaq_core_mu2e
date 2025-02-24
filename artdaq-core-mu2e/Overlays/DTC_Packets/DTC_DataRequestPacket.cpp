@@ -5,11 +5,11 @@
 #include "TRACE/tracemf.h"
 
 DTCLib::DTC_DataRequestPacket::DTC_DataRequestPacket(DTC_Link_ID link, bool debug, uint16_t debugPacketCount,
-	DTC_DebugType type)
+													 DTC_DebugType type)
 	: DTC_DMAPacket(DTC_PacketType_DataRequest, link), event_tag_(), debug_(debug), debugPacketCount_(debugPacketCount), type_(type) {}
 
 DTCLib::DTC_DataRequestPacket::DTC_DataRequestPacket(DTC_Link_ID link, DTC_EventWindowTag event_tag, bool debug,
-	uint16_t debugPacketCount, DTC_DebugType type)
+													 uint16_t debugPacketCount, DTC_DebugType type)
 	: DTC_DMAPacket(DTC_PacketType_DataRequest, link), event_tag_(event_tag), debug_(debug), debugPacketCount_(debugPacketCount), type_(type) {}
 
 DTCLib::DTC_DataRequestPacket::DTC_DataRequestPacket(DTC_DataPacket in)
@@ -47,9 +47,9 @@ std::string DTCLib::DTC_DataRequestPacket::toPacketFormat()
 	ss << event_tag_.toPacketFormat();
 	ss << "        \t        \n";
 	ss << "        \t0x" << std::setw(2) << static_cast<int>(type_) << "   " << std::setw(1) << static_cast<int>(debug_)
-		<< "\n";
+	   << "\n";
 	ss << "0x" << std::setw(6) << ((debugPacketCount_ & 0xFF00) >> 8) << "\t"
-		<< "0x" << std::setw(6) << (debugPacketCount_ & 0xFF) << "\n";
+	   << "0x" << std::setw(6) << (debugPacketCount_ & 0xFF) << "\n";
 	return ss.str();
 }
 
@@ -75,4 +75,3 @@ void DTCLib::DTC_DataRequestPacket::SetDebugPacketCount(uint16_t count)
 	}
 	debugPacketCount_ = count;
 }
-

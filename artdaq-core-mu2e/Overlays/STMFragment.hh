@@ -2,10 +2,10 @@
 #define MU2E_ARTDAQ_CORE_OVERLAYS_STMFRAGMENT_HH
 
 #include "artdaq-core/Data/Fragment.hh"
-//#include "STMDAQ-TestBeam/utils/Hex.hh"
-//#include "/home/mu2estm/STMDAQ-TestBeam/utils/dataVars.hh"
-// #include "STMDAQ-TestBeam/utils/xml.hh"
-// #include "STMDAQ-TestBeam/utils/EnvVars.hh"
+// #include "STMDAQ-TestBeam/utils/Hex.hh"
+// #include "/home/mu2estm/STMDAQ-TestBeam/utils/dataVars.hh"
+//  #include "STMDAQ-TestBeam/utils/xml.hh"
+//  #include "STMDAQ-TestBeam/utils/EnvVars.hh"
 
 // STM-TODO: this is for the simpler sim data we are sending
 // STM-TODO: will need to update to use the struct in dataVars.hh
@@ -25,44 +25,48 @@
 // };
 
 namespace mu2e {
-  class STMFragment
-  {
-  public:
+class STMFragment
+{
+public:
+	// static const fw_tHdr tHdr;
 
-    //static const fw_tHdr tHdr;
+	explicit STMFragment(artdaq::Fragment const& f)
+		: artdaq_fragment_(f) {}
 
-    explicit STMFragment(artdaq::Fragment const& f)
-      : artdaq_fragment_(f) {}
+	int16_t const* GetTHdr() const
+	{
+		return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
+	}
 
-    int16_t const* GetTHdr() const {
-      return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
-    }
+	int16_t const* EvNum() const
+	{
+		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvNum_0);
+		return reinterpret_cast<int16_t const*>(GetTHdr() + 8);
+	}
 
-     int16_t const* EvNum() const {
-       //return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvNum_0);
-       return reinterpret_cast<int16_t const*>(GetTHdr()+8);
-     }
+	int16_t const* DataType() const
+	{
+		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.ZSflag_PreVal);
+		// return reinterpret_cast<int16_t const*>(GetTHdr()+22);
 
-     int16_t const* DataType() const {
-       //return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.ZSflag_PreVal);
-       //return reinterpret_cast<int16_t const*>(GetTHdr()+22);
+		// Dont have data type in Header yet for now assume it is Raw data
+		return reinterpret_cast<int16_t const*>(GetTHdr() + 22);
+	}
 
-       // Dont have data type in Header yet for now assume it is Raw data
-       return reinterpret_cast<int16_t const*>(GetTHdr()+22);
-     }
+	int16_t const* EvLen() const
+	{
+		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvLen);
+		return reinterpret_cast<int16_t const*>(GetTHdr() + 23);
+	}
 
-     int16_t const* EvLen() const {
-       //return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvLen);
-       return reinterpret_cast<int16_t const*>(GetTHdr()+23);
-     }
+	int16_t const* DataBegin() const
+	{
+		return reinterpret_cast<int16_t const*>(GetTHdr() + 32);
+	}
 
-    int16_t const* DataBegin() const {
-      return reinterpret_cast<int16_t const*>(GetTHdr()+32);
-    }
-
-  private:
-    artdaq::Fragment const& artdaq_fragment_;
-  };
+private:
+	artdaq::Fragment const& artdaq_fragment_;
+};
 
 }  // namespace mu2e
 

@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-//Copied structure from DTC_SubEvent.cpp
+// Copied structure from DTC_SubEvent.cpp
 
 CFOLib::CFO_Event::CFO_Event(const void* data)
 	: record_()

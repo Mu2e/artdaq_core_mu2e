@@ -2,14 +2,11 @@
 
 #include "TRACE/tracemf.h"
 
-
 namespace DTCLib {
 
-[[maybe_unused]]
-inline TraceStreamer& operator<<(TraceStreamer& ts, DTC_Link_ID const& link)
+[[maybe_unused]] inline TraceStreamer& operator<<(TraceStreamer& ts, DTC_Link_ID const& link)
 {
 	return ts << static_cast<unsigned int>(link);
 }
 
 }  // namespace DTCLib
-
