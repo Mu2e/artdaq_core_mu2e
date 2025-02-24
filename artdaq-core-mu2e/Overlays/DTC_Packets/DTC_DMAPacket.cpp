@@ -26,7 +26,7 @@ DTCLib::DTC_DataPacket DTCLib::DTC_DMAPacket::ConvertToDataPacket() const
 		output.SetByte(i, 0);
 	}
 
-	//std::cout << "ConvertToDataPacket: \n"
+	// std::cout << "ConvertToDataPacket: \n"
 	//		  << output.toPacketFormat() << std::endl;
 
 	return output;
@@ -71,10 +71,10 @@ std::string DTCLib::DTC_DMAPacket::headerPacketFormat() const
 	std::stringstream ss;
 	ss << std::setfill('0') << std::hex;
 	ss << "0x" << std::setw(6) << ((byteCount_ & 0xFF00) >> 8) << "\t"
-		<< "0x" << std::setw(6) << (byteCount_ & 0xFF) << std::endl;
+	   << "0x" << std::setw(6) << (byteCount_ & 0xFF) << std::endl;
 	ss << std::setw(1) << static_cast<int>(valid_) << " "
-		<< std::setw(2) << std::dec << static_cast<int>(subsystemID_) << std::hex << " "
-		<< "0x" << std::setw(2) << linkID_ << "\t";
+	   << std::setw(2) << std::dec << static_cast<int>(subsystemID_) << std::hex << " "
+	   << "0x" << std::setw(2) << linkID_ << "\t";
 	ss << "0x" << std::setw(2) << static_cast<int>(packetType_) << "0x" << std::setw(2) << 0 << std::endl;
 	return ss.str();
 }

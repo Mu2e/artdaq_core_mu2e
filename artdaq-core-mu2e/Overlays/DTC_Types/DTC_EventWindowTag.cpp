@@ -45,7 +45,8 @@ std::string DTCLib::DTC_EventWindowTag::toJSON(bool arrayMode) const
 	{
 		uint8_t ts[6];
 		GetEventWindowTag(ts, 0);
-		ss << "\t\"timestamp\": [\n" << static_cast<int>(ts[0]) << ",\n";
+		ss << "\t\"timestamp\": [\n"
+		   << static_cast<int>(ts[0]) << ",\n";
 		ss << static_cast<int>(ts[1]) << ",\n";
 		ss << static_cast<int>(ts[2]) << ",\n";
 		ss << static_cast<int>(ts[3]) << ",\n";
@@ -61,7 +62,7 @@ std::string DTCLib::DTC_EventWindowTag::toJSON(bool arrayMode) const
 
 std::string DTCLib::DTC_EventWindowTag::toPacketFormat() const
 {
-	uint8_t ts[6]{0,0,0,0,0,0};
+	uint8_t ts[6]{0, 0, 0, 0, 0, 0};
 	GetEventWindowTag(ts, 0);
 	std::stringstream ss;
 	ss << std::setfill('0') << std::hex;

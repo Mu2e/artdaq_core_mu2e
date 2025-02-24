@@ -24,8 +24,9 @@ struct mu2e::DTCDataDecoder
 {
 	DTCDataDecoder() {}
 
-	explicit DTCDataDecoder(std::vector<uint8_t> const& data)
-		: data_(data) {
+	explicit DTCDataDecoder(std::vector<uint8_t> const &data)
+		: data_(data)
+	{
 	}
 
 	explicit DTCDataDecoder(DTCLib::DTC_SubEvent const &se)
@@ -34,28 +35,32 @@ struct mu2e::DTCDataDecoder
 		memcpy(&data_[0], se.GetHeader(), sizeof(DTCLib::DTC_SubEventHeader));
 		size_t offset = sizeof(DTCLib::DTC_SubEventHeader);
 
-		for(auto& bl : se.GetDataBlocks()) {
+		for (auto &bl : se.GetDataBlocks())
+		{
 			memcpy(&data_[0] + offset, bl.blockPointer, bl.byteSize);
 			offset += bl.byteSize;
 		}
-		
+
 		auto ptr = data_.data();
-		event_ = DTCLib::DTC_SubEvent(ptr);	
+		event_ = DTCLib::DTC_SubEvent(ptr);
 		event_.SetupSubEvent();
 		setup_ = true;
 	}
 
-	void setup_event() const {
+	void setup_event() const
+	{
 		auto ptr = data_.data();
-		event_ = DTCLib::DTC_SubEvent(ptr);	
+		event_ = DTCLib::DTC_SubEvent(ptr);
 		event_.SetupSubEvent();
 		setup_ = true;
-		}
+	}
 
 	// const getter functions for the data in the header
-	size_t block_count() const {
-	  if (!setup_) {setup_event();}
-	  return event_.GetDataBlockCount(); }
+	size_t block_count() const
+	{
+		if (!setup_) { setup_event(); }
+		return event_.GetDataBlockCount();
+	}
 
 	// Return size of block at given DataBlock index
 	size_t blockSizeBytes(size_t blockIndex) const
@@ -109,7 +114,7 @@ struct mu2e::DTCDataDecoder
 		std::cout << std::endl;
 		return;
 	}
-	
+
 	mutable bool setup_{false};
 	std::vector<uint8_t> data_;
 

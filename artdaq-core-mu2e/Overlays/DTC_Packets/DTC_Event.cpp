@@ -29,13 +29,13 @@ void DTCLib::DTC_Event::SetupEvent()
 	while (byte_count < header_.inclusive_event_byte_count)
 	{
 		TLOG(TLVL_DEBUG + 6) << "Current byte_count is " << byte_count << " / " << header_.inclusive_event_byte_count << ", creating sub event";
-		try 
+		try
 		{
 			sub_events_.emplace_back(ptr);
 			sub_events_.back().SetupSubEvent();
 			ptr += sub_events_.back().GetSubEventByteCount();
 			byte_count += sub_events_.back().GetSubEventByteCount();
-			if(sub_events_.back().GetSubEventByteCount() == 0)
+			if (sub_events_.back().GetSubEventByteCount() == 0)
 			{
 				auto ex = DTC_WrongPacketSizeException(sizeof(DTC_SubEventHeader), sub_events_.back().GetSubEventByteCount());
 				TLOG(TLVL_ERROR) << "Invalid empty sub event byte count interpretation!";
@@ -43,20 +43,20 @@ void DTCLib::DTC_Event::SetupEvent()
 			}
 			TLOG(TLVL_DEBUG + 6) << "Found sub event byte_count of " << sub_events_.back().GetSubEventByteCount();
 		}
-		catch (DTC_WrongPacketTypeException const& ex) 
+		catch (DTC_WrongPacketTypeException const& ex)
 		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
 			break;
 		}
-		catch (DTC_WrongPacketSizeException const& ex) 
+		catch (DTC_WrongPacketSizeException const& ex)
 		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
 			break;
 		}
 	}
-} //end SetupEvent()
+}  // end SetupEvent()
 
 DTCLib::DTC_EventWindowTag DTCLib::DTC_Event::GetEventWindowTag() const
 {
@@ -97,12 +97,13 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 	TLOG(TLVL_TRACE) << "Updating header byte counts";
 	UpdateHeader();
 
-	if (header_.inclusive_event_byte_count + sizeof(uint64_t) + (includeDMAWriteSize ? sizeof(uint64_t) : 0) < MAX_DMA_SIZE) {
+	if (header_.inclusive_event_byte_count + sizeof(uint64_t) + (includeDMAWriteSize ? sizeof(uint64_t) : 0) < MAX_DMA_SIZE)
+	{
 		TLOG(TLVL_TRACE) << "Event fits into one buffer, writing";
 		auto pos = o.tellp();
 		Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, header_.inclusive_event_byte_count, pos, false);
 
-        TLOG(TLVL_TRACE) << "Writing DTC_EventHeader for event " << GetEventWindowTag().GetEventWindowTag(true) << " sz=" << sizeof(DTC_EventHeader);
+		TLOG(TLVL_TRACE) << "Writing DTC_EventHeader for event " << GetEventWindowTag().GetEventWindowTag(true) << " sz=" << sizeof(DTC_EventHeader);
 		o.write(reinterpret_cast<const char*>(&header_), sizeof(DTC_EventHeader));
 
 		for (auto& subevt : sub_events_)
@@ -118,7 +119,7 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 			}
 		}
 	}
-	else 
+	else
 	{
 		TLOG(TLVL_TRACE) << "Event spans multiple buffers, beginning write";
 		auto buffer_start = o.tellp();
@@ -144,7 +145,7 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 			buffer_data_size += sizeof(DTC_SubEventHeader);
 			for (auto& blk : subevt.GetDataBlocks())
 			{
-				if (bytes_written + buffer_data_size + blk.byteSize > MAX_DMA_SIZE) 
+				if (bytes_written + buffer_data_size + blk.byteSize > MAX_DMA_SIZE)
 				{
 					TLOG(TLVL_TRACE) << "Starting new buffer, writing size words " << buffer_data_size << " to old buffer";
 					Utilities::WriteDMABufferSizeWords(o, includeDMAWriteSize, buffer_data_size, buffer_start, true);
@@ -160,4 +161,3 @@ void DTCLib::DTC_Event::WriteEvent(std::ostream& o, bool includeDMAWriteSize)
 		}
 	}
 }
-

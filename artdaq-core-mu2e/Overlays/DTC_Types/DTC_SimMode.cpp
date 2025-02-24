@@ -5,7 +5,8 @@ DTCLib::DTC_SimMode DTCLib::DTC_SimModeConverter::ConvertToSimMode(std::string m
 	switch (modeName[0])
 	{
 		case '1':
-			if (modeName.size() > 1) {
+			if (modeName.size() > 1)
+			{
 				switch (modeName[1])
 				{
 					case '0':

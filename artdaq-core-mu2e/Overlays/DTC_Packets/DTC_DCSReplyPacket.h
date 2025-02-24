@@ -7,7 +7,7 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
 
 #include <cstdint>
-#include <utility> // std::pair
+#include <utility>  // std::pair
 #include <vector>
 
 namespace DTCLib {
