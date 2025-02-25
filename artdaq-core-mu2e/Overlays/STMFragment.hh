@@ -38,6 +38,12 @@ public:
 		return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
 	}
 
+	int16_t const* detID() const
+	{
+		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.Ch_DTCclk_0);
+		return reinterpret_cast<int16_t const*>(GetTHdr() + 28);
+	}
+
 	int16_t const* EvNum() const
 	{
 		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvNum_0);
