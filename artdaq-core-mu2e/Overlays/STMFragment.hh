@@ -38,34 +38,6 @@ public:
 		return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
 	}
 
-<<<<<<< Updated upstream
-	int16_t const* EvNum() const
-	{
-		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvNum_0);
-		return reinterpret_cast<int16_t const*>(GetTHdr() + 8);
-	}
-
-	int16_t const* DataType() const
-	{
-		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.ZSflag_PreVal);
-		// return reinterpret_cast<int16_t const*>(GetTHdr()+22);
-
-		// Dont have data type in Header yet for now assume it is Raw data
-		return reinterpret_cast<int16_t const*>(GetTHdr() + 22);
-	}
-
-	int16_t const* EvLen() const
-	{
-		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvLen);
-		return reinterpret_cast<int16_t const*>(GetTHdr() + 23);
-	}
-
-	int16_t const* DataBegin() const
-	{
-		return reinterpret_cast<int16_t const*>(GetTHdr() + 32);
-	}
-
-=======
 	int16_t const* detID() const
 	{
 		// return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.Ch_DTCclk_0);
@@ -98,7 +70,6 @@ public:
 		return reinterpret_cast<int16_t const*>(GetTHdr() + 32);
 	}
 
->>>>>>> Stashed changes
 private:
 	artdaq::Fragment const& artdaq_fragment_;
 };
