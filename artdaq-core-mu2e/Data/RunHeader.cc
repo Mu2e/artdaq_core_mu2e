@@ -4,11 +4,12 @@
 
 namespace mu2e {
 
-  std::ostream& operator<<(std::ostream& os,
-			   RunHeader const& rh ){
-    os << " start Time: " << rh.startTime
-       << " first EWT: "  << std::setw(ewt_decimal_digits) << rh.ewtFirst;
-    return os;
-  }
-
+std::ostream& operator<<(std::ostream& os,
+						 RunHeader const& rh)
+{
+	os << " start Time: " << rh.startTime
+	   << " first EWT: " << std::setw(ewt_decimal_digits) << rh.ewtFirst;
+	return os;
 }
+
+}  // namespace mu2e

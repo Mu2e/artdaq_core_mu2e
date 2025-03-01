@@ -1,5 +1,5 @@
-#include <memory>  // std::shared_ptr, std::make_shared
-#include <cstring> // memcpy
+#include <memory>   // std::shared_ptr, std::make_shared
+#include <cstring>  // memcpy
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_CharacterNotInTableError.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
