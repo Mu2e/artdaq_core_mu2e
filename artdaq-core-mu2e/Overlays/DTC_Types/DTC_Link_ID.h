@@ -26,6 +26,29 @@ inline std::ostream& operator<<(std::ostream& o, DTC_Link_ID const& link)
 	return o << static_cast<unsigned int>(link);
 }
 
+// Prefix increment
+inline DTC_Link_ID& operator++(DTC_Link_ID& id)
+{
+	if (id == DTC_Link_ALL || id == DTC_Link_Unused)
+		throw std::runtime_error("Illegal ++ operator on DTC_Link_ID of value " +
+								 std::to_string(id));
+
+	id = static_cast<DTC_Link_ID>(static_cast<uint8_t>(id) + 1);
+	return id;
+}  // end ++op
+
+// Postfix increment
+inline DTC_Link_ID operator++(DTC_Link_ID& id, int)
+{
+	if (id == DTC_Link_ALL || id == DTC_Link_Unused)
+		throw std::runtime_error("Illegal ++ operator on DTC_Link_ID of value " +
+								 std::to_string(id));
+
+	DTC_Link_ID old = id;
+	id = static_cast<DTC_Link_ID>(static_cast<uint8_t>(id) + 1);
+	return old;
+}  // end op++
+
 static const std::vector<DTC_Link_ID> DTC_ROC_Links{DTC_Link_0,
 													DTC_Link_1,
 													DTC_Link_2,
