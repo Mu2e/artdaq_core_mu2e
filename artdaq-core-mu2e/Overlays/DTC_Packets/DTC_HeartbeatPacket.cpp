@@ -64,11 +64,11 @@ std::string DTCLib::DTC_HeartbeatPacket::toPacketFormat()
 	ss << headerPacketFormat() << std::setfill('0') << std::hex;
 	ss << event_tag_.toPacketFormat();
 	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.mode1) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode0) << "\n";
+	   << static_cast<int>(eventMode_.mode0) << "\n";
 	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.mode3) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode2) << "\n";
+	   << static_cast<int>(eventMode_.mode2) << "\n";
 	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.deliveryRingTDC) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode4) << "\n";
+	   << static_cast<int>(eventMode_.mode4) << "\n";
 	return ss.str();
 }
 

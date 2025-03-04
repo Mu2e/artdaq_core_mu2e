@@ -38,7 +38,7 @@ public:
 	{
 	}
 
-	DTCLib::DTC_Event getData() const 
+	DTCLib::DTC_Event getData() const
 	{
 		if (event_ptr_ == nullptr)
 		{
@@ -48,7 +48,7 @@ public:
 		return *event_ptr_.get();
 	}
 
-	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const 
+	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const
 	{
 		auto data = getData();
 		return data.GetSubsystemData(subsys);
@@ -56,13 +56,13 @@ public:
 
 protected:
 private:
-  	DTCEventFragment(DTCEventFragment const&) = delete;             // DTCEventFragment should definitely not be copied
-  	DTCEventFragment(DTCEventFragment&&) = delete;                  // DTCEventFragment should not be moved, only the underlying Fragment
-  	DTCEventFragment& operator=(DTCEventFragment const&) = delete;  // DTCEventFragment should definitely not be copied
-  	DTCEventFragment& operator=(DTCEventFragment&&) = delete;       // DTCEventFragment should not be moved, only the underlying Fragment
+	DTCEventFragment(DTCEventFragment const&) = delete;             // DTCEventFragment should definitely not be copied
+	DTCEventFragment(DTCEventFragment&&) = delete;                  // DTCEventFragment should not be moved, only the underlying Fragment
+	DTCEventFragment& operator=(DTCEventFragment const&) = delete;  // DTCEventFragment should definitely not be copied
+	DTCEventFragment& operator=(DTCEventFragment&&) = delete;       // DTCEventFragment should not be moved, only the underlying Fragment
 
 	artdaq::Fragment const& artdaq_Fragment_;
-        mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
+	mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
 };
 
 #endif /* artdaq_core_Data_Mu2eEventFragment_hh */

@@ -26,8 +26,8 @@ public:
 	// explicit CFO_Event(size_t data_size);
 
 	CFO_Event()
-		:  record_()//, sub_events_(),
-		// buffer_ptr_(nullptr)
+		: record_()  //, sub_events_(),
+					 // buffer_ptr_(nullptr)
 	{}
 
 	// static const int MAX_DMA_SIZE = 0x8000;  // 32k

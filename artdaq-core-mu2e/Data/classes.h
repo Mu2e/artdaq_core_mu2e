@@ -9,4 +9,3 @@
 #include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
 #include <vector>
 #include "canvas/Persistency/Common/Wrapper.h"
-

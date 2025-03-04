@@ -3,7 +3,7 @@
 //
 // A presistent time stamp class that represents a time, as seconds from the start of the
 // unix epoch.  Mu2e plans to store times in UTC but this is not enforced by this class.
-// The range of representable times is from the start of the unix epoch to the 32-bit 
+// The range of representable times is from the start of the unix epoch to the 32-bit
 // unsigned epoch rollover on Feb 27, 2106.
 //
 // Notes:
@@ -27,30 +27,28 @@
 
 namespace mu2e {
 
-class  TimeStamp {
-
+class TimeStamp
+{
 public:
+	typedef uint32_t TimeStamp_t;
 
-  typedef uint32_t TimeStamp_t;
+	TimeStamp() {}
 
-  TimeStamp(){}
+	TimeStamp(time_t time)
+		: time_(static_cast<TimeStamp_t>(time))
+	{
+	}
 
-  TimeStamp( time_t time ):
-    time_(static_cast<TimeStamp_t>(time)){
-  }
-
-  time_t get()        const { return static_cast<time_t>( time_); }
-  time_t operator()() const { return get(); }
+	time_t get() const { return static_cast<time_t>(time_); }
+	time_t operator()() const { return get(); }
 
 private:
-
-  TimeStamp_t time_ = 0;
-
+	TimeStamp_t time_ = 0;
 };
 
-  // Print time as a formatted string; see note 4).
-  std::ostream& operator<<(std::ostream& os,
-			   TimeStamp const& ts );
+// Print time as a formatted string; see note 4).
+std::ostream& operator<<(std::ostream& os,
+						 TimeStamp const& ts);
 
-}
+}  // namespace mu2e
 #endif /* mu2e_artdaq_core_Data_TimeStamp_hh */

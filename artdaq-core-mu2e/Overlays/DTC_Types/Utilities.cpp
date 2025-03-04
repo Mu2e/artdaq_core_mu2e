@@ -23,7 +23,8 @@ size_t DTCLib::Utilities::WriteDMABufferSizeWords(std::ostream& output, bool inc
 	TLOG(TLVL_TRACE) << "Writing DMA Size (" << dmaSize << ")";
 	output.write(reinterpret_cast<const char*>(&dmaSize), sizeof(uint64_t));
 	bytes_written += sizeof(uint64_t);
-	if (restore_pos) {
+	if (restore_pos)
+	{
 		TLOG(TLVL_TRACE) << "Reverting write pointer";
 		output.seekp(pos_save);
 	}

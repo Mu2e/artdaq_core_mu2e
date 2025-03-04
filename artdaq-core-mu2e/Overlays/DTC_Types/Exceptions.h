@@ -20,17 +20,17 @@ public:
 	/// <param name="encountered">Encountered firmware version string</param>
 	DTC_WrongVersionException(std::string expected, std::string encountered)
 		: std::runtime_error("DTCwrongVersionException: Unexpected firmware version encountered: " + encountered + " != " + expected + " (expected)") {}
-// 	/// <summary>
-// 	/// Describe the exception
-// 	/// </summary>
-// 	/// <returns>String describing the exception</returns>
-// 	const char* what() const throw()
-// 	{
-// 		return what_.c_str();
-// 	}
+	// 	/// <summary>
+	// 	/// Describe the exception
+	// 	/// </summary>
+	// 	/// <returns>String describing the exception</returns>
+	// 	const char* what() const throw()
+	// 	{
+	// 		return what_.c_str();
+	// 	}
 
-// private:
-// 	std::string what_;
+	// private:
+	// 	std::string what_;
 };
 
 /// <summary>
@@ -48,17 +48,17 @@ public:
 	/// <param name="encountered">Encountered packet type</param>
 	DTC_WrongPacketTypeException(int expected, int encountered)
 		: std::runtime_error("DTCWrongPacketTypeException: Unexpected packet type encountered: " + std::to_string(encountered) + " != " + std::to_string(expected) + " (expected)") {}
-// 	/// <summary>
-// 	/// Describe the exception
-// 	/// </summary>
-// 	/// <returns>String describing the exception</returns>
-// 	const char* what() const throw()
-// 	{
-// 		return what_.c_str();
-// 	}
+	// 	/// <summary>
+	// 	/// Describe the exception
+	// 	/// </summary>
+	// 	/// <returns>String describing the exception</returns>
+	// 	const char* what() const throw()
+	// 	{
+	// 		return what_.c_str();
+	// 	}
 
-// private:
-// 	std::string what_;
+	// private:
+	// 	std::string what_;
 };
 
 /// <summary>
@@ -74,17 +74,17 @@ public:
 	/// <param name="encountered">Encountered block size</param>
 	DTC_WrongPacketSizeException(int expected, int encountered)
 		: std::runtime_error("DTC_WrongPacketSizeException: Unexpected block size encountered: " + std::to_string(encountered) + " != " + std::to_string(expected) + " (expected)") {}
-// 	/// <summary>
-// 	/// Describe the exception
-// 	/// </summary>
-// 	/// <returns>String describing the exception</returns>
-// 	const char* what() const throw()
-// 	{
-// 		return what_.c_str();
-// 	}
+	// 	/// <summary>
+	// 	/// Describe the exception
+	// 	/// </summary>
+	// 	/// <returns>String describing the exception</returns>
+	// 	const char* what() const throw()
+	// 	{
+	// 		return what_.c_str();
+	// 	}
 
-// private:
-// 	std::string what_;
+	// private:
+	// 	std::string what_;
 };
 /// <summary>
 /// A DTC_IOErrorException is thrown when the DTC is not communicating when communication is expected
@@ -101,18 +101,18 @@ public:
 		: std::runtime_error(std::string("DTCIOErrorException: Unable to communicate with the DTC: Error Code: ") + std::to_string(retcode)) {}
 	DTC_IOErrorException(const std::string& errorMessage)
 		: std::runtime_error(std::string("DTCIOErrorException: ") + errorMessage) {}
-	
-// 	/// <summary>
-// 	/// Describe the exception
-// 	/// </summary>
-// 	/// <returns>String describing the exception</returns>
-// 	const char* what() const throw()
-// 	{
-// 		return what_.c_str();
-// 	}
 
-// private:
-// 	std::string what_;
+	// 	/// <summary>
+	// 	/// Describe the exception
+	// 	/// </summary>
+	// 	/// <returns>String describing the exception</returns>
+	// 	const char* what() const throw()
+	// 	{
+	// 		return what_.c_str();
+	// 	}
+
+	// private:
+	// 	std::string what_;
 };
 
 /// <summary>
@@ -121,7 +121,7 @@ public:
 class DTC_DataCorruptionException : public std::runtime_error
 {
 public:
-	DTC_DataCorruptionException() 
+	DTC_DataCorruptionException()
 		: std::runtime_error("DTCDataCorruptionException: Corruption detected in data stream from DTC")
 	{}
 	// /// <summary>

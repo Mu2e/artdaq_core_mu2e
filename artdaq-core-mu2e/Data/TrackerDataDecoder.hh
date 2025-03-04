@@ -4,7 +4,7 @@
 
 #include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
 
-#include <messagefacility/MessageLogger/MessageLogger.h> // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
+#include <messagefacility/MessageLogger/MessageLogger.h>  // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
 
 #include <vector>
 
@@ -291,7 +291,6 @@ private:
 	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
 
 	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
-
 };
 }  // namespace mu2e
 
