@@ -2,6 +2,7 @@ cet_make_library(
     SOURCE 
       FragmentType.cc 
       DTCEventFragment.cc
+      CFOEventFragment.cc
       STMFragment.cc
       CFO_Packets/CFO_DataPacket.cpp
       CFO_Packets/CFO_DMAPacket.cpp

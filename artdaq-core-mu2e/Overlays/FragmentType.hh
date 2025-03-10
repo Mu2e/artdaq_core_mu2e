@@ -20,6 +20,7 @@ enum FragmentType : artdaq::Fragment::type_t
 	DTCEVT = artdaq::Fragment::FirstUserFragmentType + 8,   // DTC Event Fragment
 	STM = artdaq::Fragment::FirstUserFragmentType + 9,      // Stopping Target Monitor fragment
 	TRKDTC = artdaq::Fragment::FirstUserFragmentType + 10,  // hardware debug info
+	CFOEVT = artdaq::Fragment::FirstUserFragmentType + 11,  // CFO Event Fragment
 	INVALID                                                 // Should always be last.
 };
 
