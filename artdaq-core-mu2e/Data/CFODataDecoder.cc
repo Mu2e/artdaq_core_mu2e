@@ -9,30 +9,30 @@
 
 namespace mu2e {
 
-  CFODataDecoder::CFODataDecoder(CFOLib::CFO_Event const &se)
-  {
-    data_ = std::vector<uint8_t>(se.GetEventByteCount());
-    memcpy(&data_[0], se.GetRawBufferPointer(), sizeof(CFOLib::CFO_Event));
-    // size_t offset = sizeof(CFOLib::CFO_Event);
+CFODataDecoder::CFODataDecoder(CFOLib::CFO_Event const &se)
+{
+	data_ = std::vector<uint8_t>(se.GetEventByteCount());
+	memcpy(&data_[0], se.GetRawBufferPointer(), sizeof(CFOLib::CFO_Event));
+	// size_t offset = sizeof(CFOLib::CFO_Event);
 
-    // for (auto &bl : se.GetDataBlocks())
-    // {
-    // 	memcpy(&data_[0] + offset, bl.blockPointer, bl.byteSize);
-    // 	offset += bl.byteSize;
-    // }
+	// for (auto &bl : se.GetDataBlocks())
+	// {
+	// 	memcpy(&data_[0] + offset, bl.blockPointer, bl.byteSize);
+	// 	offset += bl.byteSize;
+	// }
 
-    auto ptr = data_.data();
-    event_ = CFOLib::CFO_Event(ptr);
-    //event_.SetupSubEvent();
-    setup_ = true;
-  }
-
-  void CFODataDecoder::setup_event() const
-  {
-    auto ptr = data_.data();
-    event_ = CFOLib::CFO_Event(ptr);
-    //event_.SetupSubEvent();
-    setup_ = true;
-  }
-
+	auto ptr = data_.data();
+	event_ = CFOLib::CFO_Event(ptr);
+	// event_.SetupSubEvent();
+	setup_ = true;
 }
+
+void CFODataDecoder::setup_event() const
+{
+	auto ptr = data_.data();
+	event_ = CFOLib::CFO_Event(ptr);
+	// event_.SetupSubEvent();
+	setup_ = true;
+}
+
+}  // namespace mu2e

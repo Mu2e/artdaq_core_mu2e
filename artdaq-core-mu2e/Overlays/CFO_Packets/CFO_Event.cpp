@@ -25,9 +25,9 @@ DTCLib::DTC_EventWindowTag CFOLib::CFO_Event::GetEventWindowTag() const
 
 DTCLib::DTC_EventMode CFOLib::CFO_Event::GetEventMode() const
 {
-        return DTCLib::DTC_EventMode(record_.event_mode);
+	return DTCLib::DTC_EventMode(record_.event_mode);
 }
-        
+
 void CFOLib::CFO_Event::SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag)
 {
 	record_.event_tag = tag.GetEventWindowTag(true);
