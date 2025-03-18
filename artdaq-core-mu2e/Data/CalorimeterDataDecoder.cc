@@ -204,7 +204,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 
 	if (dataBlock->GetHeader()->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter)
 	{
-		TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : this block is from different subsystem: " << dataBlock->GetHeader()->GetSubsystem() << ", skipping...";
+		TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : this block is from different subsystem: " << int(dataBlock->GetHeader()->GetSubsystem()) << ", skipping...";
 		return output;
 	}
 
@@ -222,23 +222,31 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 	}
 
 	auto blockPos = reinterpret_cast<const uint8_t*>(blockDataPtr);  // byte position in block (multiple of 16)
-	while (blockPos < reinterpret_cast<const uint8_t*>(blockDataPtr) + dataSize)
+	auto endOfBlockPos = blockPos + dataSize;
+	while (blockPos < endOfBlockPos)
 	{  // until the end of this block
 
 		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos));
+
+		// Create output hit
+		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
+
+		output->back().first.BeginMarker = reader[0];
 
 		// Make sure first word is 0xAAA
 		if (reader[0] != 0xAAA)
 		{
 			TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : in block " << blockIndex << " hit " << output->size() << " BeginMarker is " << std::hex << reader[0] << std::dec << " instead of 0xAAA\n";
-			// Return minimal hit and stop decoding this ROC
-			output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
-			output->back().first.BeginMarker = reader[0];
 			return output;
 		}
 
+		output->back().first.BoardID = reader[1];
+		output->back().first.ChannelID = reader[2];
+		output->back().first.InPayloadEventWindowTag = reader[3];
+
 		// Search for 0xFFF
-		uint nWordsMax = ((dataSize * 8) / 12);
+		size_t remainingBytes = endOfBlockPos - blockPos;
+		uint nWordsMax = ((remainingBytes / 32) * 21); // 21 words for every 2 packets (32 bytes)
 		int lastSampleMarkerIndex = -1;
 		for (uint i = 4; i < nWordsMax; i++)
 		{  // waveform starts from 5th word
@@ -254,19 +262,10 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 		{
 			TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitTestData : LastSampleMarker 0xFFF not found in the payload!" << std::endl;
 			// Return minimal hit and stop decoding this ROC
-			output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
 			output->back().first.LastSampleMarker = 0;
 			return output;
 		}
 
-		// Create output
-		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
-
-		// Before waveform
-		output->back().first.BeginMarker = reader[0];
-		output->back().first.BoardID = reader[1];
-		output->back().first.ChannelID = reader[2];
-		output->back().first.InPayloadEventWindowTag = reader[3];
 
 		// waveform
 		size_t nSamples = lastSampleMarkerIndex - 4;
