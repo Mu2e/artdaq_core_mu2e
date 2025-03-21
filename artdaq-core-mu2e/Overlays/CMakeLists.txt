@@ -25,7 +25,7 @@ cet_make_library(
       DTC_Types/DTC_SimMode.cpp
       DTC_Types/Utilities.cpp
     LIBRARIES PUBLIC
-      artdaq_core::artdaq-core_Data
+      artdaq-core::Data
 )
 
 #get_cmake_property(_variableNames VARIABLES)
@@ -35,7 +35,7 @@ cet_make_library(
 
 include(ArtdaqCorePlugins)
 
-  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq_core_mu2e::artdaq-core-mu2e_Overlays )
+  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq-core-mu2e::Overlays )
 
 
 install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types)

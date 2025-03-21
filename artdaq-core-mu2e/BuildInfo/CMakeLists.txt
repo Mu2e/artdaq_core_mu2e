@@ -10,7 +10,7 @@ cet_make_library( LIBRARY_NAME artdaq-core-mu2e_BuildInfo
                   SOURCE
 		  ${CMAKE_CURRENT_BINARY_DIR}/GetPackageBuildInfo.cc
           LIBRARIES PUBLIC
-          artdaq_core::artdaq-core_Data
+          artdaq-core::Data
                  )
 
 install_headers()

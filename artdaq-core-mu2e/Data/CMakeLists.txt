@@ -11,13 +11,13 @@ cet_make_library(
   CRVDataDecoder.cc 
   TrackerDataDecoder.cc
   LIBRARIES PUBLIC
-  artdaq_core_mu2e::artdaq-core-mu2e_Overlays
+  artdaq-core-mu2e::Overlays
   )
 
 include(ArtDictionary)
 
 art_dictionary(NO_CHECK_CLASS_VERSION DICTIONARY_LIBRARIES
-  artdaq_core_mu2e::artdaq-core-mu2e_Data
+  artdaq-core-mu2e::Data
 )
 
 get_target_property(DictCompileOptions artdaq-core-mu2e_Data_dict COMPILE_OPTIONS)
