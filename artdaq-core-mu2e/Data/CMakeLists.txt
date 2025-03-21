@@ -6,6 +6,7 @@ cet_make_library(
   TimeStamp.cc
   Mu2eEventHeader.cc
   DTCDataDecoder.cc 
+  CFODataDecoder.cc 
   CalorimeterDataDecoder.cc
   CRVDataDecoder.cc 
   TrackerDataDecoder.cc

@@ -11,6 +11,8 @@
   <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
   <class name="mu2e::DTCDataDecoder" />
   <class name="art::Wrapper<mu2e::DTCDataDecoder>"/>
+  <class name="mu2e::CFODataDecoder" />
+  <class name="art::Wrapper<mu2e::CFODataDecoder>"/>
   <class name="mu2e::CalorimeterDataDecoder" />
   <class name="art::Wrapper<mu2e::CalorimeterDataDecoder>"/>
   <class name="std::vector<mu2e::CalorimeterDataDecoder>" />

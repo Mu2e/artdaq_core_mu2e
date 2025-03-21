@@ -35,11 +35,12 @@ public:
 	// void SetupEvent();
 	size_t GetEventByteCount() const { return sizeof(record_); }
 	DTCLib::DTC_EventWindowTag GetEventWindowTag() const;
-	void SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag);
-	void SetEventMode(DTCLib::DTC_EventMode const& mode);
+	DTCLib::DTC_EventMode GetEventMode() const;
 	const void* GetRawBufferPointer() const { return &record_; }
 	const CFO_EventRecord& GetEventRecord() const { return record_; }
 
+	void SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag);
+	void SetEventMode(DTCLib::DTC_EventMode const& mode);
 	// std::vector<DTC_SubEvent> const& GetSubEvents() const
 	// {
 	// 	return sub_events_;
