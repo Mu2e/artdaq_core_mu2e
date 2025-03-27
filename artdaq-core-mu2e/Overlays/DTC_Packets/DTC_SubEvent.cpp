@@ -115,16 +115,16 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 			// printout ROC fragment data block
 			if (data_block_byte_count > 16 * 2)  // more than 2 packets
 				TLOG(TLVL_SETUP_VERBOSE_2) << "Beginning "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[5 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[7 * 4])));
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[5 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[7 * 4])));
 			else
 				TLOG(TLVL_SETUP_VERBOSE_2) << "Beginning "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4])));
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4])));
 
 			if (data_block_byte_count > 8 * 4)
 			{
@@ -143,11 +143,11 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 
 				size_t i = data_block_byte_count - 8 * 4;
 				TLOG(TLVL_SETUP_VERBOSE_2) << "End (starting at data block word #" << i << ") "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[i + 0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 3 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 5 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 7 * 4])));
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[i + 0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 3 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 5 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 7 * 4])));
 			}
 
 			if (data_blocks_.back().GetHeader()->GetLinkID() != roc_fragi)
