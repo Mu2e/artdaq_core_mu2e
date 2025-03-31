@@ -37,7 +37,7 @@ include(BuildPlugins)
 add_subdirectory(artdaq-core-mu2e)
 
 # testing
-# add_subdirectory(test)
+add_subdirectory(test)
 
 # documentation
 add_subdirectory(doc)
