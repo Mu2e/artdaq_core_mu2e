@@ -93,6 +93,6 @@ struct EventHeader
 std::ostream& operator<<(std::ostream& os,
 						 EventHeader const& eh);
 
-  typedef std::vector<mu2e::EventHeader> EventHeaders;
+typedef std::vector<mu2e::EventHeader> EventHeaders;
 }  // namespace mu2e
 #endif /* mu2e_artdaq_core_Data_EventHeader_hh */
