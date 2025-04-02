@@ -29,7 +29,7 @@ public:
 	DTC_SubEvent()
 		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
 
-	void SetupSubEvent();
+	bool SetupSubEvent();
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
@@ -120,12 +120,14 @@ public:
 	}
 	const DTC_SubEventHeader* GetHeader() const { return &header_; }
 	void UpdateHeader();
+	bool IsCorrupt() const { return corruption_detected_; }
 
 private:
 	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
 	DTC_SubEventHeader header_;
 	std::vector<DTC_DataBlock> data_blocks_;
 	const void* buffer_ptr_;
+	bool corruption_detected_{false};
 };
 
 }  // namespace DTCLib

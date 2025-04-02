@@ -84,3 +84,46 @@ bool DTCLib::DTC_DataHeaderPacket::Equals(const DTC_DataHeaderPacket& other) con
 {
 	return ConvertToDataPacket() == other.ConvertToDataPacket();
 }
+
+bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_EventWindowTag timestamp, uint8_t dtc, DTC_Link_ID roc, DTC_Subsystem subsystem)
+{
+	uint64_t mask1 = 0x0000000080F00000;
+	uint64_t mask2 = 0x0000000000000000;
+
+	uint64_t comp1 = 0x0000000080500000;
+	uint64_t comp2 = 0x0000000000000000;
+
+	if (timestamp != DTC_EventWindowTag(static_cast<uint64_t>(0)))
+	{
+		mask1 += 0xFFFF000000000000;
+		mask2 += 0x00000000FFFFFFFF;
+
+		auto tag = timestamp.GetEventWindowTag(true);
+		comp1 += (tag & 0xFFFF) << 48;
+		comp2 += (tag & 0xFFFFFFFF0000) >> 16;
+	}
+	if (roc != DTC_Link_Unused)
+	{
+		mask1 += 0x0000000007000000;
+		comp1 += static_cast<uint64_t>(roc) << 24;
+	}
+	if (subsystem != DTC_Subsystem_Unused)
+	{
+		mask1 += 0x0000E00000000000;
+		comp1 += static_cast<uint64_t>(subsystem) << 45;
+	}
+	if (dtc != 0xFF)
+	{
+		mask2 += 0x00FF000000000000;
+		comp2 += static_cast<uint64_t>(dtc) << 48;
+	}
+
+	auto ptr64 = reinterpret_cast<const uint64_t*>(ptr);
+
+	auto check1 = *ptr64 & mask1;
+	auto check2 = *(ptr64 + 1) & mask2;
+
+    TLOG(TLVL_DEBUG + 20) << "Checking ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << " with masks " << mask1 << " " << mask2 << ". check1 " << check1 << " =?= " << comp1 << " comp1, check2 " << check2 << " =?= " << comp2 << " comp2";
+
+    return check1 == comp1 && check2 == comp2;
+}

@@ -24,7 +24,8 @@ BOOST_AUTO_TEST_CASE(Constructor)
 	memcpy(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(evt->GetRawBufferPointer())), &evtHdr, sizeof(DTCLib::DTC_SubEventHeader));
 
 	TLOG(TLVL_TRACE + 22) << "Calling SetupSubEvent";
-	evt->SetupSubEvent();
+	auto ok = evt->SetupSubEvent();
+	BOOST_REQUIRE(ok);
 
 	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 0);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
@@ -36,7 +37,8 @@ BOOST_AUTO_TEST_CASE(GoodBinaryFile)
 	std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(buffer.data());
-	evt->SetupSubEvent();
+	auto ok = evt->SetupSubEvent();
+	BOOST_REQUIRE(ok);
 	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 6);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
 }
@@ -47,8 +49,9 @@ BOOST_AUTO_TEST_CASE(BadBinaryFile_Short)
 	std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(buffer.data());
-	evt->SetupSubEvent();
-	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 1);
+	auto ok = evt->SetupSubEvent();
+	BOOST_REQUIRE(!ok);
+	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 6);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
 }
 
@@ -58,8 +61,9 @@ BOOST_AUTO_TEST_CASE(BadBinaryFile_Long)
 	std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(buffer.data());
-	evt->SetupSubEvent();
-	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 1);
+	auto ok = evt->SetupSubEvent();
+	BOOST_REQUIRE(!ok);
+	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 6);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
 }
 
