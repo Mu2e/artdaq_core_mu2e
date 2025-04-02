@@ -7,6 +7,9 @@
   <class name="art::Wrapper<mu2e::SubRunHeader>"/>
   <class name="mu2e::EventHeader" />
   <class name="art::Wrapper<mu2e::EventHeader>"/>
+  <class name="mu2e::EventHeaders" />
+  <class name="std::vector<mu2e::EventHeader>" />
+  <class name="art::Wrapper<mu2e::EventHeaders>" />
   <class name="mu2e::Mu2eEventHeader" />
   <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
   <class name="mu2e::DTCDataDecoder" />
