@@ -162,9 +162,10 @@ public:
 	/// <returns>String representing event_tag in "packet format"</returns>
 	std::string toPacketFormat() const;
 
-    friend std::ostream& operator<<(std::ostream& o, DTC_EventWindowTag const& t) {
+	friend std::ostream& operator<<(std::ostream& o, DTC_EventWindowTag const& t)
+	{
 		return o << t.GetEventWindowTag(true);
-    }
+	}
 };
 
 }  // namespace DTCLib

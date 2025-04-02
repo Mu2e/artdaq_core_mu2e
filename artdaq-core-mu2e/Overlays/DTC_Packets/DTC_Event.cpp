@@ -59,7 +59,7 @@ bool DTCLib::DTC_Event::SetupEvent()
 		}
 	}
 
-    if (corruption_detected_)
+	if (corruption_detected_)
 	{
 		TLOG(TLVL_ERROR) << "Data corruption detected in Event " << GetEventWindowTag() << "! Data may be incomplete!";
 	}

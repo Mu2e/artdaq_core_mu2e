@@ -180,7 +180,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent()
 						throw DTC_WrongPacketTypeException(5, 0);
 					}
 
-                    byte_count += offset - data_block_byte_count;
+					byte_count += offset - data_block_byte_count;
 					TLOG(TLVL_WARNING) << "Successfully recovered from corruption, will continue decoding rest of SubEvent (but will be marked as corrupt)";
 				}
 			}

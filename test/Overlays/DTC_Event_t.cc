@@ -42,11 +42,10 @@ BOOST_AUTO_TEST_CASE(GoodBinaryFile)
 	BOOST_REQUIRE_EQUAL(evt->GetSubEventCount(), 3);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
 
-    auto subevt = evt->GetSubEvent(0);
+	auto subevt = evt->GetSubEvent(0);
 	BOOST_REQUIRE_EQUAL(subevt->GetDataBlockCount(), 6);
 	BOOST_REQUIRE_EQUAL(subevt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));
 	BOOST_REQUIRE_EQUAL(subevt->GetDTCID(), 0);
-
 }
 
 BOOST_AUTO_TEST_CASE(BadBinaryFile_Short)

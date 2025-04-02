@@ -123,7 +123,7 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 	auto check1 = *ptr64 & mask1;
 	auto check2 = *(ptr64 + 1) & mask2;
 
-    TLOG(TLVL_DEBUG + 20) << "Checking ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << " with masks " << mask1 << " " << mask2 << ". check1 " << check1 << " =?= " << comp1 << " comp1, check2 " << check2 << " =?= " << comp2 << " comp2";
+	TLOG(TLVL_DEBUG + 20) << "Checking ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << " with masks " << mask1 << " " << mask2 << ". check1 " << check1 << " =?= " << comp1 << " comp1, check2 " << check2 << " =?= " << comp2 << " comp2";
 
-    return check1 == comp1 && check2 == comp2;
+	return check1 == comp1 && check2 == comp2;
 }
