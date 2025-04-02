@@ -90,8 +90,7 @@ struct EventHeader
 	}
 };
 
-std::ostream& operator<<(std::ostream& os,
-						 EventHeader const& eh);
+std::ostream& operator<<(std::ostream& os, EventHeader const& eh);
 
 typedef std::vector<mu2e::EventHeader> EventHeaders;
 }  // namespace mu2e
