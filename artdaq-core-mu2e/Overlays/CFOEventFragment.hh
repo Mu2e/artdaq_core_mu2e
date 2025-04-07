@@ -2,8 +2,7 @@
 #define artdaq_core_Data_Mu2eEventFragment_hh
 
 #include <memory>
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_Event.h"
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_SubEvent.h"
+#include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_Event.h"
 #include "artdaq-core/Data/Fragment.hh"
 #include "cetlib_except/exception.h"
 
@@ -38,20 +37,14 @@ public:
 	{
 	}
 
-	DTCLib::DTC_Event getData() const
+	CFOLib::CFO_Event getData() const
 	{
 		if (event_ptr_ == nullptr)
 		{
-			event_ptr_.reset(new DTCLib::DTC_Event(artdaq_Fragment_.dataBeginBytes()));
-			event_ptr_->SetupEvent();
+			event_ptr_.reset(new CFOLib::CFO_Event(artdaq_Fragment_.dataBeginBytes()));
+			//			event_ptr_->SetupEvent();
 		}
 		return *event_ptr_.get();
-	}
-
-	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const
-	{
-		auto data = getData();
-		return data.GetSubsystemData(subsys);
 	}
 
 protected:
@@ -62,7 +55,7 @@ private:
 	CFOEventFragment& operator=(CFOEventFragment&&) = delete;       // CFOEventFragment should not be moved, only the underlying Fragment
 
 	artdaq::Fragment const& artdaq_Fragment_;
-	mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
+	mutable std::unique_ptr<CFOLib::CFO_Event> event_ptr_{nullptr};
 };
 
 #endif /* artdaq_core_Data_Mu2eEventFragment_hh */
