@@ -28,7 +28,6 @@ public:
 
 		uint16_t operator[](size_t index) const
 		{
-
 			int wordInTwoPackets = index % 21;
 			int nTwoPackets = (index - wordInTwoPackets) / 21;
 			int startingLetter = wordInTwoPackets % 4;

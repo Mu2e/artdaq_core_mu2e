@@ -189,7 +189,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, ui
 	return output;
 }
 
-//Get Calo Hit Test Data Packet
+// Get Calo Hit Test Data Packet
 std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, std::vector<uint16_t>>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitTestData(size_t blockIndex) const
 {
 	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, std::vector<uint16_t>>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, std::vector<uint16_t>>>();
@@ -249,7 +249,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 
 		// Search for 0xFFF
 		size_t remainingBytes = endOfBlockPos - blockPos;
-		uint nWordsMax = ((remainingBytes / 32) * 21); // 21 words for every 2 packets (32 bytes)
+		uint nWordsMax = ((remainingBytes / 32) * 21);  // 21 words for every 2 packets (32 bytes)
 		int lastSampleMarkerIndex = -1;
 		thisHitWaveform.reserve(nWordsMax);
 		for (uint i = 4; i < nWordsMax; i++)
@@ -272,10 +272,9 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 			return output;
 		}
 
-
 		// waveform
 		size_t nSamples = lastSampleMarkerIndex - 4;
-		
+
 		// After waveform
 		thisHitPacket.LastSampleMarker = reader[lastSampleMarkerIndex];
 		thisHitPacket.ErrorFlags = reader[lastSampleMarkerIndex + 1];
@@ -305,7 +304,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 // Get Calo Hit Test Data Packet Fast
 std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, uint16_t>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitTestForTrigger(size_t blockIndex) const
 {
-    std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, uint16_t>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, uint16_t>>();
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, uint16_t>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket, uint16_t>>();
 
 	// get data block at given index
 	DTCLib::DTC_DataBlock const* dataBlock = dataAtBlockIndex(blockIndex);
@@ -359,7 +358,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 
 		// Search for 0xFFF
 		size_t remainingBytes = endOfBlockPos - blockPos;
-		uint nWordsMax = ((remainingBytes / 32) * 21); // 21 words for every 2 packets (32 bytes)
+		uint nWordsMax = ((remainingBytes / 32) * 21);  // 21 words for every 2 packets (32 bytes)
 		int lastSampleMarkerIndex = -1;
 		for (uint i = 4; i < nWordsMax; i++)
 		{  // waveform starts from 5th word
@@ -378,7 +377,6 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 			output->back().first.LastSampleMarker = 0;
 			return output;
 		}
-
 
 		size_t nSamples = lastSampleMarkerIndex - 4;
 
