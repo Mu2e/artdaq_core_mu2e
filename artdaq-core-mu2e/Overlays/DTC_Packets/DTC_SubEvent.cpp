@@ -6,11 +6,17 @@
 
 const uint8_t DTCLib::DTC_SubEvent::REQUIRED_SUBEVENT_FORMAT_VERSION = 1;
 
+static constexpr int TLVL_CONSTRUCTOR = TLVL_DEBUG + 10;
+static constexpr int TLVL_UPDATEHEADER = TLVL_DEBUG + 11;
+static constexpr int TLVL_SETUP = TLVL_DEBUG + 12;
+static constexpr int TLVL_SETUP_VERBOSE = TLVL_DEBUG + 13;
+static constexpr int TLVL_SETUP_VERBOSE_2 = TLVL_DEBUG + 14;
+
 DTCLib::DTC_SubEvent::DTC_SubEvent(const void *data)
 	: header_(), data_blocks_(), buffer_ptr_(data)
 {
 	memcpy(&header_, data, sizeof(header_));
-	TLOG(TLVL_TRACE) << "Header of DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
+	TLOG(TLVL_CONSTRUCTOR) << "Header of DTC_SubEvent created, copy in data and call SetupSubEvent to finalize";
 	// Moved remainder to SetupSubEvent() to allow for SubEvents to cross DMA transfers
 	if (header_.subevent_format_version != REQUIRED_SUBEVENT_FORMAT_VERSION)
 	{
@@ -27,7 +33,7 @@ DTCLib::DTC_SubEvent::DTC_SubEvent(const void *data)
 DTCLib::DTC_SubEvent::DTC_SubEvent(size_t data_size)
 	: allocBytes(new std::vector<uint8_t>(data_size)), header_(), data_blocks_(), buffer_ptr_(allocBytes->data())
 {
-	TLOG(TLVL_TRACE) << "Empty DTC_SubEvent created, copy in data and call SetupSubEvent to finalize, data_size = " << data_size;
+	TLOG(TLVL_CONSTRUCTOR) << "Empty DTC_SubEvent created, copy in data and call SetupSubEvent to finalize, data_size = " << data_size;
 }
 
 DTCLib::DTC_EventWindowTag DTCLib::DTC_SubEvent::GetEventWindowTag() const
@@ -66,7 +72,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	{
 		header_.inclusive_subevent_byte_count += block.byteSize;
 	}
-	TLOG(TLVL_TRACE) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
+	TLOG(TLVL_UPDATEHEADER) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
 bool DTCLib::DTC_SubEvent::SetupSubEvent()
@@ -86,39 +92,39 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent()
 		testss << "subevent header Tag=" << GetEventWindowTag().GetEventWindowTag(true) << " (0x" << std::hex << GetEventWindowTag().GetEventWindowTag(true) << ") bytes=" << std::dec << sizeof(header_) << ": 0x ";
 		for (size_t i = 0; i < sizeof(header_); i += 4)
 			testss << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
-		TLOG(TLVL_DEBUG + 6) << testss.str();
-		TLOG(TLVL_DEBUG + 6) << header_.toJson();
+		TLOG(TLVL_SETUP_VERBOSE) << testss.str();
+		TLOG(TLVL_SETUP_VERBOSE) << header_.toJson();
 	}
 	ptr += sizeof(header_);  // moving ptr past subevent header
 
-	TLOG(TLVL_DEBUG + 6) << "Found sub event inclusive byte count as: " << header_.inclusive_subevent_byte_count << " 0x" << std::hex << std::setw(4) << std::setfill('0') << header_.inclusive_subevent_byte_count << ". i.e., " << std::dec << std::setw(0) << (header_.inclusive_subevent_byte_count - sizeof(header_)) / 16 << " subevent packets.";
+	TLOG(TLVL_SETUP) << "Found sub event inclusive byte count as: " << header_.inclusive_subevent_byte_count << " 0x" << std::hex << std::setw(4) << std::setfill('0') << header_.inclusive_subevent_byte_count << ". i.e., " << std::dec << std::setw(0) << (header_.inclusive_subevent_byte_count - sizeof(header_)) / 16 << " subevent packets.";
 
 	size_t byte_count = sizeof(header_);
 	uint8_t roc_fragi = -1;
 	while (byte_count < header_.inclusive_subevent_byte_count)
 	{
 		++roc_fragi;
-		TLOG(TLVL_DEBUG + 6) << "Current byte_count is " << byte_count << " / " << header_.inclusive_subevent_byte_count << ", creating block";
+		TLOG(TLVL_SETUP) << "Current byte_count is " << byte_count << " / " << header_.inclusive_subevent_byte_count << ", creating block";
 		try
 		{
 			data_blocks_.emplace_back(static_cast<const void *>(ptr));
 			auto data_block_byte_count = data_blocks_.back().byteSize;
 			byte_count += data_block_byte_count;
-			TLOG(TLVL_DEBUG + 6) << "Found ROC fragment #" << static_cast<int>(roc_fragi) << " block of byte_count " << data_block_byte_count << " 0x" << std::hex << data_block_byte_count << " (i.e., " << std::dec << data_block_byte_count / 16 << " fragment packets).";
+			TLOG(TLVL_SETUP) << "Found ROC fragment #" << static_cast<int>(roc_fragi) << " block of byte_count " << data_block_byte_count << " 0x" << std::hex << data_block_byte_count << " (i.e., " << std::dec << data_block_byte_count / 16 << " fragment packets).";
 
 			// printout ROC fragment data block
 			if (data_block_byte_count > 16 * 2)  // more than 2 packets
-				TLOG(TLVL_DEBUG + 6) << "Beginning "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[5 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[7 * 4])));
+				TLOG(TLVL_SETUP_VERBOSE_2) << "Beginning "
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[5 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[7 * 4])));
 			else
-				TLOG(TLVL_DEBUG + 6) << "Beginning "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4])));
+				TLOG(TLVL_SETUP_VERBOSE_2) << "Beginning "
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[3 * 4])));
 
 			if (data_block_byte_count > 8 * 4)
 			{
@@ -136,12 +142,12 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent()
 				// }
 
 				size_t i = data_block_byte_count - 8 * 4;
-				TLOG(TLVL_DEBUG + 6) << "End (starting at data block word #" << i << ") "
-									 << std::hex << std::setw(8) << std::setfill('0')
-									 << *((uint32_t *)(&(ptr[i + 0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 1 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 3 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 5 * 4]))) << ' '
-									 << *((uint32_t *)(&(ptr[i + 6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 7 * 4])));
+				TLOG(TLVL_SETUP_VERBOSE_2) << "End (starting at data block word #" << i << ") "
+										   << std::hex << std::setw(8) << std::setfill('0')
+										   << *((uint32_t *)(&(ptr[i + 0 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 1 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 2 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 3 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 4 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 5 * 4]))) << ' '
+										   << *((uint32_t *)(&(ptr[i + 6 * 4]))) << ' ' << *((uint32_t *)(&(ptr[i + 7 * 4])));
 			}
 
 			if (data_blocks_.back().GetHeader()->GetLinkID() != roc_fragi)
