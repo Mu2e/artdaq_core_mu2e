@@ -27,8 +27,7 @@ public:
 			: dataPtr(dataPtr) {}
 
 		uint16_t operator[](size_t index) const
-		{  // FIXME: This algorithm is very complicated, might want to optimize
-
+		{
 			int wordInTwoPackets = index % 21;
 			int nTwoPackets = (index - wordInTwoPackets) / 21;
 			int startingLetter = wordInTwoPackets % 4;
@@ -146,6 +145,7 @@ public:
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetEmulatedCountersData(size_t blockIndex) const;
 	std::unique_ptr<CalorimeterFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>* GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
 };
 
 using CalorimeterDataDecoders = std::vector<CalorimeterDataDecoder>;
