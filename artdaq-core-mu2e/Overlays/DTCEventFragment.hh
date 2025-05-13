@@ -25,6 +25,15 @@ public:
 	/// The current version of the DTCEventFragment
 	static constexpr uint8_t CURRENT_VERSION = 1;
 
+	struct Metadata
+	{
+		uint8_t corrupt_flag : 1;
+		uint8_t unused : 7;
+
+		static size_t const size_bytes = 1;
+	};
+	static_assert(sizeof(Metadata) == Metadata::size_bytes, "Metadata size changed!");
+
 	/**
 	 * \param f The Fragment object to use for data storage
 	 *
@@ -36,6 +45,15 @@ public:
 
 	virtual ~DTCEventFragment()
 	{
+	}
+
+	bool IsCorrupt() const
+	{
+		if (artdaq_Fragment_.hasMetadata())
+		{
+			return artdaq_Fragment_.metadata<Metadata>()->corrupt_flag;
+		}
+		return false;
 	}
 
 	DTCLib::DTC_Event getData() const
