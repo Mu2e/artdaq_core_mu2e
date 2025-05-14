@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/CRVDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/CRVDataDecoder.hh"
 
 // for CrvDigis and global run
 std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacket> mu2e::CRVDataDecoder::GetCRVROCStatusPacket(size_t blockIndex) const

@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/CFODataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/CFODataDecoder.hh"
 
 #include "TRACE/tracemf.h"
 

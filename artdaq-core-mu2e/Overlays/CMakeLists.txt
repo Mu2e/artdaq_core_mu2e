@@ -24,6 +24,11 @@ cet_make_library(
       DTC_Types/DTC_SERDESRXDisparityError.cpp
       DTC_Types/DTC_SimMode.cpp
       DTC_Types/Utilities.cpp
+      Decoders/DTCDataDecoder.cc
+      Decoders/CalorimeterDataDecoder.cc
+      Decoders/CFODataDecoder.cc
+      Decoders/CRVDataDecoder.cc
+      Decoders/TrackerDataDecoder.cc
     LIBRARIES PUBLIC
       artdaq-core::Data
 )

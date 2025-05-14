@@ -2,7 +2,7 @@
 #ifndef ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
 #define ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/DTCDataDecoder.hh"
 #include <memory>
 #include <vector>
 #include <bitset>

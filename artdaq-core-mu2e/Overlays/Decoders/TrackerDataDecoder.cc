@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/TrackerDataDecoder.hh"
 
 #include "TRACE/tracemf.h"
 

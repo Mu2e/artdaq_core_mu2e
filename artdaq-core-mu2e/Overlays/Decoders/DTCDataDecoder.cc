@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/DTCDataDecoder.hh"
 
 #include <iomanip>
 
