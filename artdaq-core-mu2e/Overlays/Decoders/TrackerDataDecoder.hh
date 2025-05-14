@@ -14,10 +14,6 @@ class TrackerDataDecoder : public DTCDataDecoder
 public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
 
-	TrackerDataDecoder()
-		: DTCDataDecoder() {}
-	explicit TrackerDataDecoder(std::vector<uint8_t> data);
-
 	explicit TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt);
 
 	struct TrackerDataPacketV0

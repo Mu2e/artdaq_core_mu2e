@@ -19,20 +19,6 @@ TrackerDataDecoder::TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt)
 	}
 }
 
-TrackerDataDecoder::TrackerDataDecoder(std::vector<uint8_t> data)
-	: DTCDataDecoder(data)
-{
-	if (block_count() > 0)
-	{
-		auto dataPtr = dataAtBlockIndex(0);
-		auto hdr = dataPtr->GetHeader();
-		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
-		{
-			TLOG(TLVL_ERROR) << "TrackerDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
-		}
-	}
-}
-
 TrackerDataDecoder::tracker_data_t TrackerDataDecoder::GetTrackerData(size_t blockIndex, bool readWaveform) const
 {
 	tracker_data_t output;

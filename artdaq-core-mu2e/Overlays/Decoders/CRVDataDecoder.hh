@@ -11,12 +11,6 @@ namespace mu2e {
 class CRVDataDecoder : public DTCDataDecoder
 {
 public:
-	CRVDataDecoder()
-		: DTCDataDecoder() {}
-
-	CRVDataDecoder(std::vector<uint8_t> data)
-		: DTCDataDecoder(data) {}
-
 	explicit CRVDataDecoder(DTCLib::DTC_SubEvent const &f)
 		: DTCDataDecoder(f)
 	{}

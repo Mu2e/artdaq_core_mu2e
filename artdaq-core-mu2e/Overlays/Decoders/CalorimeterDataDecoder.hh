@@ -9,11 +9,6 @@ namespace mu2e {
 class CalorimeterDataDecoder : public DTCDataDecoder
 {
 public:
-	CalorimeterDataDecoder()
-		: DTCDataDecoder() {}
-
-	CalorimeterDataDecoder(const void* data);
-
 	CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& f);
 
 	// Class to swap pairs of 16-bit words and extract 12-bit words without memory buffers -- only applies to DEBUG data
