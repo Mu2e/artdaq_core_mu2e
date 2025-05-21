@@ -23,7 +23,7 @@ DTCLib::DTC_Event::DTC_Event(size_t data_size)
 	TLOG(TLVL_CONSTRUCTOR) << "Empty DTC_Event created, copy in data and call SetupEvent to finalize";
 }
 
-void DTCLib::DTC_Event::SetupEvent()
+bool DTCLib::DTC_Event::SetupEvent()
 {
 	auto ptr = reinterpret_cast<const uint8_t*>(buffer_ptr_);
 
@@ -37,13 +37,14 @@ void DTCLib::DTC_Event::SetupEvent()
 		try
 		{
 			sub_events_.emplace_back(ptr);
-			sub_events_.back().SetupSubEvent();
+			auto subEventOK = sub_events_.back().SetupSubEvent();
+			corruption_detected_ |= !subEventOK;
 			ptr += sub_events_.back().GetSubEventByteCount();
 			byte_count += sub_events_.back().GetSubEventByteCount();
 			if (sub_events_.back().GetSubEventByteCount() == 0)
 			{
-				auto ex = DTC_WrongPacketSizeException(sizeof(DTC_SubEventHeader), sub_events_.back().GetSubEventByteCount());
 				TLOG(TLVL_ERROR) << "Invalid empty sub event byte count interpretation!";
+				auto ex = DTC_WrongPacketSizeException(sizeof(DTC_SubEventHeader), sub_events_.back().GetSubEventByteCount());
 				throw ex;
 			}
 			TLOG(TLVL_SETUP) << "Found sub event byte_count of " << sub_events_.back().GetSubEventByteCount();
@@ -51,16 +52,23 @@ void DTCLib::DTC_Event::SetupEvent()
 		catch (DTC_WrongPacketTypeException const& ex)
 		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the event at location 0x" << std::hex << byte_count;
-			TLOG(TLVL_ERROR) << "This event has been truncated.";
-			break;
+			corruption_detected_ = true;
+			continue;
 		}
 		catch (DTC_WrongPacketSizeException const& ex)
 		{
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketSizeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
+			corruption_detected_ = true;
 			break;
 		}
 	}
+
+	if (corruption_detected_)
+	{
+		TLOG(TLVL_ERROR) << "Data corruption detected in Event " << GetEventWindowTag() << "! Data may be incomplete!";
+	}
+	return !corruption_detected_;
 }  // end SetupEvent()
 
 DTCLib::DTC_EventWindowTag DTCLib::DTC_Event::GetEventWindowTag() const

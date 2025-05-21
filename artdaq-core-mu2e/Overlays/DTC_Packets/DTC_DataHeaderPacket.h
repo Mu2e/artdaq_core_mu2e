@@ -128,6 +128,8 @@ public:
 	/// <returns>True if Data Header packet contents are equal</returns>
 	bool Equals(const DTC_DataHeaderPacket& other) const;
 
+	static bool IsDataHeaderPacket(const uint8_t* ptr, DTC_EventWindowTag timestamp = DTC_EventWindowTag(static_cast<uint64_t>(0)), uint8_t dtc = 0xFF, DTC_Link_ID roc = DTC_Link_Unused, DTC_Subsystem subsystem = DTC_Subsystem_Unused);
+
 private:
 	uint16_t packetCount_;
 	DTC_EventWindowTag event_tag_;

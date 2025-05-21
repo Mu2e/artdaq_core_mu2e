@@ -75,7 +75,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	TLOG(TLVL_UPDATEHEADER) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
-void DTCLib::DTC_SubEvent::SetupSubEvent()
+bool DTCLib::DTC_SubEvent::SetupSubEvent()
 {
 	auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
 
@@ -161,7 +161,35 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 				throw DTC_WrongPacketTypeException(GetEventWindowTag().GetEventWindowTag(true), data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true));
 			}
 
-			ptr += data_block_byte_count;  // moving ptr past the ROC fragment data block
+			if (byte_count < header_.inclusive_subevent_byte_count)
+			{
+				if (DTC_DataHeaderPacket::IsDataHeaderPacket(ptr + data_block_byte_count, GetEventWindowTag(), GetDTCID()))
+				{
+					ptr += data_block_byte_count;  // moving ptr past the ROC fragment data block
+				}
+				else
+				{
+					TLOG(TLVL_ERROR) << "Corruption detected in block " << static_cast<int>(roc_fragi) << " of SubEvent EWT: " << GetEventWindowTag() << ", DTC " << static_cast<int>(GetDTCID());
+					corruption_detected_ = true;
+
+					TLOG(TLVL_DEBUG + 6) << "Trying to recover...";
+					ptr += 16;  // Advance one packet;
+					size_t offset = 16;
+					while (byte_count - data_block_byte_count + offset < header_.inclusive_subevent_byte_count && !DTC_DataHeaderPacket::IsDataHeaderPacket(ptr, GetEventWindowTag(), GetDTCID()))
+					{
+						ptr += 16;
+						offset += 16;
+					}
+					if (!DTC_DataHeaderPacket::IsDataHeaderPacket(ptr, GetEventWindowTag(), GetDTCID()))
+					{
+						TLOG(TLVL_ERROR) << "Corruption recovery failed, this SubEvent cannot be processed further";
+						throw DTC_WrongPacketTypeException(5, 0);
+					}
+
+					byte_count += offset - data_block_byte_count;
+					TLOG(TLVL_WARNING) << "Successfully recovered from corruption, will continue decoding rest of SubEvent (but will be marked as corrupt)";
+				}
+			}
 		}
 		catch (DTC_WrongPacketTypeException const &ex)
 		{
@@ -199,7 +227,6 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 							  << std::flush;
 				}
 			}
-			throw;
 		}
 		catch (DTC_WrongPacketSizeException const &ex)
 		{
@@ -207,14 +234,19 @@ void DTCLib::DTC_SubEvent::SetupSubEvent()
 			// printout SubEvent header
 			{
 				std::stringstream testss;
-				testss << "subevent header Tag=" << GetEventWindowTag().GetEventWindowTag(true) << " (0x" << std::hex << GetEventWindowTag().GetEventWindowTag(true) << ") bytes=" << std::dec << sizeof(header_) << ": 0x ";
+				testss << "subevent header Tag=" << GetEventWindowTag() << " (0x" << std::hex << GetEventWindowTag() << ") bytes=" << std::dec << sizeof(header_) << ": 0x ";
 				for (size_t i = 0; i < sizeof(header_); i += 4)
 					testss << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
 				TLOG(TLVL_ERROR) << testss.str();
 				TLOG(TLVL_ERROR) << header_.toJson();
 			}
-			throw;
 		}
 	}
+
+	if (corruption_detected_)
+	{
+		TLOG(TLVL_ERROR) << "Data Corruption Detected in SubEvent! EWT: " << GetEventWindowTag() << ", DTCID: " << static_cast<int>(GetDTCID());
+	}
+	return !corruption_detected_;
 
 }  // end SetupSubEvent()
