@@ -3,7 +3,9 @@
 //------------------------------------------------------------------------------
 // bit-packing of the ROC data header packet
 //-----------------------------------------------------------------------------
-struct RocDataHeaderPacket_t {
+struct RocDataHeaderPacket_t
+{
+	// clang-format off
                                         // 8 16-byte words in total
                                         // 16-bit word 0
   uint16_t byteCount   : 16;
@@ -28,22 +30,24 @@ struct RocDataHeaderPacket_t {
   uint8_t subrun       : 2;
   uint8_t eventMode    : 5;
                                         // error flags - decoding 'status'
+	// clang-format on
 
-  int empty     () { return (status & 0x01) == 0; }
-  int invalid_dr() { return (status & 0x02); }
-  int corrupt   () { return (status & 0x04); }
-  int timeout   () { return (status & 0x08); }
-  int overflow  () { return (status & 0x10); }
+	int empty() { return (status & 0x01) == 0; }
+	int invalid_dr() { return (status & 0x02); }
+	int corrupt() { return (status & 0x04); }
+	int timeout() { return (status & 0x08); }
+	int overflow() { return (status & 0x10); }
 
-  int error_code() { return (status & 0x1e); }
+	int error_code() { return (status & 0x1e); }
 
-  ulong ewtag() {
-    ulong x1  = eventTag[0];
-    ulong x2  = eventTag[1];
-    ulong x3  = eventTag[2];
-    ulong ewt = x1 | (x2 << 16) | (x3 << 32);
-    return ewt;
-  }
+	ulong ewtag()
+	{
+		ulong x1 = eventTag[0];
+		ulong x2 = eventTag[1];
+		ulong x3 = eventTag[2];
+		ulong ewt = x1 | (x2 << 16) | (x3 << 32);
+		return ewt;
+	}
 };
 
 #endif
