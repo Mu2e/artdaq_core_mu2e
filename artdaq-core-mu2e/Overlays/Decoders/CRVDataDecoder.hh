@@ -2,7 +2,7 @@
 #ifndef ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
 #define ARTDAQ_CORE_MU2E_DATA_CRVDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/DTCDataDecoder.hh"
 #include <memory>
 #include <vector>
 #include <bitset>
@@ -11,12 +11,6 @@ namespace mu2e {
 class CRVDataDecoder : public DTCDataDecoder
 {
 public:
-	CRVDataDecoder()
-		: DTCDataDecoder() {}
-
-	CRVDataDecoder(std::vector<uint8_t> data)
-		: DTCDataDecoder(data) {}
-
 	explicit CRVDataDecoder(DTCLib::DTC_SubEvent const &f)
 		: DTCDataDecoder(f)
 	{}

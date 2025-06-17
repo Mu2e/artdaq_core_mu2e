@@ -11,35 +11,6 @@
   <class name="std::vector<mu2e::EventHeader>" />
   <class name="art::Wrapper<mu2e::EventHeaders>" />
   <class name="mu2e::Mu2eEventHeader" />
-  <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/>
-  <class name="mu2e::DTCDataDecoder" />
-  <class name="art::Wrapper<mu2e::DTCDataDecoder>"/>
-  <class name="mu2e::CFODataDecoder" />
-  <class name="art::Wrapper<mu2e::CFODataDecoder>"/>
-  <class name="mu2e::CalorimeterDataDecoder" />
-  <class name="art::Wrapper<mu2e::CalorimeterDataDecoder>"/>
-  <class name="std::vector<mu2e::CalorimeterDataDecoder>" />
-  <class name="art::Wrapper<std::vector<mu2e::CalorimeterDataDecoder>>"/>
-  <class name="mu2e::TrackerDataDecoder" />
-  <class name="art::Wrapper<mu2e::TrackerDataDecoder>"/>
-  <class name="std::vector<mu2e::TrackerDataDecoder>" />
-  <class name="art::Wrapper<std::vector<mu2e::TrackerDataDecoder>>"/>
-  <class name="mu2e::CRVDataDecoder" />
-  <class name="art::Wrapper<mu2e::CRVDataDecoder>"/>
-  <class name="std::vector<mu2e::CRVDataDecoder>" />
-  <class name="art::Wrapper<std::vector<mu2e::CRVDataDecoder>>"/>
-
-  <class name="mu2e::CRVDataDecoder::CRVGlobalRunDataCollection" />
-  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunDataCollection>" />
-  <class name="std::vector<mu2e::CRVDataDecoder::CRVGlobalRunData>" />
-  <class name="art::Wrapper<std::vector<mu2e::CRVDataDecoder::CRVGlobalRunData>>" />
-  <class name="mu2e::CRVDataDecoder::CRVGlobalRunData" />
-  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunData>" />
-  //<class name="mu2e::CRVDataDecoder::CRVGlobalRunPayload" />
-  //<class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunPayload>" />
-  <class name="mu2e::CRVDataDecoder::CRVGlobalRunInfo" />
-  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVGlobalRunInfo>" />
-  <class name="mu2e::CRVDataDecoder::CRVROCStatusPacket" />
-  <class name="art::Wrapper<mu2e::CRVDataDecoder::CRVROCStatusPacket>" />
+  <class name="art::Wrapper<mu2e::Mu2eEventHeader>"/> 
 
 </lcgdict>

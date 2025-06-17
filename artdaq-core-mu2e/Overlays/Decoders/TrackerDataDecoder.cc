@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/TrackerDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/TrackerDataDecoder.hh"
 
 #include "TRACE/tracemf.h"
 
@@ -7,20 +7,6 @@
 namespace mu2e {
 TrackerDataDecoder::TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt)
 	: DTCDataDecoder(evt)
-{
-	if (block_count() > 0)
-	{
-		auto dataPtr = dataAtBlockIndex(0);
-		auto hdr = dataPtr->GetHeader();
-		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Tracker || hdr->GetVersion() > 1)
-		{
-			TLOG(TLVL_ERROR) << "TrackerDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Tracker) << "/[0,1])";
-		}
-	}
-}
-
-TrackerDataDecoder::TrackerDataDecoder(std::vector<uint8_t> data)
-	: DTCDataDecoder(data)
 {
 	if (block_count() > 0)
 	{

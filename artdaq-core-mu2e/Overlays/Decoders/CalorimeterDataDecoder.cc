@@ -1,4 +1,4 @@
-#include "artdaq-core-mu2e/Data/CalorimeterDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/CalorimeterDataDecoder.hh"
 
 #include "TRACE/tracemf.h"
 
@@ -18,21 +18,6 @@ CalorimeterDataDecoder::CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& evt)
 		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter || hdr->GetVersion() > 1)
 		{
 			// TLOG(TLVL_WARNING) << "CalorimeterDataDecoder CONSTRUCTOR: First block has unexpected type/version " << static_cast<int>(hdr->GetSubsystem()) << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Calorimeter) << "/[0,1])";
-		}
-	}
-}
-
-CalorimeterDataDecoder::CalorimeterDataDecoder(std::vector<uint8_t> data)
-	: DTCDataDecoder(data)
-{
-	// event_.GetDataBlockCount() > 0
-	if (block_count() > 0)
-	{
-		auto dataPtr = dataAtBlockIndex(0);
-		auto hdr = dataPtr->GetHeader();
-		if (hdr->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter || hdr->GetVersion() > 1)
-		{
-			// TLOG(TLVL_WARNING) << "CalorimeterDataDecoder CONSTRUCTOR: First block has unexpected type/version " << hdr->GetSubsystem() << "/" << static_cast<int>(hdr->GetVersion()) << " (expected " << static_cast<int>(DTCLib::DTC_Subsystem_Calorimeter) << "/[0,1])";
 		}
 	}
 }
