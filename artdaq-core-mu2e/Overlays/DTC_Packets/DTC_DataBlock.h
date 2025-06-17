@@ -21,14 +21,14 @@ struct DTC_DataBlock
 	const void* blockPointer{nullptr};                          ///< Pointer to DataBlock in Memory
 	size_t byteSize{0};                                         ///< Size of DataBlock
 private:
-	mutable std::shared_ptr<DTC_DataHeaderPacket> hdr{nullptr}; //use GetHeader()
+	mutable std::shared_ptr<DTC_DataHeaderPacket> hdr{nullptr};  // use GetHeader()
 public:
 	/**
 	 * @brief Create a DTC_DataBlock using a pointer to a memory location containing a Data Block
 	 * @param ptr Pointer to Data Block
-	 * 
+	 *
 	 * WARNING: This function assumes that the pointer is pointing to a valid DTC_DataHeaderPacket!
-	*/
+	 */
 	DTC_DataBlock(const void* ptr)
 		: blockPointer(ptr)
 	{

@@ -2,7 +2,7 @@
 #define artdaq_core_mu2e_Overlays_CFO_Packets_CFO_DataPacket_h
 
 #include <cstdint>
-#include <cstring> // memcpy
+#include <cstring>  // memcpy
 #include <ostream>
 #include <string>
 #include <vector>
@@ -158,6 +158,7 @@ public:
 	uint64_t event_tag_low : 32;
 	uint64_t event_tag_high : 16;
 	uint64_t event_mode : 40;
+
 private:
 	const uint8_t* dataPtr_;
 	uint16_t dataSize_;

@@ -9,13 +9,13 @@ namespace CFOLib {
 
 struct CFO_EventRecord
 {
-// CFO Event Record Format Version (63-56)	Res (55-48)	Event Tag (47-0)
-// Reserved (63-32)	Linux Time [s] (31-0)
-// Event Duration (63-48)	Event Mode (47-0)
-// Reserved (63-8)	DR marker N estimate (7-0)
-// Reserved (63-8)	DR marker N+1 estimate (7-0)
-// TDC of marker N from on-spill start (63-32)	Reserved (31-8)	DR marker N Measurement (7-0)
-// Reserved (63-8)	DR marker N+1 Measurement (7-0)
+	// CFO Event Record Format Version (63-56)	Res (55-48)	Event Tag (47-0)
+	// Reserved (63-32)	Linux Time [s] (31-0)
+	// Event Duration (63-48)	Event Mode (47-0)
+	// Reserved (63-8)	DR marker N estimate (7-0)
+	// Reserved (63-8)	DR marker N+1 estimate (7-0)
+	// TDC of marker N from on-spill start (63-32)	Reserved (31-8)	DR marker N Measurement (7-0)
+	// Reserved (63-8)	DR marker N+1 Measurement (7-0)
 
 	uint64_t event_tag : 48;
 	uint64_t reserved1 : 8;
@@ -57,15 +57,15 @@ struct CFO_EventRecord
 		, TDC_marker_N_from_spill(0)
 		, DR_marker_Nplus1_meas(0)
 		, reserved6(0)
-	{}	//end CFO_EventRecord constructor
+	{}  // end CFO_EventRecord constructor
 
 	inline std::string toJson() const
 	{
 		std::ostringstream oss;
 
 		oss << "\"CFO_EventRecord\": {\n";
-		oss << "\t\"record_format_version\": 0x" <<  std::hex << record_format_version << std::dec;
-		oss << ",\n\t\"event_tag\": " << event_tag << "(0x" <<  std::hex << event_tag << std::dec << ")";
+		oss << "\t\"record_format_version\": 0x" << std::hex << record_format_version << std::dec;
+		oss << ",\n\t\"event_tag\": " << event_tag << "(0x" << std::hex << event_tag << std::dec << ")";
 		oss << ",\n\t\"linux_timestamp\": " << linux_timestamp;
 		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode << std::dec;
 		oss << ",\n\t\"event_duration\": " << event_duration;
@@ -77,7 +77,7 @@ struct CFO_EventRecord
 		oss << "\n}";
 
 		return oss.str();
-	} //end toJson()
+	}  // end toJson()
 };
 
 }  // namespace CFOLib

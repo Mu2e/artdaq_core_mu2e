@@ -29,8 +29,7 @@ public:
 	DTC_SubEvent()
 		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
 
-
-	void SetupSubEvent();
+	bool SetupSubEvent();
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
@@ -54,7 +53,8 @@ public:
 	{
 		auto block_id = blk.GetHeader()->GetLinkID();
 		auto insert_iter = data_blocks_.begin();
-        while (insert_iter != data_blocks_.end()) {
+		while (insert_iter != data_blocks_.end())
+		{
 			if (block_id < insert_iter->GetHeader()->GetLinkID()) break;
 			++insert_iter;
         }
@@ -63,18 +63,34 @@ public:
 		UpdateHeader();
 	}
 
-	DTC_Subsystem GetSubsystem(DTC_Link_ID link = DTC_Link_0) const {
-		switch(link){
-			case DTC_Link_0: return static_cast<DTC_Subsystem>(header_.link0_subsystem); break;
-			case DTC_Link_1: return static_cast<DTC_Subsystem>(header_.link1_subsystem); break;
-			case DTC_Link_2: return static_cast<DTC_Subsystem>(header_.link2_subsystem); break;
-			case DTC_Link_3: return static_cast<DTC_Subsystem>(header_.link3_subsystem); break;
-			case DTC_Link_4: return static_cast<DTC_Subsystem>(header_.link4_subsystem); break;
-			case DTC_Link_5: return static_cast<DTC_Subsystem>(header_.link5_subsystem); break;
-			default: return static_cast<DTC_Subsystem>(0);
+	DTC_Subsystem GetSubsystem(DTC_Link_ID link = DTC_Link_0) const
+	{
+		switch (link)
+		{
+			case DTC_Link_0:
+				return static_cast<DTC_Subsystem>(header_.link0_subsystem);
+				break;
+			case DTC_Link_1:
+				return static_cast<DTC_Subsystem>(header_.link1_subsystem);
+				break;
+			case DTC_Link_2:
+				return static_cast<DTC_Subsystem>(header_.link2_subsystem);
+				break;
+			case DTC_Link_3:
+				return static_cast<DTC_Subsystem>(header_.link3_subsystem);
+				break;
+			case DTC_Link_4:
+				return static_cast<DTC_Subsystem>(header_.link4_subsystem);
+				break;
+			case DTC_Link_5:
+				return static_cast<DTC_Subsystem>(header_.link5_subsystem);
+				break;
+			default:
+				return static_cast<DTC_Subsystem>(0);
 		}
 	}
-	bool HasSubsystem(DTC_Subsystem subsys) const {
+	bool HasSubsystem(DTC_Subsystem subsys) const
+	{
 		if (static_cast<DTC_Subsystem>(header_.link0_subsystem) == subsys) return true;
 		if (static_cast<DTC_Subsystem>(header_.link1_subsystem) == subsys) return true;
 		if (static_cast<DTC_Subsystem>(header_.link2_subsystem) == subsys) return true;
@@ -83,15 +99,18 @@ public:
 		if (static_cast<DTC_Subsystem>(header_.link5_subsystem) == subsys) return true;
 		return false;
 	}
-	void SetDTCMAC(uint8_t mac) {
+	void SetDTCMAC(uint8_t mac)
+	{
 		header_.dtc_mac = mac;
 	}
-	void SetSourceDTC(uint8_t id, DTC_Subsystem subsystem = DTC_Subsystem_Other){
+	void SetSourceDTC(uint8_t id, DTC_Subsystem subsystem = DTC_Subsystem_Other)
+	{
 		std::array<DTC_Subsystem, 6> subsystems;
 		subsystems.fill(subsystem); //Use same subsystem for all six links
 		SetSourceDTC(id,subsystems);
 	}
-	void SetSourceDTC(uint8_t id, std::array<DTC_Subsystem, 6> subsystems){
+	void SetSourceDTC(uint8_t id, std::array<DTC_Subsystem, 6> subsystems)
+	{
 		header_.source_dtc_id = id;
 		header_.link0_subsystem = static_cast<uint8_t>(subsystems[0]);
 		header_.link1_subsystem = static_cast<uint8_t>(subsystems[1]);
@@ -102,12 +121,14 @@ public:
 	}
 	const DTC_SubEventHeader* GetHeader() const { return &header_; }
 	void UpdateHeader();
+	bool IsCorrupt() const { return corruption_detected_; }
 
 private:
 	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
 	DTC_SubEventHeader header_;
 	std::vector<DTC_DataBlock> data_blocks_;
 	const void* buffer_ptr_;
+	bool corruption_detected_{false};
 };
 
 }  // namespace DTCLib

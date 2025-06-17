@@ -25,6 +25,15 @@ public:
 	/// The current version of the DTCEventFragment
 	static constexpr uint8_t CURRENT_VERSION = 1;
 
+	struct Metadata
+	{
+		uint8_t corrupt_flag : 1;
+		uint8_t unused : 7;
+
+		static size_t const size_bytes = 1;
+	};
+	static_assert(sizeof(Metadata) == Metadata::size_bytes, "Metadata size changed!");
+
 	/**
 	 * \param f The Fragment object to use for data storage
 	 *
@@ -38,7 +47,16 @@ public:
 	{
 	}
 
-	DTCLib::DTC_Event getData() const 
+	bool IsCorrupt() const
+	{
+		if (artdaq_Fragment_.hasMetadata())
+		{
+			return artdaq_Fragment_.metadata<Metadata>()->corrupt_flag;
+		}
+		return false;
+	}
+
+	DTCLib::DTC_Event getData() const
 	{
 		if (event_ptr_ == nullptr)
 		{
@@ -48,7 +66,7 @@ public:
 		return *event_ptr_.get();
 	}
 
-	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const 
+	std::vector<DTCLib::DTC_SubEvent> getSubsystemData(DTCLib::DTC_Subsystem subsys) const
 	{
 		auto data = getData();
 		return data.GetSubsystemData(subsys);
@@ -56,13 +74,13 @@ public:
 
 protected:
 private:
-  	DTCEventFragment(DTCEventFragment const&) = delete;             // DTCEventFragment should definitely not be copied
-  	DTCEventFragment(DTCEventFragment&&) = delete;                  // DTCEventFragment should not be moved, only the underlying Fragment
-  	DTCEventFragment& operator=(DTCEventFragment const&) = delete;  // DTCEventFragment should definitely not be copied
-  	DTCEventFragment& operator=(DTCEventFragment&&) = delete;       // DTCEventFragment should not be moved, only the underlying Fragment
+	DTCEventFragment(DTCEventFragment const&) = delete;             // DTCEventFragment should definitely not be copied
+	DTCEventFragment(DTCEventFragment&&) = delete;                  // DTCEventFragment should not be moved, only the underlying Fragment
+	DTCEventFragment& operator=(DTCEventFragment const&) = delete;  // DTCEventFragment should definitely not be copied
+	DTCEventFragment& operator=(DTCEventFragment&&) = delete;       // DTCEventFragment should not be moved, only the underlying Fragment
 
 	artdaq::Fragment const& artdaq_Fragment_;
-        mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
+	mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
 };
 
 #endif /* artdaq_core_Data_Mu2eEventFragment_hh */

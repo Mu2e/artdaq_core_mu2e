@@ -3,7 +3,7 @@ include(ArtDictionary)
 
 art_dictionary(
 DICTIONARY_LIBRARIES
-  artdaq_core_mu2e::artdaq-core-mu2e_Overlays
+  artdaq-core-mu2e::Overlays
 )
 
 get_target_property(DictCompileOptions artdaq-core-mu2e_Overlays_root_dict COMPILE_OPTIONS)

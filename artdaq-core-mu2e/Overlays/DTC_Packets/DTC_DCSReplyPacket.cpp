@@ -48,16 +48,16 @@ DTCLib::DTC_DCSReplyPacket::DTC_DCSReplyPacket(DTC_DataPacket in)
 		TLOG(TLVL_ERROR) << ex.what();
 		throw ex;
 	}
-	DTCErrorBits_ = (in.GetData()[3] >> 3)  & 0xF; //[31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8] 
+	DTCErrorBits_ = (in.GetData()[3] >> 3) & 0xF;  //[31:16] Valid [15] DTC Errors [14:11] ROC Link ID [10:8]
 
 	uint8_t tmpType = in.GetData()[4] & 0xF;
-	if(static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_InvalidS2C && 
+	if (static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_InvalidS2C &&
 		static_cast<DTC_DCSOperationType>(tmpType) != DTC_DCSOperationType_Timeout)
-		tmpType &= 0x3; //if known type, allow complex types in 4-bit nibble; otherwise, mask off	
+		tmpType &= 0x3;  // if known type, allow complex types in 4-bit nibble; otherwise, mask off
 	type_ = static_cast<DTC_DCSOperationType>(tmpType);
 	doubleOp_ = (in.GetData()[4] & 0x4) == 0x4;
 	requestAck_ = (in.GetData()[4] & 0x8) == 0x8;
-	
+
 	dcsReceiveFIFOEmpty_ = (in.GetData()[4] & 0x10) == 0x10;
 	corruptFlag_ = (in.GetData()[4] & 0x20) == 0x20;
 
@@ -133,12 +133,12 @@ std::string DTCLib::DTC_DCSReplyPacket::toJSON()
 std::string DTCLib::DTC_DCSReplyPacket::toPacketFormat()
 {
 	std::stringstream ss;
-	
+
 	ss << headerPacketFormat() << std::hex << std::setfill('0');
 
 	auto firstWord = (packetCount_ & 0x3FC) >> 2;
 	auto secondWord = ((packetCount_ & 0x3) << 6) + (corruptFlag_ ? 0x20 : 0) + (dcsReceiveFIFOEmpty_ ? 0x10 : 0) +
-		(requestAck_ ? 0x8 : 0) + (doubleOp_ ? 0x4 : 0) + static_cast<int>(type_);
+					  (requestAck_ ? 0x8 : 0) + (doubleOp_ ? 0x4 : 0) + static_cast<int>(type_);
 	ss << std::setw(8) << firstWord << "\t" << secondWord << std::endl;
 
 	ss << std::setw(8) << ((address1_ & 0xFF00) >> 8) << "\t" << (address1_ & 0xFF) << std::endl;
@@ -185,7 +185,7 @@ DTCLib::DTC_DataPacket DTCLib::DTC_DCSReplyPacket::ConvertToDataPacket() const
 
 	auto firstWord = (packetCount_ & 0x3FC) >> 2;
 	auto secondWord = ((packetCount_ & 0x3) << 6) + (corruptFlag_ ? 0x20 : 0) + (dcsReceiveFIFOEmpty_ ? 0x10 : 0) +
-		(requestAck_ ? 0x8 : 0) + (doubleOp_ ? 0x4 : 0) + static_cast<int>(type_);
+					  (requestAck_ ? 0x8 : 0) + (doubleOp_ ? 0x4 : 0) + static_cast<int>(type_);
 	output.SetByte(4, static_cast<uint8_t>(secondWord));
 	output.SetByte(5, static_cast<uint8_t>(firstWord));
 

@@ -2,6 +2,7 @@ cet_make_library(
     SOURCE 
       FragmentType.cc 
       DTCEventFragment.cc
+      CFOEventFragment.cc
       STMFragment.cc
       CFO_Packets/CFO_DataPacket.cpp
       CFO_Packets/CFO_DMAPacket.cpp
@@ -23,8 +24,13 @@ cet_make_library(
       DTC_Types/DTC_SERDESRXDisparityError.cpp
       DTC_Types/DTC_SimMode.cpp
       DTC_Types/Utilities.cpp
+      Decoders/DTCDataDecoder.cc
+      Decoders/CalorimeterDataDecoder.cc
+      Decoders/CFODataDecoder.cc
+      Decoders/CRVDataDecoder.cc
+      Decoders/TrackerDataDecoder.cc
     LIBRARIES PUBLIC
-      artdaq_core::artdaq-core_Data
+      artdaq-core::Data
 )
 
 #get_cmake_property(_variableNames VARIABLES)
@@ -34,7 +40,7 @@ cet_make_library(
 
 include(ArtdaqCorePlugins)
 
-  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq_core_mu2e::artdaq-core-mu2e_Overlays )
+  cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq-core-mu2e::Overlays )
 
 
 install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types)

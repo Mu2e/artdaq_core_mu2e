@@ -7,18 +7,21 @@
 #include <sstream>
 
 DTCLib::DTC_HeartbeatPacket::DTC_HeartbeatPacket(DTC_Link_ID link)
-	: DTC_DMAPacket(DTC_PacketType_Heartbeat, link), event_tag_(), eventMode_(), deliveryRingTDC_()
+	: DTC_DMAPacket(DTC_PacketType_Heartbeat, link), event_tag_(), eventMode_()
 {
 	eventMode_.mode0 = 0;
 	eventMode_.mode1 = 0;
 	eventMode_.mode2 = 0;
 	eventMode_.mode3 = 0;
 	eventMode_.mode4 = 0;
+	eventMode_.deliveryRingTDC = 0;
 }
 
 DTCLib::DTC_HeartbeatPacket::DTC_HeartbeatPacket(DTC_Link_ID link, DTC_EventWindowTag event_tag, DTC_EventMode eventMode, uint8_t deliveryRingTDC)
-	: DTC_DMAPacket(DTC_PacketType_Heartbeat, link), event_tag_(event_tag), eventMode_(eventMode), deliveryRingTDC_(deliveryRingTDC)
-{}
+	: DTC_DMAPacket(DTC_PacketType_Heartbeat, link), event_tag_(event_tag), eventMode_(eventMode)
+{
+	eventMode_.deliveryRingTDC = deliveryRingTDC;
+}
 
 DTCLib::DTC_HeartbeatPacket::DTC_HeartbeatPacket(const DTC_DataPacket in)
 	: DTC_DMAPacket(in)
@@ -35,7 +38,7 @@ DTCLib::DTC_HeartbeatPacket::DTC_HeartbeatPacket(const DTC_DataPacket in)
 	eventMode_.mode2 = arr[12];
 	eventMode_.mode3 = arr[13];
 	eventMode_.mode4 = arr[14];
-	deliveryRingTDC_ = arr[15];
+	eventMode_.deliveryRingTDC = arr[15];
 	event_tag_ = DTC_EventWindowTag(arr, 4);
 }
 
@@ -50,7 +53,7 @@ std::string DTCLib::DTC_HeartbeatPacket::toJSON()
 	ss << std::hex << "0x" << static_cast<int>(eventMode_.mode2) << ",";
 	ss << std::hex << "0x" << static_cast<int>(eventMode_.mode3) << ",";
 	ss << std::hex << "0x" << static_cast<int>(eventMode_.mode4) << "],";
-	ss << "\"deliveryRingTDC\": " << std::hex << " 0x" << static_cast<int>(deliveryRingTDC_) << "";
+	ss << "\"deliveryRingTDC\": " << std::hex << " 0x" << static_cast<int>(eventMode_.deliveryRingTDC) << "";
 	ss << "}";
 	return ss.str();
 }
@@ -61,11 +64,11 @@ std::string DTCLib::DTC_HeartbeatPacket::toPacketFormat()
 	ss << headerPacketFormat() << std::setfill('0') << std::hex;
 	ss << event_tag_.toPacketFormat();
 	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.mode1) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode0) << "\n";
+	   << static_cast<int>(eventMode_.mode0) << "\n";
 	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.mode3) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode2) << "\n";
-	ss << "0x" << std::setw(6) << static_cast<int>(deliveryRingTDC_) << "\t0x" << std::setw(6)
-		<< static_cast<int>(eventMode_.mode4) << "\n";
+	   << static_cast<int>(eventMode_.mode2) << "\n";
+	ss << "0x" << std::setw(6) << static_cast<int>(eventMode_.deliveryRingTDC) << "\t0x" << std::setw(6)
+	   << static_cast<int>(eventMode_.mode4) << "\n";
 	return ss.str();
 }
 
@@ -74,6 +77,6 @@ DTCLib::DTC_DataPacket DTCLib::DTC_HeartbeatPacket::ConvertToDataPacket() const
 	auto output = DTC_DMAPacket::ConvertToDataPacket();
 	event_tag_.GetEventWindowTag(output.GetData(), 4);
 	eventMode_.GetEventMode(output.GetData(), 10);
-	output.SetByte(static_cast<uint16_t>(15), deliveryRingTDC_);
+	output.SetByte(static_cast<uint16_t>(15), eventMode_.deliveryRingTDC);
 	return output;
 }
