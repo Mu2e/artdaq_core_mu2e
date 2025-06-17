@@ -2,7 +2,7 @@
 #ifndef ARTDAQ_CORE_MU2E_DATA_TRACKERDATADECODER_HH
 #define ARTDAQ_CORE_MU2E_DATA_TRACKERDATADECODER_HH
 
-#include "artdaq-core-mu2e/Data/DTCDataDecoder.hh"
+#include "artdaq-core-mu2e/Overlays/Decoders/DTCDataDecoder.hh"
 
 #include <messagefacility/MessageLogger/MessageLogger.h>  // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
 
@@ -13,10 +13,6 @@ class TrackerDataDecoder : public DTCDataDecoder
 {
 public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
-
-	TrackerDataDecoder()
-		: DTCDataDecoder() {}
-	explicit TrackerDataDecoder(std::vector<uint8_t> data);
 
 	explicit TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt);
 

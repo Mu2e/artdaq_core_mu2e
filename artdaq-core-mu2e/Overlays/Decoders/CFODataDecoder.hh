@@ -21,21 +21,11 @@ std::ostream &operator<<(std::ostream &, CFODataDecoder const &);
 
 struct mu2e::CFODataDecoder
 {
-	CFODataDecoder() {}
-
-	explicit CFODataDecoder(std::vector<uint8_t> const &data)
-		: data_(data)
-	{
-	}
-
 	explicit CFODataDecoder(CFOLib::CFO_Event const &se);
 
 	void setup_event() const;
 
-	mutable bool setup_{false};
-	std::vector<uint8_t> data_;
-
-	mutable CFOLib::CFO_Event event_;  //! presume transient
+	CFOLib::CFO_Event const &event_;
 };
 
 #endif /* mu2e_artdaq_Data_CFODataDecoder_hh */
