@@ -83,7 +83,7 @@ struct mu2e::DTCDataDecoder
 		return;
 	}
 
-	DTCLib::DTC_SubEvent const& event_;
+	DTCLib::DTC_SubEvent const &event_;
 };
 
 #endif /* mu2e_artdaq_Overlays_DTCDataDecoder_hh */

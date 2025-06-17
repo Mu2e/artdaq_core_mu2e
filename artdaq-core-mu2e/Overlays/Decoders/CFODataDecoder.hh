@@ -25,7 +25,7 @@ struct mu2e::CFODataDecoder
 
 	void setup_event() const;
 
-	CFOLib::CFO_Event const& event_;
+	CFOLib::CFO_Event const &event_;
 };
 
 #endif /* mu2e_artdaq_Data_CFODataDecoder_hh */
