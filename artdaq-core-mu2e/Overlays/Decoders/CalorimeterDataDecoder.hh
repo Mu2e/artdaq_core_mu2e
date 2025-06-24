@@ -53,6 +53,25 @@ public:
 		}
 	};
 
+	struct CalorimeterHitDataPacketNew
+	{
+		uint64_t Reserved1 : 12;
+		uint64_t BoardID : 8; 
+		uint64_t DetectorID : 3; 
+		uint64_t ChannelID : 5; 
+		uint64_t Time : 16;
+		uint64_t InPayloadEventWindowTag : 16;
+		uint64_t : 4; //padding
+		uint64_t Baseline : 12;
+		uint64_t IndexOfMaxDigitizerSample : 10;
+		uint64_t ErrorFlags : 4; 
+		uint64_t NumberOfSamples : 10;
+		uint64_t : 28; //padding
+
+		CalorimeterHitDataPacketNew()
+			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
+	};
+
 	// CalorimeterHitDataPacket: Each hit is readout as a variable length sequence of data packets
 	struct CalorimeterHitDataPacket
 	{
@@ -123,6 +142,7 @@ public:
 	struct Calorimeter12bitWord
 	{
 		uint16_t word : 12;
+		uint16_t : 4; //padding
 		Calorimeter12bitWord()
 			: word(0) {}
 	};
@@ -134,11 +154,13 @@ public:
 			: numberOfCounters(0) {}
 	};
 
+	std::vector<std::pair<CalorimeterHitDataPacketNew, std::vector<uint16_t>>>* GetCalorimeterHitDataNew(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitTestDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitTestData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetCalorimeterCountersData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetEmulatedCountersData(size_t blockIndex) const;
 	std::unique_ptr<CalorimeterFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacketNew, uint16_t>> GetCalorimeterHitsForTriggerNew(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>* GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
 };
