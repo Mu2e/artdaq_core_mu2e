@@ -69,7 +69,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, st
 // Get Calo Hit Data Packet
 std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew, std::vector<uint16_t>>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitDataNew(size_t blockIndex) const
 {
-	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew, std::vector<uint16_t>>> *output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew, std::vector<uint16_t>>>();
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew, std::vector<uint16_t>>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew, std::vector<uint16_t>>>();
 
 	// get data block at given index
 	DTCLib::DTC_DataBlock const* dataBlock = dataAtBlockIndex(blockIndex);
@@ -97,36 +97,35 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew,
 		TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitDataNew : no packets in block " << blockIndex << " -- disabled ROC?\n";
 		return output;
 	}
-	
+
 	auto blockPos = reinterpret_cast<const uint8_t*>(blockDataPtr);  // byte position in block (multiple of 16)
 	auto endOfBlockPos = blockPos + dataSize;
-	while (blockPos < endOfBlockPos) // until the end of this block
+	while (blockPos < endOfBlockPos)  // until the end of this block
 	{
-
-		//Create output
+		// Create output
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew(), std::vector<uint16_t>());
 
-		//Before waveform (96 bit)
+		// Before waveform (96 bit)
 		auto hitPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew const*>(blockPos);
 		output->back().first = *hitPtr;
 
-		//Waveform
+		// Waveform
 		auto waveformPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::Calorimeter12bitWord const*>(blockPos + 6);
 		size_t nSamples = hitPtr->NumberOfSamples;
 		output->back().second.resize(nSamples);
-		for (uint i=0; i<nSamples; i++){
+		for (uint i = 0; i < nSamples; i++)
+		{
 			output->back().second[i] = waveformPtr[i].word;
 		}
 
-		//Advance to the next 16-byte packet
-		float hitByteSize = nSamples*1.5 + sizeof(output->back().first);
-		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize/16)); //number of 16-byte packets this hit occupied
-		blockPos += hitPackets*16; //advance by 16 bytes per packet
+		// Advance to the next 16-byte packet
+		float hitByteSize = nSamples * 1.5 + sizeof(output->back().first);
+		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 16));  // number of 16-byte packets this hit occupied
+		blockPos += hitPackets * 16;                                // advance by 16 bytes per packet
 	}
 
 	return output;
 }
-
 
 std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
 {

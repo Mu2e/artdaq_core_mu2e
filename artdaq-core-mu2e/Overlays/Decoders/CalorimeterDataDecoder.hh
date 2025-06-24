@@ -56,17 +56,17 @@ public:
 	struct CalorimeterHitDataPacketNew
 	{
 		uint64_t Reserved1 : 12;
-		uint64_t BoardID : 8; 
-		uint64_t DetectorID : 3; 
-		uint64_t ChannelID : 5; 
+		uint64_t BoardID : 8;
+		uint64_t DetectorID : 3;
+		uint64_t ChannelID : 5;
 		uint64_t Time : 16;
 		uint64_t InPayloadEventWindowTag : 16;
-		uint64_t : 4; //padding
+		uint64_t : 4;  // padding
 		uint64_t Baseline : 12;
 		uint64_t IndexOfMaxDigitizerSample : 10;
-		uint64_t ErrorFlags : 4; 
+		uint64_t ErrorFlags : 4;
 		uint64_t NumberOfSamples : 10;
-		uint64_t : 28; //padding
+		uint64_t : 28;  // padding
 
 		CalorimeterHitDataPacketNew()
 			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
@@ -142,7 +142,7 @@ public:
 	struct Calorimeter12bitWord
 	{
 		uint16_t word : 12;
-		uint16_t : 4; //padding
+		uint16_t : 4;  // padding
 		Calorimeter12bitWord()
 			: word(0) {}
 	};
