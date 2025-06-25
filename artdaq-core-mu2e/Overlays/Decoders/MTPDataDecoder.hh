@@ -25,7 +25,7 @@ public:
 	};
 
         typedef std::vector<const MTPDataPacket*> mtp_data_t;
-        
+
         mtp_data_t GetMTPDataPackets(size_t blockIndex) const;
 };
 }
