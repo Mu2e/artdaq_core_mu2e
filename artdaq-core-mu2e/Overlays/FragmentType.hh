@@ -43,7 +43,6 @@ std::unordered_map<FragmentType, std::string> const names{
 	{FragmentType::STM, "STM"},
 	{FragmentType::TRKDTC, "TRKDTC"},
 	{FragmentType::CFO, "CFO"},
-        {FragmentType::MTP, "MTP"},
 };
 
 FragmentType toFragmentType(std::string t_string);
