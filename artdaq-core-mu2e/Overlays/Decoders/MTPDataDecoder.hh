@@ -15,10 +15,14 @@ public:
 
 	struct MTPDataPacket
 	{
-                uint64_t timeStamp0 : 16;
-                uint64_t ewt0 : 48;
-                uint64_t timeStamp1 : 16;
-                uint64_t ewt1 : 48;
+                uint16_t timeStamp0;
+                uint16_t ewt0a;
+                uint16_t ewt0b;
+                uint16_t ewt0c;
+                uint16_t timeStamp1;
+                uint16_t ewt1a;
+                uint16_t ewt1b;
+                uint16_t ewt1c;
 
 		MTPDataPacket()
                   : timeStamp(0), ewt0(0), timeStamp1(0), ewt1(0) {}
