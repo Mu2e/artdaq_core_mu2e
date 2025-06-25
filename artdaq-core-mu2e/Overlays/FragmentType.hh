@@ -21,6 +21,7 @@ enum FragmentType : artdaq::Fragment::type_t
 	STM = artdaq::Fragment::FirstUserFragmentType + 9,      // Stopping Target Monitor fragment
 	TRKDTC = artdaq::Fragment::FirstUserFragmentType + 10,  // hardware debug info
 	CFO = artdaq::Fragment::FirstUserFragmentType + 11,     // CFO Fragment
+        MTP = artdaq::Fragment::FirstUserFragmentType + 12,     // Mobile Timing Paddles fragment
 	INVALID                                                 // Should always be last.
 };
 
@@ -43,6 +44,7 @@ std::unordered_map<FragmentType, std::string> const names{
 	{FragmentType::STM, "STM"},
 	{FragmentType::TRKDTC, "TRKDTC"},
 	{FragmentType::CFO, "CFO"},
+        {FragmentType::MTP, "MTP"},
 };
 
 FragmentType toFragmentType(std::string t_string);
