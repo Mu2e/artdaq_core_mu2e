@@ -21,19 +21,18 @@ MTPDataDecoder::MTPDataDecoder(DTCLib::DTC_SubEvent const& evt)
 
 mtp_data_t GetMTPDataPackets(size_t blockIndex) const
 {
-        mtp_data_t output;
+	mtp_data_t output;
 
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return output;
 
-        auto pos = reinterpret_cast<MTPDataPacket const*>(dataPtr->GetData());
-        output.reserve(dataPtr->GetHeader()->GetPacketCount());
-        size_t packetsProcessed = 0;
-        while (packetsProcessed < dataPtr->GetHeader()->GetPacketCount())
-        {
-                output.emplace_back(pos);
-                packetsProcessed += 1;
-                pos += 1;
-        }
-
+	auto pos = reinterpret_cast<MTPDataPacket const*>(dataPtr->GetData());
+	output.reserve(dataPtr->GetHeader()->GetPacketCount());
+	size_t packetsProcessed = 0;
+	while (packetsProcessed < dataPtr->GetHeader()->GetPacketCount())
+	{
+		output.emplace_back(pos);
+		packetsProcessed += 1;
+		pos += 1;
+	}
 }
