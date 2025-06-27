@@ -19,7 +19,7 @@ MTPDataDecoder::MTPDataDecoder(DTCLib::DTC_SubEvent const& evt)
 	}
 }
 
-mtp_data_t GetMTPDataPackets(size_t blockIndex) const
+MTPDataDecoder::mtp_data_t GetMTPDataPackets(size_t blockIndex) const
 {
 	mtp_data_t output;
 
@@ -35,4 +35,5 @@ mtp_data_t GetMTPDataPackets(size_t blockIndex) const
 		packetsProcessed += 1;
 		pos += 1;
 	}
+}
 }
