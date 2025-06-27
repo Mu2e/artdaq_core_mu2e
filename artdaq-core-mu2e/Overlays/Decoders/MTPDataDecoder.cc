@@ -36,7 +36,7 @@ MTPDataDecoder::mtp_data_t MTPDataDecoder::GetMTPDataPackets(size_t blockIndex) 
 		pos += 1;
 	}
 
-    return output;
+	return output;
 }
 
 }  // namespace mu2e
