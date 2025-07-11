@@ -54,7 +54,7 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 // for FEB-II
 bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
 {
-	crvHits.clear();
+        crvHits.clear();
 
         auto dataPtr = dataAtBlockIndex(blockIndex);
         if(dataPtr == nullptr) return false;
@@ -67,23 +67,22 @@ bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHit
         eventSize-=sizeof(CRVROCStatusPacket);
         if(eventSize%hitSize!=0) return false;  //event size should be a multiple of the hit size (11 word)
         size_t nHits = eventSize/hitSize;
+        crvHits.resize(nHits);
 
         data+=sizeof(CRVROCStatusPacket);
         for(size_t iHit=0; iHit<nHits; ++iHit)
         {
-            crvHits.resize(crvHits.size() + 1);
-
-            memcpy(&crvHits.back().first, data, sizeof(CRVHitInfoFEBII));
+            memcpy(&crvHits.at(iHit).first, data, sizeof(CRVHitInfoFEBII));
             data+=sizeof(CRVHitInfoFEBII);
 
-            crvHits.back().second.resize(nADCsamples);
+            crvHits.at(iHit).second.resize(nADCsamples);
             const CRVHitADCBlockFEBII *adcBlockPtr = reinterpret_cast<const CRVHitADCBlockFEBII *>(data);
             for(size_t i=0; i<nADCblocks; ++i)
             {
-              crvHits.back().second.at(i*nADCsamplesPerBlock+0)=adcBlockPtr->getSample0();
-              crvHits.back().second.at(i*nADCsamplesPerBlock+1)=adcBlockPtr->getSample1();
-              crvHits.back().second.at(i*nADCsamplesPerBlock+2)=adcBlockPtr->getSample2();
-              crvHits.back().second.at(i*nADCsamplesPerBlock+3)=adcBlockPtr->getSample3();
+              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+0)=adcBlockPtr->getSample0();
+              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+1)=adcBlockPtr->getSample1();
+              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+2)=adcBlockPtr->getSample2();
+              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+3)=adcBlockPtr->getSample3();
               ++adcBlockPtr;
             }
             data+=nADCblocks*sizeof(CRVHitADCBlockFEBII);
