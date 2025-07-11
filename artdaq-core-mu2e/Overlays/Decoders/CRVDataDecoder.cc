@@ -51,6 +51,47 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 	return true;
 }
 
+// for FEB-II
+bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
+{
+	crvHits.clear();
+
+        auto dataPtr = dataAtBlockIndex(blockIndex);
+        if(dataPtr == nullptr) return false;
+        const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
+
+        auto crvRocHeader = reinterpret_cast<CRVROCStatusPacket const *>(data);
+        size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
+
+        if(eventSize<sizeof(CRVROCStatusPacket)) return false;  //check is required when subtracting unsigned integers
+        eventSize-=sizeof(CRVROCStatusPacket);
+        if(eventSize%hitSize!=0) return false;  //event size should be a multiple of the hit size (11 word)
+        size_t nHits = eventSize/hitSize;
+
+        data+=sizeof(CRVROCStatusPacket);
+        for(size_t iHit=0; iHit<nHits; ++iHit)
+        {
+            crvHits.resize(crvHits.size() + 1);
+
+            memcpy(&crvHits.back().first, data, sizeof(CRVHitInfoFEBII));
+            data+=sizeof(CRVHitInfoFEBII);
+
+            crvHits.back().second.resize(nADCsamples);
+            const CRVHitADCBlockFEBII *adcBlockPtr = reinterpret_cast<const CRVHitADCBlockFEBII *>(data);
+            for(size_t i=0; i<nADCblocks; ++i)
+            {
+              crvHits.back().second.at(i*nADCsamplesPerBlock+0)=adcBlockPtr->getSample0();
+              crvHits.back().second.at(i*nADCsamplesPerBlock+1)=adcBlockPtr->getSample1();
+              crvHits.back().second.at(i*nADCsamplesPerBlock+2)=adcBlockPtr->getSample2();
+              crvHits.back().second.at(i*nADCsamplesPerBlock+3)=adcBlockPtr->getSample3();
+              ++adcBlockPtr;
+            }
+            data+=nADCblocks*sizeof(CRVHitADCBlockFEBII);
+        }
+
+        return true;
+}
+
 // for global run
 bool mu2e::CRVDataDecoder::GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const
 {
