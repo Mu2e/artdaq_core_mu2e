@@ -54,41 +54,41 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 // for FEB-II
 bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
 {
-        crvHits.clear();
+	crvHits.clear();
 
-        auto dataPtr = dataAtBlockIndex(blockIndex);
-        if(dataPtr == nullptr) return false;
-        const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return false;
+	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
 
-        auto crvRocHeader = reinterpret_cast<CRVROCStatusPacket const *>(data);
-        size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
+	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacket const *>(data);
+	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
 
-        if(eventSize<sizeof(CRVROCStatusPacket)) return false;  //check is required when subtracting unsigned integers
-        eventSize-=sizeof(CRVROCStatusPacket);
-        if(eventSize%hitSize!=0) return false;  //event size should be a multiple of the hit size (11 word)
-        size_t nHits = eventSize/hitSize;
-        crvHits.resize(nHits);
+	if (eventSize < sizeof(CRVROCStatusPacket)) return false;  // check is required when subtracting unsigned integers
+	eventSize -= sizeof(CRVROCStatusPacket);
+	if (eventSize % hitSize != 0) return false;  // event size should be a multiple of the hit size (11 word)
+	size_t nHits = eventSize / hitSize;
+	crvHits.resize(nHits);
 
-        data+=sizeof(CRVROCStatusPacket);
-        for(size_t iHit=0; iHit<nHits; ++iHit)
-        {
-            memcpy(&crvHits.at(iHit).first, data, sizeof(CRVHitInfoFEBII));
-            data+=sizeof(CRVHitInfoFEBII);
+	data += sizeof(CRVROCStatusPacket);
+	for (size_t iHit = 0; iHit < nHits; ++iHit)
+	{
+		memcpy(&crvHits.at(iHit).first, data, sizeof(CRVHitInfoFEBII));
+		data += sizeof(CRVHitInfoFEBII);
 
-            crvHits.at(iHit).second.resize(nADCsamples);
-            const CRVHitADCBlockFEBII *adcBlockPtr = reinterpret_cast<const CRVHitADCBlockFEBII *>(data);
-            for(size_t i=0; i<nADCblocks; ++i)
-            {
-              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+0)=adcBlockPtr->getSample0();
-              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+1)=adcBlockPtr->getSample1();
-              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+2)=adcBlockPtr->getSample2();
-              crvHits.at(iHit).second.at(i*nADCsamplesPerBlock+3)=adcBlockPtr->getSample3();
-              ++adcBlockPtr;
-            }
-            data+=nADCblocks*sizeof(CRVHitADCBlockFEBII);
-        }
+		crvHits.at(iHit).second.resize(nADCsamples);
+		const CRVHitADCBlockFEBII *adcBlockPtr = reinterpret_cast<const CRVHitADCBlockFEBII *>(data);
+		for (size_t i = 0; i < nADCblocks; ++i)
+		{
+			crvHits.at(iHit).second.at(i * nADCsamplesPerBlock + 0) = adcBlockPtr->getSample0();
+			crvHits.at(iHit).second.at(i * nADCsamplesPerBlock + 1) = adcBlockPtr->getSample1();
+			crvHits.at(iHit).second.at(i * nADCsamplesPerBlock + 2) = adcBlockPtr->getSample2();
+			crvHits.at(iHit).second.at(i * nADCsamplesPerBlock + 3) = adcBlockPtr->getSample3();
+			++adcBlockPtr;
+		}
+		data += nADCblocks * sizeof(CRVHitADCBlockFEBII);
+	}
 
-        return true;
+	return true;
 }
 
 // for global run
