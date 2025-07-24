@@ -176,9 +176,9 @@ public:
 		uint16_t getSample3() const { return ADCsample3; }
 	};
 
-        constexpr static std::size_t hitSize = sizeof(CRVHitInfoFEBII)+nADCblocks*sizeof(CRVHitADCBlockFEBII);
-        typedef std::vector<int16_t> CRVHitWaveformFEBII;  //ADC samples use only 12 bits, but are reported as 16 bits
-        typedef std::pair<CRVHitInfoFEBII, CRVHitWaveformFEBII> CRVHitFEBII;
+	constexpr static std::size_t hitSize = sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
+	typedef std::vector<int16_t> CRVHitWaveformFEBII;  // ADC samples use only 12 bits, but are reported as 16 bits
+	typedef std::pair<CRVHitInfoFEBII, CRVHitWaveformFEBII> CRVHitFEBII;
 
 	/**********************************************************/
 
