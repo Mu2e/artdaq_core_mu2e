@@ -123,7 +123,7 @@ public:
 	// Hit meta data for FEB-II
 	struct CRVHitInfoFEBII
 	{
-		uint16_t fpgaChannel : 5; //real channels: 0x00...0x0F (5th bit set to 0). special situation, e.g. fake pulses: 0x10...0x1F (5th bit set to 1)
+		uint16_t fpgaChannel : 5;  // real channels: 0x00...0x0F (5th bit set to 0). special situation, e.g. fake pulses: 0x10...0x1F (5th bit set to 1)
 		uint16_t fpgaNumber : 2;
 		uint16_t portNumber : 5;
 		uint16_t reserved : 4;
