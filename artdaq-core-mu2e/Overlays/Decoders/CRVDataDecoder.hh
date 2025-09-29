@@ -84,6 +84,7 @@ public:
 			return EventWindowTag;
 		}
 	};
+	typedef std::vector<CRVROCStatusPacket> CRVROCStatusPacketCollection;
 
 	/**********************************************************/
 
