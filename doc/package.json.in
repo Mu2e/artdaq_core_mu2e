@@ -1,0 +1,22 @@
+{
+  "name" : "@NODEJS_ADDON_NAME@",
+  "description": "@PROJECT_NAME@ library",
+  "keywords":["artdaq","@PROJECT_NAME@"],
+  "homepage": "https://cdcvs.fnal.gov/redmine/projects/@PROJECT_NAME@",
+  "main" : "./@NODEJS_ADDON_NAME@.node",
+  "repository": {
+  "type": "git",
+  "url": "https://cdcvs.fnal.gov/redmine/projects/@PROJECT_NAME@"
+  },
+  "engines" : {
+    "node": ">= 0.10.x"
+  },
+  "bugs": {
+    "url" : "https://cdcvs.fnal.gov/redmine/projects/@PROJECT_NAME@"
+  },
+  "dependencies": {
+  },
+  "license": "FNAL.GOV",
+  "version" : "@CETPKG_VERSION@",
+  "authors": "See https://cdcvs.fnal.gov/redmine/projects/@PROJECT_NAME@"
+}
