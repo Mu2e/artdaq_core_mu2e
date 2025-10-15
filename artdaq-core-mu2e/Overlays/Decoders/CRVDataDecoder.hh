@@ -15,9 +15,10 @@ public:
 		: DTCDataDecoder(f)
 	{}
 
+	/**********************************************************/
+
 	// ROC Status Header (used for CrvDigis and global run)
 	// see doc-db 4914
-
 	struct CRVROCStatusPacket
 	{
 		uint8_t unused1 : 4;
@@ -84,8 +85,9 @@ public:
 		}
 	};
 
-	// Hits (used for CrvDigi)
+	/**********************************************************/
 
+	// Hits (used for CrvDigi)
 	struct CRVHitWaveformSample
 	{
 		int16_t ADC : 12;
@@ -95,7 +97,6 @@ public:
 			, unused(0)
 		{}
 	};
-
 	struct CRVHitInfo
 	{
 		uint16_t febChannel : 6;
@@ -117,8 +118,73 @@ public:
 	typedef std::vector<CRVHitWaveformSample> CRVHitWaveform;
 	typedef std::pair<CRVHitInfo, CRVHitWaveform> CRVHit;
 
-	// GlobalRun Info
+	/**********************************************************/
 
+	// Hit meta data for FEB-II
+	struct CRVHitInfoFEBII
+	{
+		uint16_t fpgaChannel : 5;  // real channels: 0x00...0x0F (5th bit set to 0). special situation, e.g. fake pulses: 0x10...0x1F (5th bit set to 1)
+		uint16_t fpgaNumber : 2;
+		uint16_t portNumber : 5;
+		uint16_t reserved : 4;
+		uint16_t hitTime;
+		CRVHitInfoFEBII()
+			: fpgaChannel(0)
+			, fpgaNumber(0)
+			, portNumber(0)
+			, reserved(0)
+			, hitTime(0)
+		{}
+	};
+
+	// ADC samples use 12 bit and are densily packed, i.e. 4 samples in a 3 word block (=ADC block below)
+	constexpr static std::size_t nADCsamplesPerBlock = 4;
+	constexpr static std::size_t nADCblocks = 3;    // each hit has 3 of such ADC blocks (with 4 ADC samples each)
+	constexpr static std::size_t nADCsamples = 12;  // total number of ADC samples per hit
+	struct CRVHitADCBlockFEBII
+	{
+		// first word
+		uint16_t ADCsample0 : 12;
+		uint16_t ADCsample1a : 4;
+		// second word
+		uint16_t ADCsample1b : 8;
+		uint16_t ADCsample2a : 8;
+		// third word
+		uint16_t ADCsample2b : 4;
+		uint16_t ADCsample3 : 12;
+		CRVHitADCBlockFEBII()
+			: ADCsample0(0)
+			, ADCsample1a(0)
+			, ADCsample1b(0)
+			, ADCsample2a(0)
+			, ADCsample2b(0)
+			, ADCsample3(0)
+		{}
+		uint16_t getSample0() const { return ADCsample0; }
+		uint16_t getSample1() const
+		{
+			uint16_t sample = ADCsample1b;
+			sample <<= 4;
+			sample |= ADCsample1a;
+			return sample;
+		}
+		uint16_t getSample2() const
+		{
+			uint16_t sample = ADCsample2b;
+			sample <<= 8;
+			sample |= ADCsample2a;
+			return sample;
+		}
+		uint16_t getSample3() const { return ADCsample3; }
+	};
+
+	constexpr static std::size_t hitSize = sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
+	typedef std::vector<int16_t> CRVHitWaveformFEBII;  // ADC samples use only 12 bits, but are reported as 16 bits
+	typedef std::pair<CRVHitInfoFEBII, CRVHitWaveformFEBII> CRVHitFEBII;
+
+	/**********************************************************/
+
+	// GlobalRun Info
 	struct CRVGlobalRunInfo
 	{
 		uint16_t word0;
@@ -151,11 +217,9 @@ public:
 	};
 
 	// GlobalRun Payload
-
 	typedef std::vector<uint16_t> CRVGlobalRunPayload;
 
 	// Full GlobalRun Data
-
 	struct CRVGlobalRunData
 	{
 		CRVROCStatusPacket _ROCstatus;
@@ -170,10 +234,13 @@ public:
 	};
 	typedef std::vector<CRVGlobalRunData> CRVGlobalRunDataCollection;
 
+	/**********************************************************/
+
 	// access functions (used for CrvDigis and GlobalRun)
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
+	bool GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const;
 	bool GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const;
 	bool GetCRVGlobalRunPayload(size_t blockIndex, std::vector<uint16_t> &globalRunPayload) const;
 };
