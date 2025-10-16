@@ -106,20 +106,25 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew,
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew(), std::vector<uint16_t>());
 
 		// Before waveform (96 bit)
-		auto hitPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew const*>(blockPos);
-		output->back().first = *hitPtr;
+		const uint16_t* words = reinterpret_cast<const uint16_t*>(blockPos);
+		output->back().first.mapFromRaw(words);
 
 		// Waveform
-		auto waveformPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::Calorimeter12bitWord const*>(blockPos + 6);
-		size_t nSamples = hitPtr->NumberOfSamples;
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos + 12));
+		size_t nSamples = output->back().first.NumberOfSamples;
+
+		// Make sure we don't read over the block if there is an error
+		uint bytesLeft = endOfBlockPos - (blockPos + 12);
+		uint maxSamples = bytesLeft / 1.5;
+		if (nSamples > maxSamples) nSamples = maxSamples;
+
 		output->back().second.resize(nSamples);
-		for (uint i = 0; i < nSamples; i++)
-		{
-			output->back().second[i] = waveformPtr[i].word;
+		for (uint i = 0; i < nSamples; i++){
+			output->back().second[i] = reader[i];
 		}
 
 		// Advance to the next 16-byte packet
-		float hitByteSize = nSamples * 1.5 + sizeof(output->back().first);
+		float hitByteSize = 12 + nSamples * 1.5;
 		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 16));  // number of 16-byte packets this hit occupied
 		blockPos += hitPackets * 16;                                // advance by 16 bytes per packet
 	}
@@ -195,7 +200,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 	while (blockPos < endOfBlockPos)
 	{  // until the end of this block
 
-		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos));
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos), true);
 
 		// Create output hit
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
@@ -307,7 +312,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 	while (blockPos < endOfBlockPos)
 	{  // until the end of this block
 
-		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos));
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos), true);
 
 		// Create output hit
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), uint16_t());
