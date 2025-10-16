@@ -80,8 +80,7 @@ public:
 
 		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength) {
 			uint32_t result = 0;
-			for (size_t i = 0; i < bitLength; ++i) {
-				size_t bitIndex = startBit + i;
+			for (size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++) {
 				size_t wordIndex = (bitIndex / 16) ^ 0x1; //Swap pairs of 16-bit words (just flip the last bit)
 				size_t bitOffset = 15 - (bitIndex % 16); // Big-endian
 
