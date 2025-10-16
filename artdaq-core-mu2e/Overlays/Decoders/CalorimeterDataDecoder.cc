@@ -119,7 +119,8 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacketNew,
 		if (nSamples > maxSamples) nSamples = maxSamples;
 
 		output->back().second.resize(nSamples);
-		for (uint i = 0; i < nSamples; i++){
+		for (uint i = 0; i < nSamples; i++)
+		{
 			output->back().second[i] = reader[i];
 		}
 

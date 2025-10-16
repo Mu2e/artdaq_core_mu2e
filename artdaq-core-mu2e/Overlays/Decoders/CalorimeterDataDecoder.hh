@@ -27,33 +27,36 @@ public:
 			uint firstWordIndex;
 			uint startingLetter;
 
-			if (debugPacket){
+			if (debugPacket)
+			{
 				int wordInTwoPackets = index % 21;
 				int nTwoPackets = (index - wordInTwoPackets) / 21;
 				firstWordIndex = nTwoPackets * 16 + ((wordInTwoPackets * 3) / 4);
 				startingLetter = wordInTwoPackets % 4;
-			} else {
+			}
+			else
+			{
 				firstWordIndex = (index * 3) / 4;
 				startingLetter = index % 4;
 			}
 
-			//Find the two 16-bit words relative to this 12-bit word (swap their position first)
+			// Find the two 16-bit words relative to this 12-bit word (swap their position first)
 			uint16_t word1 = dataPtr[firstWordIndex ^ 0x1];
-			uint16_t word2 = dataPtr[(firstWordIndex+1) ^ 0x1];
+			uint16_t word2 = dataPtr[(firstWordIndex + 1) ^ 0x1];
 
 			uint16_t temp;
 			switch (startingLetter)
 			{
-				case 0: //FFF0
+				case 0:  // FFF0
 					temp = (word1 >> 4) & 0x0FFF;
 					break;
-				case 1: //000F FF00
+				case 1:  // 000F FF00
 					temp = ((word1 & 0x000F) << 8) | ((word2 & 0xFF00) >> 8);
 					break;
-				case 2: //00FF F000
+				case 2:  // 00FF F000
 					temp = ((word1 & 0x00FF) << 4) | ((word2 & 0xF000) >> 12);
 					break;
-				case 3: //0FFF
+				case 3:  // 0FFF
 					temp = word1 & 0x0FFF;
 					break;
 			}
@@ -78,11 +81,13 @@ public:
 		CalorimeterHitDataPacketNew()
 			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
 
-		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength) {
+		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength)
+		{
 			uint32_t result = 0;
-			for (size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++) {
-				size_t wordIndex = (bitIndex / 16) ^ 0x1; //Swap pairs of 16-bit words (just flip the last bit)
-				size_t bitOffset = 15 - (bitIndex % 16); // Big-endian
+			for (size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++)
+			{
+				size_t wordIndex = (bitIndex / 16) ^ 0x1;  // Swap pairs of 16-bit words (just flip the last bit)
+				size_t bitOffset = 15 - (bitIndex % 16);   // Big-endian
 
 				uint16_t bit = (words[wordIndex] >> bitOffset) & 0x1;
 				result = (result << 1) | bit;
@@ -90,7 +95,9 @@ public:
 			return result;
 		}
 
-		void mapFromRaw(const uint16_t* words){
+		void mapFromRaw(const uint16_t* words)
+		{
+			// clang-format off
 			Reserved1                 = static_cast<uint16_t>(extractBits(words, 0, 12));
 			BoardID                   = static_cast<uint8_t>(extractBits(words, 12, 8));
 			DetectorID                = static_cast<uint8_t>(extractBits(words, 20, 3));
@@ -101,6 +108,7 @@ public:
 			IndexOfMaxDigitizerSample = static_cast<uint16_t>(extractBits(words, 72, 10));
 			ErrorFlags                = static_cast<uint8_t>(extractBits(words, 82, 4));
 			NumberOfSamples           = static_cast<uint16_t>(extractBits(words, 86, 10));
+			// clang-format on
 		}
 	};
 
