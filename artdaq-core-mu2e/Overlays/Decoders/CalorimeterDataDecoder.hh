@@ -102,7 +102,7 @@ public:
 			IndexOfMaxDigitizerSample = static_cast<uint16_t>(extractBits(words, 72, 10));
 			ErrorFlags                = static_cast<uint8_t>(extractBits(words, 82, 4));
 			NumberOfSamples           = static_cast<uint16_t>(extractBits(words, 86, 10));
-		}			
+		}	
 	};
 
 	// CalorimeterHitDataPacket: Each hit is readout as a variable length sequence of data packets
