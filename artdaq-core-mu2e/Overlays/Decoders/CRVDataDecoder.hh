@@ -21,9 +21,9 @@ public:
 	// see doc-db 4914
 	struct CRVROCStatusPacket
 	{
-		uint8_t unused1 : 4;
+		uint8_t ControllerID : 4;
 		uint8_t PacketType : 4;  // == 0x06
-		uint8_t ControllerID;
+		uint8_t unused1;
 
 		uint16_t ControllerEventWordCount;
 
