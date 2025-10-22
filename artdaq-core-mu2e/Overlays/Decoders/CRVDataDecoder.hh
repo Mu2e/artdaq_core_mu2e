@@ -42,9 +42,9 @@ public:
 		uint16_t EventWindowTag0;  // EventWindowTag2 for global run
 
 		CRVROCStatusPacket()
-			: unused1(0)
+			: ControllerID(0)
 			, PacketType(0)
-			, ControllerID(0)
+			, unused1(0)
 			, ControllerEventWordCount(0)
 			, ActiveFEBFlags2(0)
 			, unused2(0)
