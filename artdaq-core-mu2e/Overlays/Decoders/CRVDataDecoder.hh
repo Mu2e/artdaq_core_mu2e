@@ -21,9 +21,9 @@ public:
 	// see doc-db 4914
 	struct CRVROCStatusPacket
 	{
-		uint8_t unused1 : 4;
+		uint8_t ControllerID : 4;
 		uint8_t PacketType : 4;  // == 0x06
-		uint8_t ControllerID;
+		uint8_t unused1;
 
 		uint16_t ControllerEventWordCount;
 
@@ -42,9 +42,9 @@ public:
 		uint16_t EventWindowTag0;  // EventWindowTag2 for global run
 
 		CRVROCStatusPacket()
-			: unused1(0)
+			: ControllerID(0)
 			, PacketType(0)
-			, ControllerID(0)
+			, unused1(0)
 			, ControllerEventWordCount(0)
 			, ActiveFEBFlags2(0)
 			, unused2(0)
