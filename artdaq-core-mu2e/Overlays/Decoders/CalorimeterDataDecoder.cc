@@ -139,7 +139,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, ui
 		// Make sure we don't read over the block if there is an error
 		uint bytesLeft = endOfBlockPos - (blockPos + 12);
 		uint maxSamples = bytesLeft / 1.5;
-		if (peakIndex >= maxSamples) peakIndex = maxSamples-1;
+		if (peakIndex >= maxSamples) peakIndex = maxSamples - 1;
 
 		output->back().second = reader[peakIndex];
 
