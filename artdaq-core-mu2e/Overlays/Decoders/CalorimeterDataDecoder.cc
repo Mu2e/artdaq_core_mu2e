@@ -25,152 +25,130 @@ CalorimeterDataDecoder::CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& evt)
 // Get Calo Hit Data Packet
 std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitData(size_t blockIndex) const
 {
-	// a pair is created mapping the data packet to set of hits (?)
 	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>();
 
 	// get data block at given index
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return output;
+	DTCLib::DTC_DataBlock const* dataBlock = dataAtBlockIndex(blockIndex);
+	if (dataBlock == nullptr)
+	{  // Empty block
+		TLOG(TLVL_WARNING) << "CalorimeterDataDecoder::GetCalorimeterHitData : empty block " << blockIndex;
+		return output;
+	}
 
-	// check size of hit data packet
-	static_assert(sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) % 2 == 0);
-
-	auto dataPacket = reinterpret_cast<CalorimeterHitDataPacket const*>(dataPtr->GetData());
-
-	// pos is a uint16_t pointer after the BoardID in the data stream
-	uint16_t const* pos = 0;  // assumes this is the first piece of information
-
-	// loop over samples:
-	unsigned int count = 0;
-	while (count < dataPacket->NumberOfSamples)
+	if (dataBlock->GetHeader()->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter)
 	{
-		// Reinterpret pos as a pointer to a hit readout header
-		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(pos)), std::vector<uint16_t>());  // Construct and insert element at the end, Converts between types by reinterpreting the underlying bit pattern.
+		TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitData : this block is from different subsystem: " << int(dataBlock->GetHeader()->GetSubsystem()) << ", skipping...";
+		return output;
+	}
 
-		// Step pos past the hit readout
-		pos += sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) / sizeof(uint16_t);
+	DTCLib::DTC_DataHeaderPacket* blockHeader = dataBlock->GetHeader().get();
+	size_t blockSize = dataBlock->byteSize;
+	size_t nPackets = blockHeader->GetPacketCount();
+	size_t dataSize = blockSize - 16;
 
-		// Setup waveform storage
-		// find number of samples from output
-		auto nSamples = output->back().first.NumberOfSamples;
-		// resize the vector part to nSamples
+	auto blockDataPtr = dataBlock->GetData();
+
+	if (nPackets == 0)
+	{  // Empty packet
+		TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitData : no packets in block " << blockIndex << " -- disabled ROC?\n";
+		return output;
+	}
+
+	auto blockPos = reinterpret_cast<const uint8_t*>(blockDataPtr);  // byte position in block (multiple of 16)
+	auto endOfBlockPos = blockPos + dataSize;
+	while (blockPos < endOfBlockPos)  // until the end of this block
+	{
+		// Create output
+		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(), std::vector<uint16_t>());
+
+		// Before waveform (96 bit)
+		const uint16_t* words = reinterpret_cast<const uint16_t*>(blockPos);
+		output->back().first.mapFromRaw(words);
+
+		// Waveform
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos + 12));
+		size_t nSamples = output->back().first.NumberOfSamples;
+
+		// Make sure we don't read over the block if there is an error
+		uint bytesLeft = endOfBlockPos - (blockPos + 12);
+		uint maxSamples = bytesLeft / 1.5;
+		if (nSamples > maxSamples) nSamples = maxSamples;
+
 		output->back().second.resize(nSamples);
+		for (uint i = 0; i < nSamples; i++)
+		{
+			output->back().second[i] = reader[i];
+		}
 
-		// Copy waveform into output
-		memcpy(output->back().second.data(), pos, sizeof(uint16_t) * nSamples);
-
-		// Step pos past waveform
-		pos += nSamples;
-		count++;
+		// Advance to the next 16-byte packet
+		float hitByteSize = 12 + nSamples * 1.5;
+		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 16));  // number of 16-byte packets this hit occupied
+		blockPos += hitPackets * 16;                                // advance by 16 bytes per packet
 	}
+
 	return output;
 }
 
-// Get Calo Hit Data Packet (Paolo)
-/*
-std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitData(size_t blockIndex) const
+std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>>* mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
 {
-  std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>> *output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, std::vector<uint16_t>>>();
+	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>>* output = new std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>>();
 
-  // get data block at given index
-  DTCLib::DTC_DataBlock const * dataBlock = dataAtBlockIndex(blockIndex);
-  if (dataBlock == nullptr) return output;
-
-  DTCLib::DTC_DataHeaderPacket* blockHeader = dataBlock->GetHeader().get();
-  size_t blockSize = dataBlock->byteSize;
-  size_t nPackets = blockHeader->GetPacketCount();
-  size_t dataSize = blockSize - 16;
-
-  auto blockDataPtr = dataBlock->GetData();
-
-  if (nPackets == 0){ //Empty packet
-	TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitData : no packets -- disabled ROC?\n";
-	return output;
-  }
-
-  auto blockPos = reinterpret_cast<const uint8_t*>(blockDataPtr); //byte position in block (multiple of 16)
-  while(blockPos < reinterpret_cast<const uint8_t*>(blockDataPtr) + dataSize){ //until the end of this block
-
-	//Create output
-	output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(), std::vector<uint16_t>());
-
-	//Before waveform (48 bit)
-	auto hitPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(blockPos);
-	output->back().first.DetectorType = hitPtr->DetectorType;
-	output->back().first.BoardID = hitPtr->BoardID;
-	output->back().first.ChannelNumber = hitPtr->ChannelNumber;
-	output->back().first.DIRACA = hitPtr->DIRACA;
-	output->back().first.DIRACB = hitPtr->DIRACB;
-
-	//Waveform
-	auto waveformPtr = reinterpret_cast<mu2e::CalorimeterDataDecoder::Calorimeter12bitWord const*>(blockPos + 6);
-
-	//Search for 0xFFF
-	uint nWordsMax = (((dataSize - 6) * 8) / 12);
-	int lastSampleMarkerIndex = -1;
-	for (uint i=0; i<nWordsMax; i++){
-	  if (waveformPtr[i].word == 0xFFF){
-		lastSampleMarkerIndex = i;
-		break;
-	  }
-	}
-	if (lastSampleMarkerIndex == -1){
-	  TLOG(TLVL_ERROR) << "CalorimeterDataDecoder::GetCalorimeterHitData : LastSampleMarker 0xFFF not found in the payload!" << std::endl;
-	  return output;
+	// get data block at given index
+	DTCLib::DTC_DataBlock const* dataBlock = dataAtBlockIndex(blockIndex);
+	if (dataBlock == nullptr)
+	{  // Empty block
+		TLOG(TLVL_WARNING) << "CalorimeterDataDecoder::GetCalorimeterHitsForTrigger : empty block " << blockIndex;
+		return output;
 	}
 
-	//Save waveform
-	size_t nSamples = lastSampleMarkerIndex;
-	output->back().second.resize(nSamples);
-	for (uint i=0; i<nSamples; i++){
-	  output->back().second[i] = waveformPtr[i].word;
-	}
-
-	//After waveform
-	output->back().first.LastSampleMarker = waveformPtr[lastSampleMarkerIndex].word;
-	output->back().first.ErrorFlags = waveformPtr[lastSampleMarkerIndex+1].word;
-	output->back().first.Time = (waveformPtr[lastSampleMarkerIndex+2].word << 12) | waveformPtr[lastSampleMarkerIndex+3].word ;
-	output->back().first.IndexOfMaxDigitizerSample = waveformPtr[lastSampleMarkerIndex+4].word;
-	output->back().first.NumberOfSamples = waveformPtr[lastSampleMarkerIndex+5].word;
-
-	//Advance to the next 16-byte packet
-	float hitByteSize = nSamples*1.5 + sizeof(output->back().first);
-	uint8_t hitPackets = uint8_t(std::ceil(hitByteSize/16)); //number of 16-byte packets this hit occupied
-	blockPos += hitPackets*16; //advance by 16 bytes per packet
-  }
-
-  return output;
-}
-*/
-
-std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>> mu2e::CalorimeterDataDecoder::GetCalorimeterHitsForTrigger(size_t blockIndex) const
-{
-	std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, uint16_t>> output;
-
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return output;
-
-	static_assert(sizeof(CalorimeterHitDataPacket) % 2 == 0);
-
-	auto dataPacket = reinterpret_cast<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket const*>(dataPtr->GetData());
-
-	uint16_t const* pos = 0;
-
-	// loop over samples:
-	unsigned int count = 0;
-	while (count < dataPacket->NumberOfSamples)
+	if (dataBlock->GetHeader()->GetSubsystem() != DTCLib::DTC_Subsystem_Calorimeter)
 	{
-		// Reinterpret pos as a pointer to a hit readout header
-		output.emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(*reinterpret_cast<CalorimeterHitDataPacket const*>(pos)), 0);
-		// Step pos past the hit readout
-		pos += sizeof(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket) / sizeof(uint16_t);
-
-		output.back().second = *(pos + output.back().first.IndexOfMaxDigitizerSample);
-
-		// Step pos past waveform
-		auto nSamples = output.back().first.NumberOfSamples;
-		pos += nSamples;
+		TLOG(TLVL_DEBUG) << "CalorimeterDataDecoder::GetCalorimeterHitsForTrigger : this block is from different subsystem: " << int(dataBlock->GetHeader()->GetSubsystem()) << ", skipping...";
+		return output;
 	}
+
+	DTCLib::DTC_DataHeaderPacket* blockHeader = dataBlock->GetHeader().get();
+	size_t blockSize = dataBlock->byteSize;
+	size_t nPackets = blockHeader->GetPacketCount();
+	size_t dataSize = blockSize - 16;
+
+	auto blockDataPtr = dataBlock->GetData();
+
+	if (nPackets == 0)
+	{  // Empty packet
+		TLOG(TLVL_DEBUG + 6) << "CalorimeterDataDecoder::GetCalorimeterHitsForTrigger : no packets in block " << blockIndex << " -- disabled ROC?\n";
+		return output;
+	}
+
+	auto blockPos = reinterpret_cast<const uint8_t*>(blockDataPtr);  // byte position in block (multiple of 16)
+	auto endOfBlockPos = blockPos + dataSize;
+	while (blockPos < endOfBlockPos)  // until the end of this block
+	{
+		// Create output
+		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(), uint16_t());
+
+		// Before waveform (96 bit)
+		const uint16_t* words = reinterpret_cast<const uint16_t*>(blockPos);
+		output->back().first.mapFromRaw(words);
+
+		// Waveform peak value
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos + 12));
+		size_t nSamples = output->back().first.NumberOfSamples;
+		size_t peakIndex = output->back().first.IndexOfMaxDigitizerSample;
+
+		// Make sure we don't read over the block if there is an error
+		uint bytesLeft = endOfBlockPos - (blockPos + 12);
+		uint maxSamples = bytesLeft / 1.5;
+		if (peakIndex >= maxSamples) peakIndex = maxSamples - 1;
+
+		output->back().second = reader[peakIndex];
+
+		// Advance to the next 16-byte packet
+		float hitByteSize = 12 + nSamples * 1.5;
+		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 16));  // number of 16-byte packets this hit occupied
+		blockPos += hitPackets * 16;                                // advance by 16 bytes per packet
+	}
+
 	return output;
 }
 
@@ -211,7 +189,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 	while (blockPos < endOfBlockPos)
 	{  // until the end of this block
 
-		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos));
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos), true);
 
 		// Create output hit
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), std::vector<uint16_t>());
@@ -323,7 +301,7 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket
 	while (blockPos < endOfBlockPos)
 	{  // until the end of this block
 
-		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos));
+		mu2e::CalorimeterDataDecoder::Data12bitReader reader(reinterpret_cast<const uint16_t*>(blockPos), true);
 
 		// Create output hit
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitTestDataPacket(), uint16_t());

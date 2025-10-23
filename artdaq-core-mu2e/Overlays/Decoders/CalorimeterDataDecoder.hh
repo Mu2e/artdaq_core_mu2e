@@ -11,40 +11,52 @@ class CalorimeterDataDecoder : public DTCDataDecoder
 public:
 	CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& f);
 
-	// Class to swap pairs of 16-bit words and extract 12-bit words without memory buffers -- only applies to DEBUG data
+	// Class to swap pairs of 16-bit words and extract 12-bit words without memory buffers
 	class Data12bitReader
 	{
 	private:
 		const uint16_t* dataPtr;
+		bool debugPacket;
 
 	public:
-		Data12bitReader(const uint16_t* dataPtr)
-			: dataPtr(dataPtr) {}
+		Data12bitReader(const uint16_t* dataPtr, bool debug = false)
+			: dataPtr(dataPtr), debugPacket(debug) {}
 
 		uint16_t operator[](size_t index) const
 		{
-			int wordInTwoPackets = index % 21;
-			int nTwoPackets = (index - wordInTwoPackets) / 21;
-			int startingLetter = wordInTwoPackets % 4;
+			uint firstWordIndex;
+			uint startingLetter;
 
-			size_t wordIndex1 = nTwoPackets * 16 + ((wordInTwoPackets * 3) / 4);
-			size_t wordIndex2 = wordIndex1 + 1;
-			uint16_t word1 = dataPtr[wordIndex1 % 2 == 0 ? wordIndex1 + 1 : wordIndex1 - 1];
-			uint16_t word2 = dataPtr[wordIndex2 % 2 == 0 ? wordIndex2 + 1 : wordIndex2 - 1];
+			if (debugPacket)
+			{
+				int wordInTwoPackets = index % 21;
+				int nTwoPackets = (index - wordInTwoPackets) / 21;
+				firstWordIndex = nTwoPackets * 16 + ((wordInTwoPackets * 3) / 4);
+				startingLetter = wordInTwoPackets % 4;
+			}
+			else
+			{
+				firstWordIndex = (index * 3) / 4;
+				startingLetter = index % 4;
+			}
+
+			// Find the two 16-bit words relative to this 12-bit word (swap their position first)
+			uint16_t word1 = dataPtr[firstWordIndex ^ 0x1];
+			uint16_t word2 = dataPtr[(firstWordIndex + 1) ^ 0x1];
 
 			uint16_t temp;
 			switch (startingLetter)
 			{
-				case 0:
+				case 0:  // FFF0
 					temp = (word1 >> 4) & 0x0FFF;
 					break;
-				case 1:
+				case 1:  // 000F FF00
 					temp = ((word1 & 0x000F) << 8) | ((word2 & 0xFF00) >> 8);
 					break;
-				case 2:
+				case 2:  // 00FF F000
 					temp = ((word1 & 0x00FF) << 4) | ((word2 & 0xF000) >> 12);
 					break;
-				case 3:
+				case 3:  // 0FFF
 					temp = word1 & 0x0FFF;
 					break;
 			}
@@ -53,36 +65,51 @@ public:
 		}
 	};
 
-	// CalorimeterHitDataPacket: Each hit is readout as a variable length sequence of data packets
 	struct CalorimeterHitDataPacket
 	{
-		uint16_t DetectorType : 3;   // subdetector type e.g. CALO=0, CAPHRI = 1, TRAD = 2, LASER = 3
-		uint16_t BoardID : 8;        // unique board ID from 0 - 255
-		uint16_t ChannelNumber : 5;  // channel ID from 0-19
-		uint16_t DIRACA;
-		uint16_t DIRACB;
-		uint16_t LastSampleMarkerStart : 12;
-		uint16_t LastSampleMarkerEnd : 12;
-
-		// there are 4 types of sample length
-		uint16_t SampleType0 : 12;
-
-		uint16_t SampleType1A : 4;
-		uint16_t SampleType1B : 8;
-
-		uint16_t SampleType2A : 8;
-		uint16_t SampleType2B : 4;
-
-		uint16_t SampleType3A : 10;
-		uint16_t SampleType3B : 2;
-
-		uint16_t ErrorFlags;
-		uint16_t Time;
-		uint8_t NumberOfSamples;
-		uint8_t IndexOfMaxDigitizerSample;
+		uint16_t Reserved1 : 12;
+		uint16_t BoardID : 8;
+		uint16_t DetectorID : 3;
+		uint16_t ChannelID : 5;
+		uint16_t Time : 16;
+		uint16_t InPayloadEventWindowTag : 16;
+		uint16_t Baseline : 12;
+		uint16_t IndexOfMaxDigitizerSample : 10;
+		uint16_t ErrorFlags : 4;
+		uint16_t NumberOfSamples : 10;
 
 		CalorimeterHitDataPacket()
-			: DetectorType(0), BoardID(0), ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
+			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
+
+		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength)
+		{
+			uint32_t result = 0;
+			for (size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++)
+			{
+				size_t wordIndex = (bitIndex / 16) ^ 0x1;  // Swap pairs of 16-bit words (just flip the last bit)
+				size_t bitOffset = 15 - (bitIndex % 16);   // Big-endian
+
+				uint16_t bit = (words[wordIndex] >> bitOffset) & 0x1;
+				result = (result << 1) | bit;
+			}
+			return result;
+		}
+
+		void mapFromRaw(const uint16_t* words)
+		{
+			// clang-format off
+			Reserved1                 = static_cast<uint16_t>(extractBits(words, 0, 12));
+			BoardID                   = static_cast<uint8_t>(extractBits(words, 12, 8));
+			DetectorID                = static_cast<uint8_t>(extractBits(words, 20, 3));
+			ChannelID                 = static_cast<uint8_t>(extractBits(words, 23, 5));
+			Time                      = static_cast<uint16_t>(extractBits(words, 28, 16));
+			InPayloadEventWindowTag   = static_cast<uint16_t>(extractBits(words, 44, 16));
+			Baseline                  = static_cast<uint16_t>(extractBits(words, 60, 12));
+			IndexOfMaxDigitizerSample = static_cast<uint16_t>(extractBits(words, 72, 10));
+			ErrorFlags                = static_cast<uint8_t>(extractBits(words, 82, 4));
+			NumberOfSamples           = static_cast<uint16_t>(extractBits(words, 86, 10));
+			// clang-format on
+		}
 	};
 
 	struct CalorimeterHitTestDataPacket
@@ -120,13 +147,6 @@ public:
 			: DetectorType(0), BoardID(0), unused(0), ChannelStatusFlagA(0), ChannelStatusFlagC(0) {}
 	};
 
-	struct Calorimeter12bitWord
-	{
-		uint16_t word : 12;
-		Calorimeter12bitWord()
-			: word(0) {}
-	};
-
 	struct CalorimeterCountersDataPacket
 	{
 		uint16_t numberOfCounters;
@@ -139,7 +159,7 @@ public:
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetCalorimeterCountersData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetEmulatedCountersData(size_t blockIndex) const;
 	std::unique_ptr<CalorimeterFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
-	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>>* GetCalorimeterHitsForTrigger(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>* GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
 };
 
