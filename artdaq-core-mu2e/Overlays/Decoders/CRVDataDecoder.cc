@@ -52,6 +52,15 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 }
 
 // for FEB-II
+std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII> mu2e::CRVDataDecoder::GetCRVROCStatusPacketFEBII(size_t blockIndex) const
+{
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return nullptr;
+
+	std::unique_ptr<CRVROCStatusPacketFEBII> output(nullptr);
+	output.reset(new CRVROCStatusPacketFEBII(*reinterpret_cast<CRVROCStatusPacketFEBII const *>(dataPtr->GetData())));
+	return output;
+}
 bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
 {
 	crvHits.clear();
@@ -60,16 +69,16 @@ bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHit
 	if (dataPtr == nullptr) return false;
 	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
 
-	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacket const *>(data);
+	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacketFEBII const *>(data);
 	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
 
-	if (eventSize < sizeof(CRVROCStatusPacket)) return false;  // check is required when subtracting unsigned integers
-	eventSize -= sizeof(CRVROCStatusPacket);
+	if (eventSize < sizeof(CRVROCStatusPacketFEBII)) return false;  // check is required when subtracting unsigned integers
+	eventSize -= sizeof(CRVROCStatusPacketFEBII);
 	if (eventSize % hitSize != 0) return false;  // event size should be a multiple of the hit size (11 word)
 	size_t nHits = eventSize / hitSize;
 	crvHits.resize(nHits);
 
-	data += sizeof(CRVROCStatusPacket);
+	data += sizeof(CRVROCStatusPacketFEBII);
 	for (size_t iHit = 0; iHit < nHits; ++iHit)
 	{
 		memcpy(&crvHits.at(iHit).first, data, sizeof(CRVHitInfoFEBII));
