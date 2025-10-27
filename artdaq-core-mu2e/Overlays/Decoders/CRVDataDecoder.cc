@@ -114,14 +114,14 @@ void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
 	if (dataPtr == nullptr) return;
 	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
 
-        std::cout<<std::endl;
-        std::cout<<"ROC Status header: ";
-        for(size_t i=0; i<sizeof(CRVROCStatusPacketFEBII); i+=2)
-        {
-          std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
-          std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
-        }
-        std::cout<<std::dec<<std::endl;
+	std::cout << std::endl;
+	std::cout << "ROC Status header: ";
+	for (size_t i = 0; i < sizeof(CRVROCStatusPacketFEBII); i += 2)
+	{
+		std::cout << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)(*(data + i)) << " ";
+		std::cout << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)(*(data + i + 1)) << "    ";
+	}
+	std::cout << std::dec << std::endl;
 
 	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacketFEBII const *>(data);
 	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
@@ -131,23 +131,23 @@ void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
 	size_t nHits = eventSize / hitSize;
 	if (eventSize % hitSize != 0)
 	{
-          nHits+=1;  //the remaining word count is used for a partial hit
-	  std::cout<<"Word count of "<<eventSize/2<< " (after subtracting 8 words of ROC status header) is not a multiple of the hit size (11 word)!"<<std::endl;
+		nHits += 1;  // the remaining word count is used for a partial hit
+		std::cout << "Word count of " << eventSize / 2 << " (after subtracting 8 words of ROC status header) is not a multiple of the hit size (11 word)!" << std::endl;
 	}
 
 	data += sizeof(CRVROCStatusPacketFEBII);
 	for (size_t iHit = 0; iHit < nHits; ++iHit)
 	{
-          std::cout<<"Hit: ";
-          for(size_t i=0; i<hitSize; i+=2)
-          {
-	    if(iHit*hitSize+i>=eventSize) break;
-            std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
-            std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
-          }
-          std::cout<<std::dec<<std::endl;
+		std::cout << "Hit: ";
+		for (size_t i = 0; i < hitSize; i += 2)
+		{
+			if (iHit * hitSize + i >= eventSize) break;
+			std::cout << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)(*(data + i)) << " ";
+			std::cout << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)(*(data + i + 1)) << "    ";
+		}
+		std::cout << std::dec << std::endl;
 
-          data += hitSize;
+		data += hitSize;
 	}
 }
 
