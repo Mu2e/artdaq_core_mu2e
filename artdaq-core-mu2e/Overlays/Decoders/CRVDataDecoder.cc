@@ -108,6 +108,43 @@ bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHit
 
 	return true;
 }
+void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
+{
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return;
+	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
+
+        std::cout<<std::endl;
+        std::cout<<"ROC Status header: ";
+        for(size_t i=0; i<16; i+=2)
+        {
+          std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
+          std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
+        }
+        std::cout<<std::dec<<std::endl;
+
+	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacketFEBII const *>(data);
+	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
+
+	if (eventSize < sizeof(CRVROCStatusPacketFEBII)) return;  // check is required when subtracting unsigned integers
+	eventSize -= sizeof(CRVROCStatusPacketFEBII);
+	if (eventSize % hitSize != 0) return;  // event size should be a multiple of the hit size (11 word)
+	size_t nHits = eventSize / hitSize;
+
+	data += sizeof(CRVROCStatusPacketFEBII);
+	for (size_t iHit = 0; iHit < nHits; ++iHit)
+	{
+          std::cout<<"Hit: ";
+          for(size_t i=0; i<22; i+=2)
+          {
+            std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
+            std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
+          }
+          std::cout<<std::dec<<std::endl;
+
+          data += sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
+	}
+}
 
 // for global run
 bool mu2e::CRVDataDecoder::GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const
