@@ -116,7 +116,7 @@ void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
 
         std::cout<<std::endl;
         std::cout<<"ROC Status header: ";
-        for(size_t i=0; i<16; i+=2)
+        for(size_t i=0; i<sizeof(CRVROCStatusPacketFEBII); i+=2)
         {
           std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
           std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
@@ -128,21 +128,26 @@ void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
 
 	if (eventSize < sizeof(CRVROCStatusPacketFEBII)) return;  // check is required when subtracting unsigned integers
 	eventSize -= sizeof(CRVROCStatusPacketFEBII);
-	if (eventSize % hitSize != 0) return;  // event size should be a multiple of the hit size (11 word)
 	size_t nHits = eventSize / hitSize;
+	if (eventSize % hitSize != 0)
+	{
+          nHits+=1;  //the remaining word count is used for a partial hit
+	  std::cout<<"Word count of "<<eventSize/2<< " (after subtracting 8 words of ROC status header) is not a multiple of the hit size (11 word)!"<<std::endl;
+	}
 
 	data += sizeof(CRVROCStatusPacketFEBII);
 	for (size_t iHit = 0; iHit < nHits; ++iHit)
 	{
           std::cout<<"Hit: ";
-          for(size_t i=0; i<22; i+=2)
+          for(size_t i=0; i<hitSize; i+=2)
           {
+	    if(iHit*hitSize+i>=eventSize) break;
             std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i))<<" ";
             std::cout<<std::setfill('0')<<std::setw(2)<<std::hex<<(uint16_t)(*(data+i+1))<<"    ";
           }
           std::cout<<std::dec<<std::endl;
 
-          data += sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
+          data += hitSize;
 	}
 }
 
