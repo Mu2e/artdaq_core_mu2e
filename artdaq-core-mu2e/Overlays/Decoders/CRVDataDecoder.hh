@@ -120,6 +120,69 @@ public:
 
 	/**********************************************************/
 
+	// ROC Status Header for FEB-II
+	struct CRVROCStatusPacketFEBII
+	{
+		uint16_t ControllerEventWordCount;
+
+		uint16_t TriggerCount;
+
+		uint8_t ActiveFEBFlags2;
+		uint8_t unused2;
+
+		uint8_t ActiveFEBFlags0;
+		uint8_t ActiveFEBFlags1;
+
+		uint16_t MicroBunchStatus1;
+
+		uint16_t MicroBunchStatus0;
+
+		uint16_t EventWindowTag1;
+
+		uint16_t EventWindowTag0;
+
+		CRVROCStatusPacketFEBII()
+			: ControllerEventWordCount(0)
+			, TriggerCount(0)
+			, ActiveFEBFlags2(0)
+			, unused2(0)
+			, ActiveFEBFlags0(0)
+			, ActiveFEBFlags1(0)
+			, MicroBunchStatus1(0)
+			, MicroBunchStatus0(0)
+			, EventWindowTag1(0)
+			, EventWindowTag0(0)
+		{}
+
+		std::bitset<24> GetActiveFEBFlags() const
+		{
+			uint32_t ActiveFEBFlags = ActiveFEBFlags2;
+			ActiveFEBFlags <<= 8;
+			ActiveFEBFlags |= ActiveFEBFlags1;
+			ActiveFEBFlags <<= 8;
+			ActiveFEBFlags |= ActiveFEBFlags0;
+			return std::bitset<24>(ActiveFEBFlags);  // only need the 24 lowest bits
+		}
+
+		uint32_t GetMicroBunchStatus() const
+		{
+			uint32_t MicroBunchStatus = MicroBunchStatus1;
+			MicroBunchStatus <<= 16;
+			MicroBunchStatus |= MicroBunchStatus0;
+			return MicroBunchStatus;
+		}
+
+		uint32_t GetEventWindowTag() const
+		{
+			uint32_t EventWindowTag = EventWindowTag1;
+			EventWindowTag <<= 16;
+			EventWindowTag |= EventWindowTag0;
+			return EventWindowTag;
+		}
+	};
+
+	/**********************************************************/
+
 	// Hit meta data for FEB-II
 	struct CRVHitInfoFEBII
 	{
@@ -239,8 +302,10 @@ public:
 	// access functions (used for CrvDigis and GlobalRun)
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
+	std::unique_ptr<CRVROCStatusPacketFEBII> GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
 	bool GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const;
+	void PrintBlockFEBII(size_t blockIndex) const;
 	bool GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const;
 	bool GetCRVGlobalRunPayload(size_t blockIndex, std::vector<uint16_t> &globalRunPayload) const;
 };
