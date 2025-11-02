@@ -52,14 +52,12 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 }
 
 // for FEB-II
-std::unique_ptr<mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII> mu2e::CRVDataDecoder::GetCRVROCStatusPacketFEBII(size_t blockIndex) const
+const mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII* mu2e::CRVDataDecoder::GetCRVROCStatusPacketFEBII(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
 
-	std::unique_ptr<CRVROCStatusPacketFEBII> output(nullptr);
-	output.reset(new CRVROCStatusPacketFEBII(*reinterpret_cast<CRVROCStatusPacketFEBII const *>(dataPtr->GetData())));
-	return output;
+	return reinterpret_cast<CRVROCStatusPacketFEBII const *>(dataPtr->GetData());
 }
 bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
 {
@@ -107,6 +105,27 @@ bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHit
 	}
 
 	return true;
+}
+
+// Return range/view for zero-copy iteration over raw hits
+mu2e::CRVDataDecoder::CRVHitRangeFEBII mu2e::CRVDataDecoder::GetCRVHitRangeFEBII(size_t blockIndex) const
+{
+	auto dataPtr = dataAtBlockIndex(blockIndex);
+	if (dataPtr == nullptr) return CRVHitRangeFEBII(nullptr, 0);
+
+	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
+	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacketFEBII const *>(data);
+	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
+
+	if (eventSize < sizeof(CRVROCStatusPacketFEBII)) return CRVHitRangeFEBII(nullptr, 0);
+	eventSize -= sizeof(CRVROCStatusPacketFEBII);
+	if (eventSize % hitSize != 0) return CRVHitRangeFEBII(nullptr, 0);
+
+	size_t nHits = eventSize / hitSize;
+	data += sizeof(CRVROCStatusPacketFEBII);  // Skip past ROC header
+
+	const CRVHitRawFEBII* hits = reinterpret_cast<const CRVHitRawFEBII*>(data);
+	return CRVHitRangeFEBII(hits, nHits);
 }
 
 // for global run
