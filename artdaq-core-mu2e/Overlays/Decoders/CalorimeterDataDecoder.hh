@@ -65,7 +65,7 @@ public:
 		}
 	};
 
-	struct CalorimeterHitDataPacket
+	struct CalorimeterHitDataPacketNew
 	{
 		uint16_t Reserved1 : 12;
 		uint16_t BoardID : 8;
@@ -78,7 +78,7 @@ public:
 		uint16_t ErrorFlags : 4;
 		uint16_t NumberOfSamples : 10;
 
-		CalorimeterHitDataPacket()
+		CalorimeterHitDataPacketNew()
 			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
 
 		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength)
@@ -110,6 +110,38 @@ public:
 			NumberOfSamples           = static_cast<uint16_t>(extractBits(words, 86, 10));
 			// clang-format on
 		}
+	};
+
+	// CalorimeterHitDataPacket: Each hit is readout as a variable length sequence of data packets
+	struct CalorimeterHitDataPacket
+	{
+		uint16_t DetectorType : 3;   // subdetector type e.g. CALO=0, CAPHRI = 1, TRAD = 2, LASER = 3
+		uint16_t BoardID : 8;        // unique board ID from 0 - 255
+		uint16_t ChannelNumber : 5;  // channel ID from 0-19
+		uint16_t DIRACA;
+		uint16_t DIRACB;
+		uint16_t LastSampleMarkerStart : 12;
+		uint16_t LastSampleMarkerEnd : 12;
+
+		// there are 4 types of sample length
+		uint16_t SampleType0 : 12;
+
+		uint16_t SampleType1A : 4;
+		uint16_t SampleType1B : 8;
+
+		uint16_t SampleType2A : 8;
+		uint16_t SampleType2B : 4;
+
+		uint16_t SampleType3A : 10;
+		uint16_t SampleType3B : 2;
+
+		uint16_t ErrorFlags;
+		uint16_t Time;
+		uint8_t NumberOfSamples;
+		uint8_t IndexOfMaxDigitizerSample;
+
+		CalorimeterHitDataPacket()
+			: DetectorType(0), BoardID(0), ChannelNumber(0), DIRACA(0), DIRACB(0), ErrorFlags(0), Time(0), NumberOfSamples(0), IndexOfMaxDigitizerSample(0) {}
 	};
 
 	struct CalorimeterHitTestDataPacket
@@ -147,6 +179,14 @@ public:
 			: DetectorType(0), BoardID(0), unused(0), ChannelStatusFlagA(0), ChannelStatusFlagC(0) {}
 	};
 
+	struct Calorimeter12bitWord
+	{
+		uint16_t word : 12;
+		uint16_t : 4;  // padding
+		Calorimeter12bitWord()
+			: word(0) {}
+	};
+
 	struct CalorimeterCountersDataPacket
 	{
 		uint16_t numberOfCounters;
@@ -154,12 +194,14 @@ public:
 			: numberOfCounters(0) {}
 	};
 
+	std::vector<std::pair<CalorimeterHitDataPacketNew, std::vector<uint16_t>>>* GetCalorimeterHitDataNew(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitTestDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitTestData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetCalorimeterCountersData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetEmulatedCountersData(size_t blockIndex) const;
 	std::unique_ptr<CalorimeterFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
-	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>>* GetCalorimeterHitsForTrigger(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacketNew, uint16_t>> GetCalorimeterHitsForTriggerNew(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>> GetCalorimeterHitsForTrigger(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>* GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
 };
 
