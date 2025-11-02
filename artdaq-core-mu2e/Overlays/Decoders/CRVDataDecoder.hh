@@ -366,6 +366,7 @@ public:
 	const CRVROCStatusPacketFEBII* GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
 	bool GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const;
+	CRVHitRangeFEBII GetCRVHitRangeFEBII(size_t blockIndex) const;  // Returns range for zero-copy iteration
 	void PrintBlockFEBII(size_t blockIndex) const;
 	bool GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const;
 	bool GetCRVGlobalRunPayload(size_t blockIndex, std::vector<uint16_t> &globalRunPayload) const;
