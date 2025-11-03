@@ -52,7 +52,7 @@ bool mu2e::CRVDataDecoder::GetCRVHits(size_t blockIndex, std::vector<mu2e::CRVDa
 }
 
 // for FEB-II
-const mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII* mu2e::CRVDataDecoder::GetCRVROCStatusPacketFEBII(size_t blockIndex) const
+const mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII *mu2e::CRVDataDecoder::GetCRVROCStatusPacketFEBII(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return nullptr;
@@ -119,7 +119,7 @@ mu2e::CRVDataDecoder::CRVHitRangeFEBII mu2e::CRVDataDecoder::GetCRVHitRangeFEBII
 	size_t nHits = eventSize / hitSize;
 	data += sizeof(CRVROCStatusPacketFEBII);  // Skip past ROC header
 
-	const CRVHitRawFEBII* hits = reinterpret_cast<const CRVHitRawFEBII*>(data);
+	const CRVHitRawFEBII *hits = reinterpret_cast<const CRVHitRawFEBII *>(data);
 	return CRVHitRangeFEBII(hits, nHits);
 }
 

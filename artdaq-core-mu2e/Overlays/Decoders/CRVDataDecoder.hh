@@ -16,7 +16,7 @@ public:
 	{}
 
 	/**********************************************************/
-        /* For FEB-I: soon to be obsolete                         */
+	/* For FEB-I: soon to be obsolete                         */
 	/**********************************************************/
 
 	// ROC Status Header (used for CrvDigis and global run)
@@ -119,7 +119,7 @@ public:
 	typedef std::pair<CRVHitInfo, CRVHitWaveform> CRVHit;
 
 	/**********************************************************/
-        /* For FEB-II                                             */
+	/* For FEB-II                                             */
 	/**********************************************************/
 
 	// ROC Status Header for FEB-II
@@ -245,7 +245,7 @@ public:
 	/// this an be cast directly from raw data pointer avoiding any copying
 	struct CRVHitRawFEBII
 	{
-		CRVHitInfoFEBII hitInfo;                     // (port, channel, time, etc.)
+		CRVHitInfoFEBII hitInfo;                    // (port, channel, time, etc.)
 		CRVHitADCBlockFEBII adcBlocks[nADCblocks];  // 3 blocks, each with 4 x 12-bit packed samples for a total of 12 samples
 
 		// Direct accessors for info fields
@@ -272,7 +272,7 @@ public:
 
 	constexpr static std::size_t hitSize = sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
 	static_assert(sizeof(CRVHitRawFEBII) == hitSize,
-	              "CRVHitRawFEBII size must match raw data layout");
+				  "CRVHitRawFEBII size must match raw data layout");
 
 	/// Range/view class for iterating over raw hits without copying
 	/// Points to raw data in memory - no copying until getWaveform() is called
@@ -282,29 +282,28 @@ public:
 	{
 	public:
 		// For consistency with STL convention
-		using const_iterator = const CRVHitRawFEBII*;
+		using const_iterator = const CRVHitRawFEBII *;
 
-		CRVHitRangeFEBII(const CRVHitRawFEBII* hits, size_t count)
+		CRVHitRangeFEBII(const CRVHitRawFEBII *hits, size_t count)
 			: hits_(hits), count_(count) {}
 
 		// Iterator support for range-based for loops
 		// Returns raw pointers as iterators (they satisfy all iterator requirements)
 		const_iterator begin() const { return hits_; }
 		const_iterator end() const { return hits_ + count_; }
-		
+
 		size_t size() const { return count_; }
 		bool empty() const { return count_ == 0; }
-		bool error() const { return hits_ == nullptr; } //e.g. if the hit payload is not a multiple of the hitsize
-		                                                //count_==0 indicates no hits, but not necessarily corrupted data
+		bool error() const { return hits_ == nullptr; }  // e.g. if the hit payload is not a multiple of the hitsize
+														 // count_==0 indicates no hits, but not necessarily corrupted data
 
 		// Direct access by index - returns reference (no copy)
-		const CRVHitRawFEBII& operator[](size_t index) const { return hits_[index]; }
+		const CRVHitRawFEBII &operator[](size_t index) const { return hits_[index]; }
 
 	private:
-		const CRVHitRawFEBII* hits_;
+		const CRVHitRawFEBII *hits_;
 		size_t count_;
 	};
-
 
 	/**********************************************************/
 	/* GlobalRun Info                                         */
@@ -363,7 +362,7 @@ public:
 	/**********************************************************/
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
-	const CRVROCStatusPacketFEBII* GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
+	const CRVROCStatusPacketFEBII *GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
 	CRVHitRangeFEBII GetCRVHitRangeFEBII(size_t blockIndex) const;  // Returns range for zero-copy iteration
 	void PrintBlockFEBII(size_t blockIndex) const;
