@@ -59,53 +59,6 @@ const mu2e::CRVDataDecoder::CRVROCStatusPacketFEBII* mu2e::CRVDataDecoder::GetCR
 
 	return reinterpret_cast<CRVROCStatusPacketFEBII const *>(dataPtr->GetData());
 }
-bool mu2e::CRVDataDecoder::GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const
-{
-	crvHits.clear();
-
-	auto dataPtr = dataAtBlockIndex(blockIndex);
-	if (dataPtr == nullptr) return false;
-	const uint8_t *data = reinterpret_cast<const uint8_t *>(dataPtr->GetData());
-
-	auto crvRocHeader = reinterpret_cast<CRVROCStatusPacketFEBII const *>(data);
-	size_t eventSize = 2 * crvRocHeader->ControllerEventWordCount;
-
-	if (eventSize < sizeof(CRVROCStatusPacketFEBII)) return false;  // check is required when subtracting unsigned integers
-	eventSize -= sizeof(CRVROCStatusPacketFEBII);
-	if (eventSize % hitSize != 0) return false;  // event size should be a multiple of the hit size (11 word)
-	size_t nHits = eventSize / hitSize;
-	crvHits.resize(nHits);
-
-	data += sizeof(CRVROCStatusPacketFEBII);
-	for (size_t iHit = 0; iHit < nHits; ++iHit)
-	{
-		memcpy(&crvHits.at(iHit).first, data, sizeof(CRVHitInfoFEBII));
-		data += sizeof(CRVHitInfoFEBII);
-
-		auto &waveform = crvHits.at(iHit).second;
-		waveform.resize(nADCsamples);
-		const CRVHitADCBlockFEBII *adcBlockPtr = reinterpret_cast<const CRVHitADCBlockFEBII *>(data);
-		for (size_t i = 0; i < nADCblocks; ++i)
-		{
-			waveform.at(i * nADCsamplesPerBlock + 0) = adcBlockPtr->getSample0();
-			waveform.at(i * nADCsamplesPerBlock + 1) = adcBlockPtr->getSample1();
-			waveform.at(i * nADCsamplesPerBlock + 2) = adcBlockPtr->getSample2();
-			waveform.at(i * nADCsamplesPerBlock + 3) = adcBlockPtr->getSample3();
-			++adcBlockPtr;
-		}
-		data += nADCblocks * sizeof(CRVHitADCBlockFEBII);
-		/*
-				// handle negative numbers stored in 12bit ADC samples
-				for (size_t i = 0; i < waveform.size(); ++i)
-				{
-					// if bit 11 is 1 (from 12 bit ADC sample), set bits 12,13,14,14 to 1 to make it a negative number
-					if ((waveform[i] & 0x800) == 0x800) waveform[i] = (int16_t)(waveform[i] | 0xF000);
-				}
-		*/
-	}
-
-	return true;
-}
 void mu2e::CRVDataDecoder::PrintBlockFEBII(size_t blockIndex) const
 {
 	auto dataPtr = dataAtBlockIndex(blockIndex);

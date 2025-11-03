@@ -16,6 +16,8 @@ public:
 	{}
 
 	/**********************************************************/
+        /* For FEB-I: soon to be obsolete                         */
+	/**********************************************************/
 
 	// ROC Status Header (used for CrvDigis and global run)
 	// see doc-db 4914
@@ -85,8 +87,6 @@ public:
 		}
 	};
 
-	/**********************************************************/
-
 	// Hits (used for CrvDigi)
 	struct CRVHitWaveformSample
 	{
@@ -118,6 +118,8 @@ public:
 	typedef std::vector<CRVHitWaveformSample> CRVHitWaveform;
 	typedef std::pair<CRVHitInfo, CRVHitWaveform> CRVHit;
 
+	/**********************************************************/
+        /* For FEB-II                                             */
 	/**********************************************************/
 
 	// ROC Status Header for FEB-II
@@ -181,8 +183,6 @@ public:
 		}
 	};
 
-	/**********************************************************/
-
 	// Hit meta data for FEB-II
 	struct CRVHitInfoFEBII
 	{
@@ -242,11 +242,11 @@ public:
 	};
 
 	/// Raw hit structure that matches the raw DAQ data format
-	/// this an be cast directly from raw data pointer avouding any copying
+	/// this an be cast directly from raw data pointer avoiding any copying
 	struct CRVHitRawFEBII
 	{
 		CRVHitInfoFEBII hitInfo;                     // (port, channel, time, etc.)
-		CRVHitADCBlockFEBII adcBlocks[nADCblocks];  // 3 blocks, each with 4 x 12-bit packed samples for a otal of 12 samples
+		CRVHitADCBlockFEBII adcBlocks[nADCblocks];  // 3 blocks, each with 4 x 12-bit packed samples for a total of 12 samples
 
 		// Direct accessors for info fields
 		uint16_t getPortNumber() const { return hitInfo.portNumber; }
@@ -294,6 +294,8 @@ public:
 		
 		size_t size() const { return count_; }
 		bool empty() const { return count_ == 0; }
+		bool error() const { return hits_ == nullptr; } //e.g. if the hit payload is not a multiple of the hitsize
+		                                                //count_==0 indicates no hits, but not necessarily corrupted data
 
 		// Direct access by index - returns reference (no copy)
 		const CRVHitRawFEBII& operator[](size_t index) const { return hits_[index]; }
@@ -303,12 +305,10 @@ public:
 		size_t count_;
 	};
 
-	typedef std::vector<int16_t> CRVHitWaveformFEBII;  // ADC samples use only 12 bits, but are reported as 16 bits
-	typedef std::pair<CRVHitInfoFEBII, CRVHitWaveformFEBII> CRVHitFEBII;
 
 	/**********************************************************/
-
-	// GlobalRun Info
+	/* GlobalRun Info                                         */
+	/**********************************************************/
 	struct CRVGlobalRunInfo
 	{
 		uint16_t word0;
@@ -359,13 +359,12 @@ public:
 	typedef std::vector<CRVGlobalRunData> CRVGlobalRunDataCollection;
 
 	/**********************************************************/
-
-	// access functions (used for CrvDigis and GlobalRun)
+	/* access functions (used for CrvDigis and GlobalRun)     */
+	/**********************************************************/
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
 	const CRVROCStatusPacketFEBII* GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
-	bool GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const;
 	CRVHitRangeFEBII GetCRVHitRangeFEBII(size_t blockIndex) const;  // Returns range for zero-copy iteration
 	void PrintBlockFEBII(size_t blockIndex) const;
 	bool GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const;
