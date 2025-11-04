@@ -16,6 +16,8 @@ public:
 	{}
 
 	/**********************************************************/
+	/* For FEB-I: soon to be obsolete                         */
+	/**********************************************************/
 
 	// ROC Status Header (used for CrvDigis and global run)
 	// see doc-db 4914
@@ -85,8 +87,6 @@ public:
 		}
 	};
 
-	/**********************************************************/
-
 	// Hits (used for CrvDigi)
 	struct CRVHitWaveformSample
 	{
@@ -118,6 +118,8 @@ public:
 	typedef std::vector<CRVHitWaveformSample> CRVHitWaveform;
 	typedef std::pair<CRVHitInfo, CRVHitWaveform> CRVHit;
 
+	/**********************************************************/
+	/* For FEB-II                                             */
 	/**********************************************************/
 
 	// ROC Status Header for FEB-II
@@ -181,8 +183,6 @@ public:
 		}
 	};
 
-	/**********************************************************/
-
 	// Hit meta data for FEB-II
 	struct CRVHitInfoFEBII
 	{
@@ -241,13 +241,73 @@ public:
 		uint16_t getSample3() const { return ADCsample3; }
 	};
 
+	/// Raw hit structure that matches the raw DAQ data format
+	/// this an be cast directly from raw data pointer avoiding any copying
+	struct CRVHitRawFEBII
+	{
+		CRVHitInfoFEBII hitInfo;                    // (port, channel, time, etc.)
+		CRVHitADCBlockFEBII adcBlocks[nADCblocks];  // 3 blocks, each with 4 x 12-bit packed samples for a total of 12 samples
+
+		// Direct accessors for info fields
+		uint16_t getPortNumber() const { return hitInfo.portNumber; }
+		uint16_t getFpgaNumber() const { return hitInfo.fpgaNumber; }
+		uint16_t getFpgaChannel() const { return hitInfo.fpgaChannel; }
+		uint16_t getHitTime() const { return hitInfo.hitTime; }
+
+		// Extract waveform by unpacking 12-bit samples (this copies data!)
+		std::vector<int16_t> getWaveform() const
+		{
+			std::vector<int16_t> waveform;
+			waveform.reserve(nADCsamples);
+			for (size_t i = 0; i < nADCblocks; ++i)
+			{
+				waveform.push_back(static_cast<int16_t>(adcBlocks[i].getSample0()));
+				waveform.push_back(static_cast<int16_t>(adcBlocks[i].getSample1()));
+				waveform.push_back(static_cast<int16_t>(adcBlocks[i].getSample2()));
+				waveform.push_back(static_cast<int16_t>(adcBlocks[i].getSample3()));
+			}
+			return waveform;
+		}
+	};
+
 	constexpr static std::size_t hitSize = sizeof(CRVHitInfoFEBII) + nADCblocks * sizeof(CRVHitADCBlockFEBII);
-	typedef std::vector<int16_t> CRVHitWaveformFEBII;  // ADC samples use only 12 bits, but are reported as 16 bits
-	typedef std::pair<CRVHitInfoFEBII, CRVHitWaveformFEBII> CRVHitFEBII;
+	static_assert(sizeof(CRVHitRawFEBII) == hitSize,
+				  "CRVHitRawFEBII size must match raw data layout");
+
+	/// Range/view class for iterating over raw hits without copying
+	/// Points to raw data in memory - no copying until getWaveform() is called
+	/// When iterating with "for (const auto& hit : range)", hit is a reference to CRVHitRawFEBII
+	/// which itself is just a view into raw memory - zero copying of hit data.
+	class CRVHitRangeFEBII
+	{
+	public:
+		// For consistency with STL convention
+		using const_iterator = const CRVHitRawFEBII *;
+
+		CRVHitRangeFEBII(const CRVHitRawFEBII *hits, size_t count)
+			: hits_(hits), count_(count) {}
+
+		// Iterator support for range-based for loops
+		// Returns raw pointers as iterators (they satisfy all iterator requirements)
+		const_iterator begin() const { return hits_; }
+		const_iterator end() const { return hits_ + count_; }
+
+		size_t size() const { return count_; }
+		bool empty() const { return count_ == 0; }
+		bool error() const { return hits_ == nullptr; }  // e.g. if the hit payload is not a multiple of the hitsize
+														 // count_==0 indicates no hits, but not necessarily corrupted data
+
+		// Direct access by index - returns reference (no copy)
+		const CRVHitRawFEBII &operator[](size_t index) const { return hits_[index]; }
+
+	private:
+		const CRVHitRawFEBII *hits_;
+		size_t count_;
+	};
 
 	/**********************************************************/
-
-	// GlobalRun Info
+	/* GlobalRun Info                                         */
+	/**********************************************************/
 	struct CRVGlobalRunInfo
 	{
 		uint16_t word0;
@@ -298,13 +358,13 @@ public:
 	typedef std::vector<CRVGlobalRunData> CRVGlobalRunDataCollection;
 
 	/**********************************************************/
-
-	// access functions (used for CrvDigis and GlobalRun)
+	/* access functions (used for CrvDigis and GlobalRun)     */
+	/**********************************************************/
 
 	std::unique_ptr<CRVROCStatusPacket> GetCRVROCStatusPacket(size_t blockIndex) const;
-	std::unique_ptr<CRVROCStatusPacketFEBII> GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
+	const CRVROCStatusPacketFEBII *GetCRVROCStatusPacketFEBII(size_t blockIndex) const;
 	bool GetCRVHits(size_t blockIndex, std::vector<CRVHit> &crvHits) const;
-	bool GetCRVHitsFEBII(size_t blockIndex, std::vector<CRVHitFEBII> &crvHits) const;
+	CRVHitRangeFEBII GetCRVHitRangeFEBII(size_t blockIndex) const;  // Returns range for zero-copy iteration
 	void PrintBlockFEBII(size_t blockIndex) const;
 	bool GetCRVGlobalRunInfo(size_t blockIndex, mu2e::CRVDataDecoder::CRVGlobalRunInfo &globalRunInfo) const;
 	bool GetCRVGlobalRunPayload(size_t blockIndex, std::vector<uint16_t> &globalRunPayload) const;
