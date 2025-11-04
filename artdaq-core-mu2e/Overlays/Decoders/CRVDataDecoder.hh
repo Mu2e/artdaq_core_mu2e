@@ -295,7 +295,7 @@ public:
 		size_t size() const { return count_; }
 		bool empty() const { return count_ == 0; }
 		bool error() const { return hits_ == nullptr; }  // e.g. if the hit payload is not a multiple of the hitsize
-								 // count_==0 indicates no hits, but not necessarily corrupted data
+														 // count_==0 indicates no hits, but not necessarily corrupted data
 
 		// Direct access by index - returns reference (no copy)
 		const CRVHitRawFEBII &operator[](size_t index) const { return hits_[index]; }
