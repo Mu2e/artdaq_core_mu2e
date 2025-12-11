@@ -58,6 +58,15 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, st
 	auto endOfBlockPos = blockPos + dataSize;
 	while (blockPos < endOfBlockPos)  // until the end of this block
 	{
+		// Ignore any 0xFFFF word
+		if ((reinterpret_cast<const uint16_t*>(blockPos))[0] == 0xFFFF)
+		{
+			blockPos += 2;
+			continue;
+		}
+
+		if (endOfBlockPos - blockPos < 12) break;  // hit header is 12 bytes
+
 		// Create output
 		output->emplace_back(mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket(), std::vector<uint16_t>());
 
@@ -80,10 +89,10 @@ std::vector<std::pair<mu2e::CalorimeterDataDecoder::CalorimeterHitDataPacket, st
 			output->back().second[i] = reader[i];
 		}
 
-		// Advance to the next 16-byte packet
+		// Advance to the next 12-byte packet
 		float hitByteSize = 12 + nSamples * 1.5;
-		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 16));  // number of 16-byte packets this hit occupied
-		blockPos += hitPackets * 16;                                // advance by 16 bytes per packet
+		uint8_t hitPackets = uint8_t(std::ceil(hitByteSize / 12));  // number of 12-byte packets this hit occupied
+		blockPos += hitPackets * 12;
 	}
 
 	return output;
