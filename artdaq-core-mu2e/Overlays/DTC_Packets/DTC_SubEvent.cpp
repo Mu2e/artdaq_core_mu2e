@@ -254,9 +254,9 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 		}
 	}
 
-	if (roc_fragi != 5)
+	if (++roc_fragi != header_.num_rocs)
 	{
-		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) + 1 << ". Check for corrupted byte/packet counts.";
+		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) << ". Check for corrupted byte/packet counts.";
 		TLOG(TLVL_ERROR) << errSS.str();
 		corruption_detected_ = true;
 	}
