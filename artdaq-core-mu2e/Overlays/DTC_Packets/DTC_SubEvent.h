@@ -30,7 +30,7 @@ public:
 	DTC_SubEvent()
 		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
 
-    using optional_string = std::optional<std::reference_wrapper<std::string>>;
+	using optional_string = std::optional<std::reference_wrapper<std::string>>;
 	bool SetupSubEvent(optional_string accumulatedErrors = std::nullopt);
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
