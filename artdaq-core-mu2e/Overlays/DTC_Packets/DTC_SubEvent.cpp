@@ -75,7 +75,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	TLOG(TLVL_UPDATEHEADER) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
-bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nullptr */)
+bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 {
 	auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
 
@@ -273,7 +273,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nul
 		errSS << "\nData Corruption Detected in SubEvent! EWT: " << GetEventWindowTag() << ", DTCID: " << static_cast<int>(GetDTCID());
 		TLOG(TLVL_ERROR) << errSS.str();
 	}
-	if (accumulatedErrors) *accumulatedErrors = errSS.str();
+	if (accumulatedErrors) accumulatedErrors->get() = errSS.str();
 	return !corruption_detected_;
 
 }  // end SetupSubEvent()
