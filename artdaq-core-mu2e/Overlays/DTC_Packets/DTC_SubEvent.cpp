@@ -75,7 +75,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	TLOG(TLVL_UPDATEHEADER) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
-bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string* accumulatedErrors /* = nullptr */)
+bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nullptr */)
 {
 	auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
 
@@ -89,7 +89,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string* accumulatedErrors /* = nul
 	}
 
 	// printout SubEvent header
-	if(TTEST(TLVL_SETUP_VERBOSE - TLVL_DEBUG))
+	if (TTEST(TLVL_SETUP_VERBOSE - TLVL_DEBUG))
 	{
 		std::stringstream testss;
 		testss << "subevent header Tag=" << GetEventWindowTag().GetEventWindowTag(true) << " (0x" << std::hex << GetEventWindowTag().GetEventWindowTag(true) << ") bytes=" << std::dec << sizeof(header_) << ": 0x ";
@@ -161,7 +161,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string* accumulatedErrors /* = nul
 			}
 			if (data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true) != GetEventWindowTag().GetEventWindowTag(true))
 			{
-				errSS << "\nA DTC_WrongPacketTypeException, mismatch of ROC Event Tag, occurred while setting up a ROC #" << static_cast<int>(roc_fragi) << " header packet. Expected " << GetEventWindowTag().GetEventWindowTag(true) << ", but data stream contained " << data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true);				
+				errSS << "\nA DTC_WrongPacketTypeException, mismatch of ROC Event Tag, occurred while setting up a ROC #" << static_cast<int>(roc_fragi) << " header packet. Expected " << GetEventWindowTag().GetEventWindowTag(true) << ", but data stream contained " << data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true);
 				TLOG(TLVL_ERROR) << errSS.str();
 				throw DTC_WrongPacketTypeException(GetEventWindowTag().GetEventWindowTag(true), data_blocks_.back().GetHeader()->GetEventWindowTag().GetEventWindowTag(true));
 			}
@@ -254,15 +254,14 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string* accumulatedErrors /* = nul
 		}
 	}
 
-	if(roc_fragi != 5)
+	if (roc_fragi != 5)
 	{
-		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) + 1 << 
-			". Check for corrupted byte/packet counts.";
+		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) + 1 << ". Check for corrupted byte/packet counts.";
 		TLOG(TLVL_ERROR) << errSS.str();
 		corruption_detected_ = true;
 	}
 
-	if(byte_count != header_.inclusive_subevent_byte_count)
+	if (byte_count != header_.inclusive_subevent_byte_count)
 	{
 		errSS << "\nCorruption detected in SubEvent! Expected byte count " << header_.inclusive_subevent_byte_count << ", found " << byte_count;
 		TLOG(TLVL_ERROR) << errSS.str();
@@ -274,7 +273,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string* accumulatedErrors /* = nul
 		errSS << "\nData Corruption Detected in SubEvent! EWT: " << GetEventWindowTag() << ", DTCID: " << static_cast<int>(GetDTCID());
 		TLOG(TLVL_ERROR) << errSS.str();
 	}
-	if(accumulatedErrors) *accumulatedErrors = errSS.str();
+	if (accumulatedErrors) *accumulatedErrors = errSS.str();
 	return !corruption_detected_;
 
 }  // end SetupSubEvent()
