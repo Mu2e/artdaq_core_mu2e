@@ -29,7 +29,7 @@ public:
 	DTC_SubEvent()
 		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
 
-	bool SetupSubEvent();
+	bool SetupSubEvent(std::string* accumulatedErrors = nullptr);
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
