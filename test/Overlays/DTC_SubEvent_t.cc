@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_SUITE(DTC_SubEvent_t)
 
 BOOST_AUTO_TEST_CASE(Constructor)
 {
-	size_t size_bytes = sizeof(DTCLib::DTC_SubEventHeader); // 6 empty ROC headers;
+	size_t size_bytes = sizeof(DTCLib::DTC_SubEventHeader);  // 6 empty ROC headers;
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(size_bytes);
 
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(Constructor)
 	TLOG(TLVL_TRACE + 22) << "Calling SetupSubEvent";
 	std::string accumulatedErrors = "";
 	auto ok = evt->SetupSubEvent(accumulatedErrors);
-	if(accumulatedErrors.size())
+	if (accumulatedErrors.size())
 		TLOG(TLVL_ERROR) << "Returned from SetupSubEvent, accumulatedErrors = " << accumulatedErrors;
 	BOOST_REQUIRE(!accumulatedErrors.size());
 	BOOST_REQUIRE(ok);
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(BadBinaryFile_Short)
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(buffer.data());
 	std::string accumulatedErrors = "";
 	auto ok = evt->SetupSubEvent(accumulatedErrors);
-	if(accumulatedErrors.size())
+	if (accumulatedErrors.size())
 		TLOG(TLVL_ERROR) << "Returned from SetupSubEvent, accumulatedErrors = " << accumulatedErrors;
 	BOOST_REQUIRE(accumulatedErrors.size());
 	BOOST_REQUIRE(!ok);
