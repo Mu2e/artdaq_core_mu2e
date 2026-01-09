@@ -114,7 +114,7 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 		mask1 += 0x0000E00000000000;
 		comp1 += static_cast<uint64_t>(subsystem) << 45;
 	}
-	if (0 && dtc != 0xFF) //As of 09-Jan-2025, turning off DTC ID check (it was working), to avoid requiring a write to the ROC telling it.
+	if (0 && dtc != 0xFF)  // As of 09-Jan-2025, turning off DTC ID check (it was working), to avoid requiring a write to the ROC telling it.
 	{
 		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
 
