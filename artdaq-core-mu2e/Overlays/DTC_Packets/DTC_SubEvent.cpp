@@ -174,7 +174,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 				}
 				else
 				{
-	errSS << "\nCorruption (unable to find next Header packet) detected in block " << static_cast<int>(roc_fragi) << " of SubEvent EWT: " << GetEventWindowTag() << ", DTC " << static_cast<int>(GetDTCID());
+					errSS << "\nCorruption (unable to find next Header packet) detected in block " << static_cast<int>(roc_fragi) << " of SubEvent EWT: " << GetEventWindowTag() << ", DTC " << static_cast<int>(GetDTCID());
 					TLOG(TLVL_ERROR) << errSS.str();
 					corruption_detected_ = true;
 
