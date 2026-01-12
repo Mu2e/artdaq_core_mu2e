@@ -93,6 +93,8 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 	uint64_t comp1 = 0x0000000080500000;
 	uint64_t comp2 = 0x0000000000000000;
 
+	auto ptr64 = reinterpret_cast<const uint64_t*>(ptr);
+
 	if (timestamp != DTC_EventWindowTag(static_cast<uint64_t>(0)))
 	{
 		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << dtc << " with mask " << mask2 << " and comp " << comp2;
@@ -114,17 +116,19 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 		mask1 += 0x0000E00000000000;
 		comp1 += static_cast<uint64_t>(subsystem) << 45;
 	}
-	if (0 && dtc != 0xFF)  // As of 09-Jan-2025, turning off DTC ID check (it was working), to avoid requiring a write to the ROC telling it.
+	if (dtc != 0xFF)  // As of 12-Jan-2025, turning off DTC ID check (it was working) exception, demoted to error
 	{
 		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
 
-		mask2 += static_cast<uint64_t>(0x0FF) << 48;
-		comp2 += static_cast<uint64_t>(dtc) << 48;
+		// mask2 += static_cast<uint64_t>(0x0FF) << 48;
+		// comp2 += static_cast<uint64_t>(dtc) << 48;
+		if ((((*(ptr64 + 1)) >> 48) & 0xFF) != dtc)
+		{
+			TLOG(TLVL_ERROR) << "DTC ID check failed for ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << ". Expected DTC ID " << std::hex << std::showbase << dtc << " in upper byte of second quad word, but found " << std::hex << std::showbase << ((*(ptr64 + 1)) >> 48);
+		}
 
 		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
 	}
-
-	auto ptr64 = reinterpret_cast<const uint64_t*>(ptr);
 
 	auto check1 = *ptr64 & mask1;
 	auto check2 = *(ptr64 + 1) & mask2;
