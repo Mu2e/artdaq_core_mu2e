@@ -21,6 +21,9 @@ enum FragmentType : artdaq::Fragment::type_t
 	STM = artdaq::Fragment::FirstUserFragmentType + 9,      // Stopping Target Monitor fragment
 	TRKDTC = artdaq::Fragment::FirstUserFragmentType + 10,  // hardware debug info
 	CFO = artdaq::Fragment::FirstUserFragmentType + 11,     // CFO Fragment
+	STM_RAW = artdaq::Fragment::FirstUserFragmentType + 12,  // STM RAW fragment
+	STM_ZS = artdaq::Fragment::FirstUserFragmentType + 13,  // STM ZS fragment
+	STM_MWD = artdaq::Fragment::FirstUserFragmentType + 14,  // STM MWD fragment
 	INVALID                                                 // Should always be last.
 };
 
