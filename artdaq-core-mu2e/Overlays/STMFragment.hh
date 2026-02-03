@@ -2,84 +2,145 @@
 #define MU2E_ARTDAQ_CORE_OVERLAYS_STMFRAGMENT_HH
 
 #include "artdaq-core/Data/Fragment.hh"
-// #include "STMDAQ-TestBeam/utils/Hex.hh"
-// #include "/home/mu2estm/STMDAQ-TestBeam/utils/dataVars.hh"
-//  #include "STMDAQ-TestBeam/utils/xml.hh"
-//  #include "STMDAQ-TestBeam/utils/EnvVars.hh"
+#include <cstdint>
+#include <cstddef>
 
-// STM-TODO: this is for the simpler sim data we are sending
-// STM-TODO: will need to update to use the struct in dataVars.hh
-// struct fw_tHdr {
-//   // Length in int16_t values of the trigger header
-//   static const uint len = 3;
-//   // Size in bytes of the trigger header
-//   static const uint size = len*sizeof(int16_t);
+namespace stm {
 
-//   // Index positions of trigger header components
-//   static const uint EvNum = 0; // event number
-//   static const uint DataType = 1; // raw = 0, ZS = 1
-//   static const uint EvLen = 2; // number of int16_ts of data to read
-
-//   // Index position of the data
-//   static const uint DataBegin = 3;
-// };
-
-// TODO: get this from the authoritative source
-
-namespace mu2e {
-class STMFragment
-{
-public:
-  static constexpr size_t RAW_HEADER_LEN = 32; // length in words of RAW header
-  static constexpr size_t ZS_HEADER_LEN  = 6; // length in words of ZS header
-  static constexpr size_t MWD_HEADER_LEN = 4; // length in words of MWD header
-
-        // static const fw_tHdr tHdr;
-
-        explicit STMFragment(artdaq::Fragment const& f)
-                : artdaq_fragment_(f) {}
-
-        int16_t const* GetTHdr() const
-        {
-                return reinterpret_cast<int16_t const*>(artdaq_fragment_.dataBegin());
-        }
-
-        int16_t const* detID() const
-        {
-                // return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.Ch_DTCclk_0);
-                return reinterpret_cast<int16_t const*>(GetTHdr() + 28);
-        }
-
-        int16_t const* EvNum() const
-        {
-                // return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvNum_0);
-                return reinterpret_cast<int16_t const*>(GetTHdr() + 8);
-        }
-
-        int16_t const* DataType() const
-        {
-                // return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.ZSflag_PreVal);
-                // return reinterpret_cast<int16_t const*>(GetTHdr()+22);
-
-                // Dont have data type in Header yet for now assume it is Raw data
-                return reinterpret_cast<int16_t const*>(GetTHdr() + 22);
-        }
-
-        int16_t const* EvLen() const
-        {
-                // return reinterpret_cast<int16_t const*>(GetTHdr()+tHdr.EvLen);
-                return reinterpret_cast<int16_t const*>(GetTHdr() + 23);
-        }
-
-        int16_t const* DataBegin() const
-        {
-                return reinterpret_cast<int16_t const*>(GetTHdr() + 32);
-        }
-
-private:
-        artdaq::Fragment const& artdaq_fragment_;
+// ---------------------------
+// Dataset identifiers
+// ---------------------------
+enum class Dataset : uint16_t {
+  RAW = 100,
+  ZS  = 101,
+  MWD = 102
 };
 
-}  // namespace mu2e
+// ---------------------------
+// RAW header layout
+// ---------------------------
+struct RawHeader {
+  static constexpr size_t WORDS = 21;
+  static constexpr uint16_t ANCHOR_WORD = 0xCAFE;
 
-#endif  // MU2E_ARTDAQ_CORE_OVERLAYS_STMFRAGMENT_HH
+  enum Index : size_t {
+    ANCHOR_START = 0,
+
+    EWT_0 = 1,
+    EWT_1 = 2,
+    EWT_2 = 3,
+
+    ADCclk_0 = 4,
+    ADCclk_1 = 5,
+    ADCclk_2 = 6,
+    ADCclk_3 = 7,
+
+    Ch_DTCclk_0 = 8,
+    DTCclk_1 = 9,
+    DTCclk_2 = 10,
+    DTCclk_3 = 11,
+
+    EM_0 = 12,
+    EM_1 = 13,
+    EM_2_DRTDC = 14,
+
+    PRESCALE = 15,
+    RAW_LEN = 16,
+    ZS_REGIONS = 17,
+    ZS_LEN = 18,
+    PH_NUM = 19,
+
+    ANCHOR_END = 20
+  };
+};
+
+} // namespace stm
+
+namespace mu2e {
+
+class STMFragment {
+public:
+  explicit STMFragment(artdaq::Fragment const& f)
+    : frag_(f),
+      data_(reinterpret_cast<uint16_t const*>(f.dataBegin()))
+  {}
+
+  // -----------------------
+  // Dataset (authoritative)
+  // -----------------------
+  stm::Dataset dataset() const {
+    return static_cast<stm::Dataset>(frag_.fragmentID());
+  }
+
+  bool isRaw() const { return dataset() == stm::Dataset::RAW; }
+  bool isZS()  const { return dataset() == stm::Dataset::ZS; }
+  bool isMWD() const { return dataset() == stm::Dataset::MWD; }
+
+  // -----------------------
+  // Header integrity
+  // -----------------------
+  bool hasValidAnchors() const {
+    if (!isRaw()) return true; // No header for ZS/MWD
+    return data_[stm::RawHeader::ANCHOR_START] == stm::RawHeader::ANCHOR_WORD &&
+           data_[stm::RawHeader::ANCHOR_END]   == stm::RawHeader::ANCHOR_WORD;
+  }
+
+  // -----------------------
+  // RAW header access
+  // -----------------------
+  uint64_t eventWindowTag() const {
+    return uint64_t(data_[stm::RawHeader::EWT_0]) |
+           (uint64_t(data_[stm::RawHeader::EWT_1]) << 16) |
+           (uint64_t(data_[stm::RawHeader::EWT_2]) << 32);
+  }
+
+  uint64_t adcClock() const {
+    return uint64_t(data_[stm::RawHeader::ADCclk_0]) |
+           (uint64_t(data_[stm::RawHeader::ADCclk_1]) << 16) |
+           (uint64_t(data_[stm::RawHeader::ADCclk_2]) << 32) |
+           (uint64_t(data_[stm::RawHeader::ADCclk_3]) << 48);
+  }
+
+  uint64_t dtcClock() const {
+    return uint64_t(data_[stm::RawHeader::Ch_DTCclk_0]) |
+           (uint64_t(data_[stm::RawHeader::DTCclk_1]) << 16) |
+           (uint64_t(data_[stm::RawHeader::DTCclk_2]) << 32) |
+           (uint64_t(data_[stm::RawHeader::DTCclk_3]) << 48);
+  }
+
+  uint16_t rawLength() const {
+    return data_[stm::RawHeader::RAW_LEN];
+  }
+
+  uint16_t zsRegions() const {
+    return data_[stm::RawHeader::ZS_REGIONS];
+  }
+
+  uint16_t zsLength() const {
+    return data_[stm::RawHeader::ZS_LEN];
+  }
+
+  uint16_t prescale() const {
+    return data_[stm::RawHeader::PRESCALE];
+  }
+
+  // -----------------------
+  // Payload access
+  // -----------------------
+  uint16_t const* payloadBegin() const {
+    return isRaw() ? data_ + stm::RawHeader::WORDS : data_;
+  }
+
+  size_t payloadWords() const {
+    return isRaw() ? rawLength()
+                   : frag_.dataSizeBytes() / sizeof(uint16_t);
+  }
+
+private:
+  artdaq::Fragment const& frag_;
+  uint16_t const* data_;
+};
+
+} // namespace mu2e
+
+#endif //MU2E_ARTDAQ_CORE_OVERLAYS_STMFRAGMENT_HH
