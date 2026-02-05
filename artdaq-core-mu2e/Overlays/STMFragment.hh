@@ -10,7 +10,7 @@ namespace stm {
 // ---------------------------
 // Dataset identifiers
 // ---------------------------
-enum class Dataset : uint16_t {
+enum class Dataset : int16_t {
   RAW = 100,
   ZS  = 101,
   MWD = 102
@@ -21,7 +21,7 @@ enum class Dataset : uint16_t {
 // ---------------------------
 struct RawHeader {
   static constexpr size_t WORDS = 21;
-  static constexpr uint16_t ANCHOR_WORD = 0xCAFE;
+  static constexpr int16_t ANCHOR_WORD = 0xCAFE;
 
   enum Index : size_t {
     ANCHOR_START = 0,
@@ -62,7 +62,7 @@ class STMFragment {
 public:
   explicit STMFragment(artdaq::Fragment const& f)
     : frag_(f),
-      data_(reinterpret_cast<uint16_t const*>(f.dataBegin()))
+      data_(reinterpret_cast<int16_t const*>(f.dataBegin()))
   {}
 
   // -----------------------
@@ -108,37 +108,37 @@ public:
            (uint64_t(data_[stm::RawHeader::DTCclk_3]) << 48);
   }
 
-  uint16_t rawLength() const {
+  int16_t rawLength() const {
     return data_[stm::RawHeader::RAW_LEN];
   }
 
-  uint16_t zsRegions() const {
+  int16_t zsRegions() const {
     return data_[stm::RawHeader::ZS_REGIONS];
   }
 
-  uint16_t zsLength() const {
+  int16_t zsLength() const {
     return data_[stm::RawHeader::ZS_LEN];
   }
 
-  uint16_t prescale() const {
+  int16_t prescale() const {
     return data_[stm::RawHeader::PRESCALE];
   }
 
   // -----------------------
   // Payload access
   // -----------------------
-  uint16_t const* payloadBegin() const {
+  int16_t const* payloadBegin() const {
     return isRaw() ? data_ + stm::RawHeader::WORDS : data_;
   }
 
   size_t payloadWords() const {
     return isRaw() ? rawLength()
-                   : frag_.dataSizeBytes() / sizeof(uint16_t);
+                   : frag_.dataSizeBytes() / sizeof(int16_t);
   }
 
 private:
   artdaq::Fragment const& frag_;
-  uint16_t const* data_;
+  int16_t const* data_;
 };
 
 } // namespace mu2e
