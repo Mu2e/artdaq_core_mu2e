@@ -21,7 +21,7 @@ enum class Dataset : int16_t {
 // ---------------------------
 struct RawHeader {
   static constexpr size_t WORDS = 21;
-  static constexpr int16_t ANCHOR_WORD = 0xCAFE;
+  static constexpr int16_t ANCHOR_WORD = static_cast<int16_t>(0xCAFE);  // -13570
 
   enum Index : size_t {
     ANCHOR_START = 0,
