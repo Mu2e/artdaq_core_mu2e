@@ -36,7 +36,7 @@ public:
 
 	typedef std::vector<MobileSyncPacket> sync_data_t;
 
-	sync_data_t GetMobileSyncPackets(size_t blockIndex) const;
+	sync_data_t GetMobileSyncPackets(size_t blockIndex);
 
 private:
 	// dataset info
@@ -88,4 +88,3 @@ private:
 }  // namespace mu2e
 
 #endif  // ARTDAQ_CORE_MU2E_DATA_MOBILESYNCDATADECODER_HH
-

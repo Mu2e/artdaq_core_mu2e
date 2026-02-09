@@ -6,16 +6,7 @@
 
 namespace mu2e {
 MobileSyncDataDecoder::MobileSyncDataDecoder(DTCLib::DTC_SubEvent const& evt) : DTCDataDecoder(evt)
-{
-	if (block_count() > 0)
-	{
-		auto dataPtr = dataAtBlockIndex(0);
-		auto hdr = dataPtr->GetHeader();
-		data_id_tag_ = hdr->GetVersion();
-		SetGitTagAndPayloadVersion(data_id_tag_);
-		SetTimestampingClockPeriod(data_id_tag_);
-	}
-}
+{}
 
 void MobileSyncDataDecoder::SetGitTagAndPayloadVersion(uint8_t data_id_tag)
 {
@@ -159,13 +150,15 @@ bool MobileSyncDataDecoder::GetHitTOT(const MobileSyncPacket* packet, unsigned h
 	}
 }
 
-MobileSyncDataDecoder::sync_data_t MobileSyncDataDecoder::GetMobileSyncPackets(
-	size_t blockIndex) const
+MobileSyncDataDecoder::sync_data_t MobileSyncDataDecoder::GetMobileSyncPackets(size_t blockIndex)
 {
 	sync_data_t output;
 
 	auto dataPtr = dataAtBlockIndex(blockIndex);
 	if (dataPtr == nullptr) return output;
+	data_id_tag_ = dataPtr->GetHeader()->GetVersion();
+	SetGitTagAndPayloadVersion(data_id_tag_);
+	SetTimestampingClockPeriod(data_id_tag_);
 
 	const auto nPackets = dataPtr->GetHeader()->GetPacketCount();
 	output.resize(nPackets);
@@ -176,4 +169,3 @@ MobileSyncDataDecoder::sync_data_t MobileSyncDataDecoder::GetMobileSyncPackets(
 }
 
 }  // namespace mu2e
-
