@@ -40,8 +40,8 @@ public:
 
 private:
 	// dataset info
-	uint8_t data_id_tag_{0};  // obtained from data header, maps to payload version and git tag
-	int payload_version_{0};  // defines data in packets
+	uint8_t data_id_tag_{0};           // maps data header info to payload version / git tag
+	int payload_version_{0};           // defines data in packets
 	std::string git_tag_{"v0_00_00"};  // tag in sync-firmware (firmware version used in run)
 	double clk_period_ns_{0};
 	void SetGitTagAndPayloadVersion(uint8_t data_id_tag);  // maps data ID tag to firmware git tag

@@ -5,8 +5,8 @@
 #include <vector>
 
 namespace mu2e {
-MobileSyncDataDecoder::MobileSyncDataDecoder(DTCLib::DTC_SubEvent const& evt) : DTCDataDecoder(evt)
-{}
+MobileSyncDataDecoder::MobileSyncDataDecoder(DTCLib::DTC_SubEvent const& evt)
+	: DTCDataDecoder(evt) {}
 
 void MobileSyncDataDecoder::SetGitTagAndPayloadVersion(uint8_t data_id_tag)
 {
