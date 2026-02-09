@@ -258,6 +258,11 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 	{
 		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) << ". Check for corrupted byte/packet counts.";
 		TLOG(TLVL_ERROR) << errSS.str();
+                auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
+                std::cout << "--> Printing entire buffer ptr data: 0x ";
+                for (size_t i = 0; i < header_.inclusive_subevent_byte_count; i += 4)
+                  std::cout << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+                std::cout << std::endl;
 		corruption_detected_ = true;
 	}
 
