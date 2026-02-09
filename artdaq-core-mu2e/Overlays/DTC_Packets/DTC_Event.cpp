@@ -54,7 +54,7 @@ bool DTCLib::DTC_Event::SetupEvent()
 			TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up the event at location 0x" << std::hex << byte_count;
 			TLOG(TLVL_ERROR) << "This event has been truncated.";
 			corruption_detected_ = true;
-			break;
+			continue;
 		}
 		catch (DTC_WrongPacketSizeException const& ex)
 		{
