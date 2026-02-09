@@ -135,5 +135,10 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 
 	TLOG(TLVL_DEBUG + 20) << "Checking ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << " with masks " << mask1 << " " << mask2 << ". check1 " << check1 << " =?= " << comp1 << " comp1, check2 " << check2 << " =?= " << comp2 << " comp2";
 
+	if (!(check1 == comp1 && check2 == comp2))
+	{
+		TLOG(TLVL_DEBUG) << "Failed header check! Looking for roc=" << roc << " and received " << std::hex << std::showbase << check1 << " =? " << comp1 << "  " << check2 << " =? " << comp2;
+	}
+
 	return check1 == comp1 && check2 == comp2;
 }
