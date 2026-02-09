@@ -28,7 +28,7 @@ DTCLib::DTC_SubEvent::DTC_SubEvent(const void *data)
 				" 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << " ";  // std::endl;
 
 		TLOG(TLVL_ERROR) << ss.str();
-		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" << std::hex << header_.subevent_format_version << " != 0x" << static_cast<uint16_t>(REQUIRED_SUBEVENT_FORMAT_VERSION) << ". Check that your DTC FPGA version matches the software expecation.";
+		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" << std::hex << header_.subevent_format_version << " != 0x" << static_cast<uint16_t>(REQUIRED_SUBEVENT_FORMAT_VERSION) << ". Check that your DTC FPGA version matches the software expectation.";
 		throw DTC_WrongPacketTypeException(REQUIRED_SUBEVENT_FORMAT_VERSION, header_.subevent_format_version);
 	}
 	else if (TTEST(1))
