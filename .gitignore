@@ -7,3 +7,5 @@ obj
 CMakePresets.json
 spack-*
 build-linux-*
+*.log
+.*OTS*.cmd

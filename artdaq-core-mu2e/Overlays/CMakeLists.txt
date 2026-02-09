@@ -29,7 +29,7 @@ cet_make_library(
       Decoders/CFODataDecoder.cc
       Decoders/CRVDataDecoder.cc
       Decoders/TrackerDataDecoder.cc
-      Decoders/MTPDataDecoder.cc
+      Decoders/MobileSyncDataDecoder.cc
     LIBRARIES PUBLIC
       artdaq-core::Data
 )
