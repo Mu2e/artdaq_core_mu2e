@@ -62,7 +62,7 @@ class STMFragment {
 public:
   explicit STMFragment(artdaq::Fragment const& f)
     : frag_(f),
-      data_(reinterpret_cast<uint16_t const*>(f.dataBegin()))
+      data_(reinterpret_cast<int16_t const*>(f.dataBegin()))
   {}
 
   // -----------------------
@@ -127,18 +127,18 @@ public:
   // -----------------------
   // Payload access
   // -----------------------
-  uint16_t const* payloadBegin() const {
+  int16_t const* payloadBegin() const {
     return isRaw() ? data_ + stm::RawHeader::WORDS : data_;
   }
 
   size_t payloadWords() const {
     return isRaw() ? rawLength()
-                   : frag_.dataSizeBytes() / sizeof(uint16_t);
+                   : frag_.dataSizeBytes() / sizeof(int16_t);
   }
 
 private:
   artdaq::Fragment const& frag_;
-  uint16_t const* data_;
+  int16_t const* data_;
 };
 
 } // namespace mu2e
