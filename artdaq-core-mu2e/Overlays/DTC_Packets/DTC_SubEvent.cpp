@@ -21,12 +21,26 @@ DTCLib::DTC_SubEvent::DTC_SubEvent(const void *data)
 	if (header_.subevent_format_version != REQUIRED_SUBEVENT_FORMAT_VERSION)
 	{
 		auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
-		TLOG(TLVL_ERROR) << "Subevent header raw data:";
+		std::stringstream ss;
+		ss << "Subevent header raw data (" << sizeof(header_) << " bytes):";
 		for (size_t i = 0; i < sizeof(header_); i += 4)
-			TLOG(TLVL_ERROR) << std::dec << "#" << i << "/" << sizeof(header_) << ": 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << std::endl;
+			ss << std::dec <<                                                                                 //"#" << i << "/" << sizeof(header_) << ":" <<
+				" 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << " ";  // std::endl;
 
-		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" << std::hex << header_.subevent_format_version << " != 0x" << static_cast<uint16_t>(REQUIRED_SUBEVENT_FORMAT_VERSION) << ". Check that your DTC FPGA version matches the software expecation.";
+		TLOG(TLVL_ERROR) << ss.str();
+		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" << std::hex << header_.subevent_format_version << " != 0x" << static_cast<uint16_t>(REQUIRED_SUBEVENT_FORMAT_VERSION) << ". Check that your DTC FPGA version matches the software expectation.";
 		throw DTC_WrongPacketTypeException(REQUIRED_SUBEVENT_FORMAT_VERSION, header_.subevent_format_version);
+	}
+	else if (TTEST(1))
+	{
+		auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
+		std::stringstream ss;
+		ss << "Subevent header raw data (" << sizeof(header_) << " bytes):";
+		for (size_t i = 0; i < sizeof(header_); i += 4)
+			ss << std::dec <<                                                                                 //"#" << i << "/" << sizeof(header_) << ":" <<
+				" 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << " ";  // std::endl;
+
+		TLOG(TLVL_TRACE) << ss.str();
 	}
 }
 
