@@ -7,3 +7,4 @@ obj
 CMakePresets.json
 spack-*
 build-linux-*
+_codeql_*
