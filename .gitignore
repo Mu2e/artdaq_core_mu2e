@@ -9,3 +9,4 @@ spack-*
 build-linux-*
 *.log
 .*OTS*.cmd
+_codeql_*
