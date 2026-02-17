@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 
 // For generated DTC_SubEvent objects
 #define CURRENT_SUBEVENT_FORMAT_VERSION 1
