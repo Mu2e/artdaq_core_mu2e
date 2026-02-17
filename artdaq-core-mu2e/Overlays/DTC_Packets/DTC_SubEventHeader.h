@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 
 // For generated DTC_SubEvent objects
 #define CURRENT_SUBEVENT_FORMAT_VERSION 1
@@ -123,7 +124,18 @@ struct DTC_SubEventHeader
 
 		return oss.str();
 	}
-};
+
+	uint64_t getLinkStatus(uint8_t link) const
+	{
+		if (link == 0) return link0_status;
+		if (link == 1) return link1_status;
+		if (link == 2) return link2_status;
+		if (link == 3) return link3_status;
+		if (link == 4) return link4_status;
+		if (link == 5) return link5_status;
+		throw std::runtime_error("Invalid link number in getLinkStatus(): " + std::to_string(link));
+	}
+};  // end DTC_SubEventHeader
 
 }  // namespace DTCLib
 
