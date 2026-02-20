@@ -1,6 +1,6 @@
 cet_make_library(
-    SOURCE 
-      FragmentType.cc 
+    SOURCE
+      FragmentType.cc
       DTCEventFragment.cc
       CFOEventFragment.cc
       STMFragment.cc
