@@ -1,5 +1,5 @@
 cet_make_library(
-  SOURCE 
+  SOURCE
   EventHeader.cc
   RunHeader.cc
   SubRunHeader.cc

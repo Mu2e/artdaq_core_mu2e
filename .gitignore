@@ -1,4 +1,5 @@
 *.*~
+!.clang-format
 \#*\#
 .editorconfig
 bin
@@ -7,3 +8,6 @@ obj
 CMakePresets.json
 spack-*
 build-linux-*
+*.log
+.*OTS*.cmd
+_codeql_*

@@ -13,7 +13,7 @@ enum DTC_Subsystem : uint8_t
 	DTC_Subsystem_Other = 3,
 	DTC_Subsystem_STM = 4,
 	DTC_Subsystem_ExtMon = 5,
-	DTC_Subsystem_MTP = 6,
+	DTC_Subsystem_MobileSync = 6,
 	DTC_Subsystem_Unused
 };
 
