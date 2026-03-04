@@ -64,16 +64,16 @@ struct CFO_EventRecord
 		std::ostringstream oss;
 
 		oss << "\"CFO_EventRecord\": {\n";
-		oss << "\t\"record_format_version\": 0x" << std::hex << record_format_version << std::dec;
+		oss << "\t\"record_format_version\": " << record_format_version << "(0x" << std::hex << record_format_version << std::dec << ")";
 		oss << ",\n\t\"event_tag\": " << event_tag << "(0x" << std::hex << event_tag << std::dec << ")";
-		oss << ",\n\t\"linux_timestamp\": " << linux_timestamp;
-		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode << std::dec;
-		oss << ",\n\t\"event_duration\": " << event_duration;
-		oss << ",\n\t\"TDC_marker_N_from_spill\": " << TDC_marker_N_from_spill;
-		oss << ",\n\t\"DR_marker_N_est\": " << DR_marker_N_est;
-		oss << ",\n\t\"DR_marker_Nplus1_est\": " << DR_marker_Nplus1_est;
-		oss << ",\n\t\"DR_marker_N_meas\": " << DR_marker_N_meas;
-		oss << ",\n\t\"DR_marker_Nplus1_meas\": " << DR_marker_Nplus1_meas;
+		oss << ",\n\t\"linux_timestamp\": " << linux_timestamp << "(0x" << std::hex << linux_timestamp << std::dec << ")";
+		oss << ",\n\t\"event_mode\": " << event_mode << "(0x" << std::hex << event_mode << std::dec << ")";
+		oss << ",\n\t\"event_duration\": " << event_duration << "(0x" << std::hex << event_duration << std::dec << ")";
+		oss << ",\n\t\"TDC_marker_N_from_spill\": " << TDC_marker_N_from_spill << "(0x" << std::hex << TDC_marker_N_from_spill << std::dec << ")";
+		oss << ",\n\t\"DR_marker_N_est\": " << DR_marker_N_est << "(0x" << std::hex << DR_marker_N_est << std::dec << ")";
+		oss << ",\n\t\"DR_marker_Nplus1_est\": " << DR_marker_Nplus1_est << "(0x" << std::hex << DR_marker_Nplus1_est << std::dec << ")";
+		oss << ",\n\t\"DR_marker_N_meas\": " << DR_marker_N_meas << "(0x" << std::hex << DR_marker_N_meas << std::dec << ")";
+		oss << ",\n\t\"DR_marker_Nplus1_meas\": " << DR_marker_Nplus1_meas << "(0x" << std::hex << DR_marker_Nplus1_meas << std::dec<< ")";
 		oss << "\n}";
 
 		return oss.str();
