@@ -7,7 +7,8 @@
 #include <cstdint>
 #include <ostream>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// This class is used to decode the SERDES RX Disparity Error register
@@ -16,7 +17,7 @@ class DTC_SERDESRXDisparityError
 {
 	std::bitset<2> data_;
 
-public:
+  public:
 	/// <summary>
 	/// Default Constructor
 	/// </summary>
@@ -75,7 +76,8 @@ public:
 	/// <returns>Data as int</returns>
 	int GetData(bool output) const
 	{
-		if (output) return static_cast<int>(data_.to_ulong());
+		if(output)
+			return static_cast<int>(data_.to_ulong());
 		return 0;
 	}
 

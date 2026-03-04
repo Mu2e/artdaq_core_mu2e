@@ -42,9 +42,9 @@ struct RocDataHeaderPacket_t
 
 	ulong ewtag()
 	{
-		ulong x1 = eventTag[0];
-		ulong x2 = eventTag[1];
-		ulong x3 = eventTag[2];
+		ulong x1  = eventTag[0];
+		ulong x2  = eventTag[1];
+		ulong x3  = eventTag[2];
 		ulong ewt = x1 | (x2 << 16) | (x3 << 32);
 		return ewt;
 	}

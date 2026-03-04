@@ -7,7 +7,8 @@
 #include <string>
 #include <vector>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DTC_DataPacket class represents the 16 bytes of raw data for all DTC packets.
@@ -16,7 +17,7 @@ namespace DTCLib {
 /// </summary>
 class DTC_DataPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a DTC_DataPacket in owner mode
 	/// </summary>
@@ -27,7 +28,9 @@ public:
 	/// </summary>
 	/// <param name="data">Pointer to data</param>
 	explicit DTC_DataPacket(const void* data)
-		: dataPtr_(static_cast<const uint8_t*>(data)), dataSize_(16), memPacket_(true) {}
+	    : dataPtr_(static_cast<const uint8_t*>(data))
+	    , dataSize_(16)
+	    , memPacket_(true) {}
 
 	/// <summary>
 	/// Creates a copy of the DTC_DataPacket. Mode is preserved, if the existing DataPacket was in "owner" mode, a deep
@@ -108,7 +111,7 @@ public:
 	/// <returns>True if successful</returns>
 	bool CramIn(DTC_DataPacket& other, int offset)
 	{
-		if (other.dataSize_ + offset <= dataSize_)
+		if(other.dataSize_ + offset <= dataSize_)
 		{
 			memcpy(const_cast<uint8_t*>(dataPtr_) + offset, other.dataPtr_, other.dataSize_);
 			return true;
@@ -155,10 +158,10 @@ public:
 		return s.write(reinterpret_cast<const char*>(p.dataPtr_), p.dataSize_);
 	}
 
-private:
-	const uint8_t* dataPtr_;
-	uint16_t dataSize_;
-	bool memPacket_;
+  private:
+	const uint8_t*       dataPtr_;
+	uint16_t             dataSize_;
+	bool                 memPacket_;
 	std::vector<uint8_t> vals_;
 };
 

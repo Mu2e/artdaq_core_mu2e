@@ -8,10 +8,11 @@
 
 #include <vector>
 
-namespace mu2e {
+namespace mu2e
+{
 class TrackerDataDecoder : public DTCDataDecoder
 {
-public:
+  public:
 	static constexpr int TRACKER_FORMAT_VERSION = 1;
 
 	explicit TrackerDataDecoder(DTCLib::DTC_SubEvent const& evt);
@@ -75,61 +76,61 @@ public:
 
 		inline void SetWaveform(size_t index, uint16_t waveform)
 		{
-			switch (index)
+			switch(index)
 			{
-				case 0:
-					ADC00 = waveform & 0xFFF;
-					break;
-				case 1:
-					ADC01A = waveform & 0xF;
-					ADC01B = (waveform >> 4) & 0xFF;
-					break;
-				case 2:
-					ADC02A = waveform & 0xFF;
-					ADC02B = (waveform >> 8) & 0xF;
-					break;
-				case 3:
-					ADC03 = waveform & 0xFFF;
-					break;
-				case 4:
-					ADC04 = waveform & 0xFFF;
-					break;
-				case 5:
-					ADC05A = waveform & 0xF;
-					ADC05B = (waveform >> 4) & 0xFF;
-					break;
-				case 6:
-					ADC06A = waveform & 0xFF;
-					ADC06B = (waveform >> 8) & 0xF;
-					break;
-				case 7:
-					ADC07 = waveform & 0xFFF;
-					break;
-				case 8:
-					ADC08 = waveform & 0xFFF;
-					break;
-				case 9:
-					ADC09A = waveform & 0xF;
-					ADC09B = (waveform >> 4) & 0xFF;
-					break;
-				case 10:
-					ADC10A = waveform & 0xFF;
-					ADC10B = (waveform >> 8) & 0xF;
-					break;
-				case 11:
-					ADC11 = waveform & 0xFFF;
-					break;
-				case 12:
-					ADC12 = waveform & 0xFFF;
-					break;
-				case 13:
-					ADC13A = waveform & 0xF;
-					ADC13B = (waveform >> 4) & 0xFF;
-					break;
-				case 14:
-					ADC14A = waveform & 0xFF;
-					ADC14B = (waveform >> 8) & 0xF;
-					break;
+			case 0:
+				ADC00 = waveform & 0xFFF;
+				break;
+			case 1:
+				ADC01A = waveform & 0xF;
+				ADC01B = (waveform >> 4) & 0xFF;
+				break;
+			case 2:
+				ADC02A = waveform & 0xFF;
+				ADC02B = (waveform >> 8) & 0xF;
+				break;
+			case 3:
+				ADC03 = waveform & 0xFFF;
+				break;
+			case 4:
+				ADC04 = waveform & 0xFFF;
+				break;
+			case 5:
+				ADC05A = waveform & 0xF;
+				ADC05B = (waveform >> 4) & 0xFF;
+				break;
+			case 6:
+				ADC06A = waveform & 0xFF;
+				ADC06B = (waveform >> 8) & 0xF;
+				break;
+			case 7:
+				ADC07 = waveform & 0xFFF;
+				break;
+			case 8:
+				ADC08 = waveform & 0xFFF;
+				break;
+			case 9:
+				ADC09A = waveform & 0xF;
+				ADC09B = (waveform >> 4) & 0xFF;
+				break;
+			case 10:
+				ADC10A = waveform & 0xFF;
+				ADC10B = (waveform >> 8) & 0xF;
+				break;
+			case 11:
+				ADC11 = waveform & 0xFFF;
+				break;
+			case 12:
+				ADC12 = waveform & 0xFFF;
+				break;
+			case 13:
+				ADC13A = waveform & 0xF;
+				ADC13B = (waveform >> 4) & 0xFF;
+				break;
+			case 14:
+				ADC14A = waveform & 0xFF;
+				ADC14B = (waveform >> 8) & 0xF;
+				break;
 			}
 		}
 	};
@@ -178,18 +179,18 @@ public:
 
 		inline void SetWaveform(size_t index, uint16_t waveform)
 		{
-			switch (index)
+			switch(index)
 			{
-				case 0:
-					ADC00 = waveform & 0x3FF;
-					break;
-				case 1:
-					ADC01A = waveform & 0x3F;
-					ADC01B = (waveform >> 6) & 0xF;
-					break;
-				case 2:
-					ADC02 = waveform & 0x3FF;
-					break;
+			case 0:
+				ADC00 = waveform & 0x3FF;
+				break;
+			case 1:
+				ADC01A = waveform & 0x3F;
+				ADC01B = (waveform >> 6) & 0xF;
+				break;
+			case 2:
+				ADC02 = waveform & 0x3FF;
+				break;
 			}
 		}
 	};
@@ -231,60 +232,60 @@ public:
 
 		inline void SetWaveform(size_t index, uint16_t waveform)
 		{
-			switch (index)
+			switch(index)
 			{
-				case 0:
-					ADC0 = waveform & 0x3FF;
-					break;
-				case 1:
-					ADC1A = waveform & 0x3F;
-					ADC1B = (waveform >> 6) & 0xF;
-					break;
-				case 2:
-					ADC2 = waveform & 0x3FF;
-					break;
-				case 3:
-					ADC3 = waveform & 0x3FF;
-					break;
-				case 4:
-					ADC4A = waveform & 0x3F;
-					ADC4B = (waveform >> 6) & 0xF;
-					break;
-				case 5:
-					ADC5 = waveform & 0x3FF;
-					break;
-				case 6:
-					ADC6 = waveform & 0x3FF;
-					break;
-				case 7:
-					ADC7A = waveform & 0x3F;
-					ADC7B = (waveform >> 6) & 0xF;
-					break;
-				case 8:
-					ADC8 = waveform & 0x3FF;
-					break;
-				case 9:
-					ADC9 = waveform & 0x3FF;
-					break;
-				case 10:
-					ADC10A = waveform & 0x3F;
-					ADC10B = (waveform >> 6) & 0xF;
-					break;
-				case 11:
-					ADC11 = waveform & 0x3FF;
-					break;
+			case 0:
+				ADC0 = waveform & 0x3FF;
+				break;
+			case 1:
+				ADC1A = waveform & 0x3F;
+				ADC1B = (waveform >> 6) & 0xF;
+				break;
+			case 2:
+				ADC2 = waveform & 0x3FF;
+				break;
+			case 3:
+				ADC3 = waveform & 0x3FF;
+				break;
+			case 4:
+				ADC4A = waveform & 0x3F;
+				ADC4B = (waveform >> 6) & 0xF;
+				break;
+			case 5:
+				ADC5 = waveform & 0x3FF;
+				break;
+			case 6:
+				ADC6 = waveform & 0x3FF;
+				break;
+			case 7:
+				ADC7A = waveform & 0x3F;
+				ADC7B = (waveform >> 6) & 0xF;
+				break;
+			case 8:
+				ADC8 = waveform & 0x3FF;
+				break;
+			case 9:
+				ADC9 = waveform & 0x3FF;
+				break;
+			case 10:
+				ADC10A = waveform & 0x3F;
+				ADC10B = (waveform >> 6) & 0xF;
+				break;
+			case 11:
+				ADC11 = waveform & 0x3FF;
+				break;
 			}
 		}
 	};
 
 	typedef std::vector<std::pair<const TrackerDataPacket*, std::vector<uint16_t>>> tracker_data_t;
-	tracker_data_t GetTrackerData(size_t blockIndex, bool readWaveform = true) const;
-	void ClearUpgradedPackets() { upgraded_data_packets_.clear(); }
+	tracker_data_t                                                                  GetTrackerData(size_t blockIndex, bool readWaveform = true) const;
+	void                                                                            ClearUpgradedPackets() { upgraded_data_packets_.clear(); }
 
-private:
+  private:
 	const TrackerDataPacket* Upgrade(const TrackerDataPacketV0* input) const;
-	std::vector<uint16_t> GetWaveformV0(const TrackerDataPacketV0* input) const;
-	std::vector<uint16_t> GetWaveform(const TrackerDataPacket* input) const;
+	std::vector<uint16_t>    GetWaveformV0(const TrackerDataPacketV0* input) const;
+	std::vector<uint16_t>    GetWaveform(const TrackerDataPacket* input) const;
 
 	mutable std::vector<TrackerDataPacket> upgraded_data_packets_;
 };

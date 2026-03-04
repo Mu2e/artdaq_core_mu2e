@@ -24,14 +24,15 @@
 //   static const uint DataBegin = 3;
 // };
 
-namespace mu2e {
+namespace mu2e
+{
 class STMFragment
 {
-public:
+  public:
 	// static const fw_tHdr tHdr;
 
 	explicit STMFragment(artdaq::Fragment const& f)
-		: artdaq_fragment_(f) {}
+	    : artdaq_fragment_(f) {}
 
 	int16_t const* GetTHdr() const
 	{
@@ -70,7 +71,7 @@ public:
 		return reinterpret_cast<int16_t const*>(GetTHdr() + 32);
 	}
 
-private:
+  private:
 	artdaq::Fragment const& artdaq_fragment_;
 };
 

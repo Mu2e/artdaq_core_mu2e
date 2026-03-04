@@ -3,13 +3,14 @@
 
 #include <cstdint>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_ROC_Emulation_Type : uint8_t
 {
-	ROC_Internal_Emulation = 0,
+	ROC_Internal_Emulation      = 0,
 	ROC_FiberLoopback_Emulation = 1,
-	ROC_External_Emulation = 2
+	ROC_External_Emulation      = 2
 };
 
 }  // namespace DTCLib

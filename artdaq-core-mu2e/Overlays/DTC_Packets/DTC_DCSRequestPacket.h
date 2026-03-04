@@ -1,25 +1,26 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DCSRequestPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DCSRequestPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 
-#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
 
 #include <cstdint>
 #include <string>
 #include <utility>  // std::pair
 #include <vector>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// Representation of a DCS Request Packet
 /// </summary>
 class DTC_DCSRequestPacket : public DTC_DMAPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Default Constructor, zeroes out header fields
 	/// </summary>
@@ -40,8 +41,7 @@ public:
 	/// <param name="data">Data/wordCount for operation</param>
 	/// <param name="address2">Address of ROC register</param>
 	/// <param name="data2">Data/wordCount for operation</param>
-	DTC_DCSRequestPacket(DTC_Link_ID link, DTC_DCSOperationType type, bool requestAck, bool incrementAddress, uint16_t address,
-						 uint16_t data = 0x0, uint16_t address2 = 0x0, uint16_t data2 = 0x0);
+	DTC_DCSRequestPacket(DTC_Link_ID link, DTC_DCSOperationType type, bool requestAck, bool incrementAddress, uint16_t address, uint16_t data = 0x0, uint16_t address2 = 0x0, uint16_t data2 = 0x0);
 	/// <summary>
 	/// Default Copy Constructor
 	/// </summary>
@@ -104,7 +104,8 @@ public:
 	/// <returns>Pair of address, data from the given request</returns>
 	std::pair<uint16_t, uint16_t> GetRequest(bool secondOp = false)
 	{
-		if (!secondOp) return std::make_pair(address1_, data1_);
+		if(!secondOp)
+			return std::make_pair(address1_, data1_);
 		return std::make_pair(address2_, data2_);
 	}
 
@@ -136,9 +137,9 @@ public:
 	/// <param name="incAddress">Whether to increment the address pointer for block reads/writes</param>
 	void SetType(DTC_DCSOperationType type, bool reqAck, bool incAddress)
 	{
-		requestAck_ = reqAck;
+		requestAck_       = reqAck;
 		incrementAddress_ = incAddress;
-		type_ = type;
+		type_             = type;
 	}
 
 	/// <summary>
@@ -157,15 +158,15 @@ public:
 	/// <returns>"packet format" string representation of DCS Request packet</returns>
 	std::string toPacketFormat() override;
 
-private:
-	DTC_DCSOperationType type_;
-	bool requestAck_;
-	bool incrementAddress_;
-	uint16_t packetCount_;
-	uint16_t address1_;
-	uint16_t data1_;     ///< Also, blockWriteData0_
-	uint16_t address2_;  ///< Also, blockWriteData1_
-	uint16_t data2_;     ///< Also, blockWriteData2_
+  private:
+	DTC_DCSOperationType  type_;
+	bool                  requestAck_;
+	bool                  incrementAddress_;
+	uint16_t              packetCount_;
+	uint16_t              address1_;
+	uint16_t              data1_;     ///< Also, blockWriteData0_
+	uint16_t              address2_;  ///< Also, blockWriteData1_
+	uint16_t              data2_;     ///< Also, blockWriteData2_
 	std::vector<uint16_t> blockWriteData_;
 };
 

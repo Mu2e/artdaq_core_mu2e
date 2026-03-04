@@ -4,16 +4,17 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_RXStatus
 {
-	DTC_RXStatus_DataOK = 0,
-	DTC_RXStatus_SKPAdded = 1,
-	DTC_RXStatus_SKPRemoved = 2,
+	DTC_RXStatus_DataOK           = 0,
+	DTC_RXStatus_SKPAdded         = 1,
+	DTC_RXStatus_SKPRemoved       = 2,
 	DTC_RXStatus_ReceiverDetected = 3,
-	DTC_RXStatus_DecodeError = 4,
-	DTC_RXStatus_ElasticOverflow = 5,
+	DTC_RXStatus_DecodeError      = 4,
+	DTC_RXStatus_ElasticOverflow  = 5,
 	DTC_RXStatus_ElasticUnderflow = 6,
 	DTC_RXStatus_RXDisparityError = 7,
 };
@@ -37,24 +38,24 @@ struct DTC_RXStatusConverter
 	/// <returns>String representation of DTC_RXStatus</returns>
 	std::string toString() const
 	{
-		switch (status_)
+		switch(status_)
 		{
-			case DTC_RXStatus_DataOK:
-				return "DataOK";
-			case DTC_RXStatus_SKPAdded:
-				return "SKPAdded";
-			case DTC_RXStatus_SKPRemoved:
-				return "SKPRemoved";
-			case DTC_RXStatus_ReceiverDetected:
-				return "ReceiverDetected";
-			case DTC_RXStatus_DecodeError:
-				return "DecodeErr";
-			case DTC_RXStatus_ElasticOverflow:
-				return "ElasticOF";
-			case DTC_RXStatus_ElasticUnderflow:
-				return "ElasticUF";
-			case DTC_RXStatus_RXDisparityError:
-				return "RXDisparity";
+		case DTC_RXStatus_DataOK:
+			return "DataOK";
+		case DTC_RXStatus_SKPAdded:
+			return "SKPAdded";
+		case DTC_RXStatus_SKPRemoved:
+			return "SKPRemoved";
+		case DTC_RXStatus_ReceiverDetected:
+			return "ReceiverDetected";
+		case DTC_RXStatus_DecodeError:
+			return "DecodeErr";
+		case DTC_RXStatus_ElasticOverflow:
+			return "ElasticOF";
+		case DTC_RXStatus_ElasticUnderflow:
+			return "ElasticUF";
+		case DTC_RXStatus_RXDisparityError:
+			return "RXDisparity";
 		}
 		return "Unknown";
 	}

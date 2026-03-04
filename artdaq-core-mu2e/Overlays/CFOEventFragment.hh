@@ -11,7 +11,8 @@
 
 // Implementation of "CFOEventFragment", an artdaq::Fragment overlay class
 
-namespace mu2e {
+namespace mu2e
+{
 class CFOEventFragment;
 }
 
@@ -20,7 +21,7 @@ class CFOEventFragment;
  */
 class mu2e::CFOEventFragment
 {
-public:
+  public:
 	/// The current version of the CFOEventFragment
 	static constexpr uint8_t CURRENT_VERSION = 1;
 
@@ -31,7 +32,7 @@ public:
 	 * to refer to the artdaq::Fragment object
 	 */
 	explicit CFOEventFragment(artdaq::Fragment const& f)
-		: artdaq_Fragment_(f) {}
+	    : artdaq_Fragment_(f) {}
 
 	virtual ~CFOEventFragment()
 	{
@@ -39,7 +40,7 @@ public:
 
 	CFOLib::CFO_Event getData() const
 	{
-		if (event_ptr_ == nullptr)
+		if(event_ptr_ == nullptr)
 		{
 			event_ptr_.reset(new CFOLib::CFO_Event(artdaq_Fragment_.dataBeginBytes()));
 			//			event_ptr_->SetupEvent();
@@ -47,14 +48,14 @@ public:
 		return *event_ptr_.get();
 	}
 
-protected:
-private:
-	CFOEventFragment(CFOEventFragment const&) = delete;             // CFOEventFragment should definitely not be copied
-	CFOEventFragment(CFOEventFragment&&) = delete;                  // CFOEventFragment should not be moved, only the underlying Fragment
+  protected:
+  private:
+	CFOEventFragment(CFOEventFragment const&)            = delete;  // CFOEventFragment should definitely not be copied
+	CFOEventFragment(CFOEventFragment&&)                 = delete;  // CFOEventFragment should not be moved, only the underlying Fragment
 	CFOEventFragment& operator=(CFOEventFragment const&) = delete;  // CFOEventFragment should definitely not be copied
-	CFOEventFragment& operator=(CFOEventFragment&&) = delete;       // CFOEventFragment should not be moved, only the underlying Fragment
+	CFOEventFragment& operator=(CFOEventFragment&&)      = delete;  // CFOEventFragment should not be moved, only the underlying Fragment
 
-	artdaq::Fragment const& artdaq_Fragment_;
+	artdaq::Fragment const&                    artdaq_Fragment_;
 	mutable std::unique_ptr<CFOLib::CFO_Event> event_ptr_{nullptr};
 };
 

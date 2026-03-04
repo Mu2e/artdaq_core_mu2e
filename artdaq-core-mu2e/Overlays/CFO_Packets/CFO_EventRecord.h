@@ -5,7 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
-namespace CFOLib {
+namespace CFOLib
+{
 
 struct CFO_EventRecord
 {
@@ -41,23 +42,24 @@ struct CFO_EventRecord
 	uint64_t reserved6 : 56;
 
 	CFO_EventRecord()
-		: event_tag(0)
-		, reserved1(0)
-		, record_format_version(0)
-		, linux_timestamp(0)
-		, reserved2(0)
-		, event_mode(0)
-		, event_duration(0)
-		, DR_marker_N_est(0)
-		, reserved3(0)
-		, DR_marker_Nplus1_est(0)
-		, reserved4(0)
-		, DR_marker_N_meas(0)
-		, reserved5(0)
-		, TDC_marker_N_from_spill(0)
-		, DR_marker_Nplus1_meas(0)
-		, reserved6(0)
-	{}  // end CFO_EventRecord constructor
+	    : event_tag(0)
+	    , reserved1(0)
+	    , record_format_version(0)
+	    , linux_timestamp(0)
+	    , reserved2(0)
+	    , event_mode(0)
+	    , event_duration(0)
+	    , DR_marker_N_est(0)
+	    , reserved3(0)
+	    , DR_marker_Nplus1_est(0)
+	    , reserved4(0)
+	    , DR_marker_N_meas(0)
+	    , reserved5(0)
+	    , TDC_marker_N_from_spill(0)
+	    , DR_marker_Nplus1_meas(0)
+	    , reserved6(0)
+	{
+	}  // end CFO_EventRecord constructor
 
 	inline std::string toJson() const
 	{
@@ -73,7 +75,7 @@ struct CFO_EventRecord
 		oss << ",\n\t\"DR_marker_N_est\": " << DR_marker_N_est << "(0x" << std::hex << DR_marker_N_est << std::dec << ")";
 		oss << ",\n\t\"DR_marker_Nplus1_est\": " << DR_marker_Nplus1_est << "(0x" << std::hex << DR_marker_Nplus1_est << std::dec << ")";
 		oss << ",\n\t\"DR_marker_N_meas\": " << DR_marker_N_meas << "(0x" << std::hex << DR_marker_N_meas << std::dec << ")";
-		oss << ",\n\t\"DR_marker_Nplus1_meas\": " << DR_marker_Nplus1_meas << "(0x" << std::hex << DR_marker_Nplus1_meas << std::dec<< ")";
+		oss << ",\n\t\"DR_marker_Nplus1_meas\": " << DR_marker_Nplus1_meas << "(0x" << std::hex << DR_marker_Nplus1_meas << std::dec << ")";
 		oss << "\n}";
 
 		return oss.str();

@@ -4,27 +4,29 @@
 #include <bitset>   // std::bitset
 #include <cstdint>  // uint8_t, uint16_t
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 struct DTC_EVBStatus
 {
-	bool error;
+	bool           error;
 	std::bitset<7> flags;
 
 	enum class Flags : uint8_t
 	{
 		kEventFragmentTimeout = 0,
-		kReserved1 = 1,
-		kReserved2 = 2,
-		kReserved3 = 3,
-		kReserved4 = 4,
-		kReserved5 = 5,
-		kReserved6 = 6,
+		kReserved1            = 1,
+		kReserved2            = 2,
+		kReserved3            = 3,
+		kReserved4            = 4,
+		kReserved5            = 5,
+		kReserved6            = 6,
 		kInvalid
 	};
 
 	DTC_EVBStatus()
-		: error(false), flags(0) {}
+	    : error(false)
+	    , flags(0) {}
 	DTC_EVBStatus(uint8_t word)
 	{
 		error = (word & 0x80) != 0;

@@ -9,7 +9,8 @@
 // For generated DTC_SubEvent objects
 #define CURRENT_SUBEVENT_FORMAT_VERSION 1
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 struct DTC_SubEventHeader
 {
@@ -52,39 +53,40 @@ struct DTC_SubEventHeader
 	uint64_t link3_drp_rx_latency : 16;
 
 	DTC_SubEventHeader()
-		: inclusive_subevent_byte_count(0)
-		, reserved1(0)
-		, event_tag_low(0)
-		, event_tag_high(0)
-		, num_rocs(0)
-		, event_mode(0)
-		, dtc_mac(0)
-		, partition_id(0)
-		, evb_mode(0)
-		, source_dtc_id(0)
-		, link0_subsystem(0)
-		, link1_subsystem(0)
-		, link2_subsystem(0)
-		, link3_subsystem(0)
-		, link4_subsystem(0)
-		, link5_subsystem(0)
-		, reserved2(0)
-		, link0_status(0)
-		, link1_status(0)
-		, link2_status(0)
-		, link3_status(0)
-		, link4_status(0)
-		, link5_status(0)
-		, subevent_format_version(CURRENT_SUBEVENT_FORMAT_VERSION)
-		, emtdc(0)
-		, link4_drp_rx_latency(0)
-		, link5_drp_rx_latency(0)
-		, reserved3(0)
-		, link0_drp_rx_latency(0)
-		, link1_drp_rx_latency(0)
-		, link2_drp_rx_latency(0)
-		, link3_drp_rx_latency(0)
-	{}
+	    : inclusive_subevent_byte_count(0)
+	    , reserved1(0)
+	    , event_tag_low(0)
+	    , event_tag_high(0)
+	    , num_rocs(0)
+	    , event_mode(0)
+	    , dtc_mac(0)
+	    , partition_id(0)
+	    , evb_mode(0)
+	    , source_dtc_id(0)
+	    , link0_subsystem(0)
+	    , link1_subsystem(0)
+	    , link2_subsystem(0)
+	    , link3_subsystem(0)
+	    , link4_subsystem(0)
+	    , link5_subsystem(0)
+	    , reserved2(0)
+	    , link0_status(0)
+	    , link1_status(0)
+	    , link2_status(0)
+	    , link3_status(0)
+	    , link4_status(0)
+	    , link5_status(0)
+	    , subevent_format_version(CURRENT_SUBEVENT_FORMAT_VERSION)
+	    , emtdc(0)
+	    , link4_drp_rx_latency(0)
+	    , link5_drp_rx_latency(0)
+	    , reserved3(0)
+	    , link0_drp_rx_latency(0)
+	    , link1_drp_rx_latency(0)
+	    , link2_drp_rx_latency(0)
+	    , link3_drp_rx_latency(0)
+	{
+	}
 
 	inline std::string toJson() const
 	{
@@ -127,12 +129,18 @@ struct DTC_SubEventHeader
 
 	uint64_t getLinkStatus(uint8_t link) const
 	{
-		if (link == 0) return link0_status;
-		if (link == 1) return link1_status;
-		if (link == 2) return link2_status;
-		if (link == 3) return link3_status;
-		if (link == 4) return link4_status;
-		if (link == 5) return link5_status;
+		if(link == 0)
+			return link0_status;
+		if(link == 1)
+			return link1_status;
+		if(link == 2)
+			return link2_status;
+		if(link == 3)
+			return link3_status;
+		if(link == 4)
+			return link4_status;
+		if(link == 5)
+			return link5_status;
 		throw std::runtime_error("Invalid link number in getLinkStatus(): " + std::to_string(link));
 	}
 };  // end DTC_SubEventHeader
