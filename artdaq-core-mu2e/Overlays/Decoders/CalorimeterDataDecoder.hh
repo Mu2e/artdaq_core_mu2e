@@ -5,34 +5,36 @@
 
 #include <messagefacility/MessageLogger/MessageLogger.h>  // Putting this here so that Offline/DAQ/src/FragmentAna_module.cc can use it
 
-namespace mu2e {
+namespace mu2e
+{
 class CalorimeterDataDecoder : public DTCDataDecoder
 {
-public:
+  public:
 	CalorimeterDataDecoder(DTCLib::DTC_SubEvent const& f);
 
 	// Class to swap pairs of 16-bit words and extract 12-bit words without memory buffers
 	class Data12bitReader
 	{
-	private:
+	  private:
 		const uint16_t* dataPtr;
-		bool debugPacket;
+		bool            debugPacket;
 
-	public:
+	  public:
 		Data12bitReader(const uint16_t* dataPtr, bool debug = false)
-			: dataPtr(dataPtr), debugPacket(debug) {}
+		    : dataPtr(dataPtr)
+		    , debugPacket(debug) {}
 
 		uint16_t operator[](size_t index) const
 		{
 			uint firstWordIndex;
 			uint startingLetter;
 
-			if (debugPacket)
+			if(debugPacket)
 			{
 				int wordInTwoPackets = index % 21;
-				int nTwoPackets = (index - wordInTwoPackets) / 21;
-				firstWordIndex = nTwoPackets * 16 + ((wordInTwoPackets * 3) / 4);
-				startingLetter = wordInTwoPackets % 4;
+				int nTwoPackets      = (index - wordInTwoPackets) / 21;
+				firstWordIndex       = nTwoPackets * 16 + ((wordInTwoPackets * 3) / 4);
+				startingLetter       = wordInTwoPackets % 4;
 			}
 			else
 			{
@@ -45,20 +47,20 @@ public:
 			uint16_t word2 = dataPtr[(firstWordIndex + 1) ^ 0x1];
 
 			uint16_t temp;
-			switch (startingLetter)
+			switch(startingLetter)
 			{
-				case 0:  // FFF0
-					temp = (word1 >> 4) & 0x0FFF;
-					break;
-				case 1:  // 000F FF00
-					temp = ((word1 & 0x000F) << 8) | ((word2 & 0xFF00) >> 8);
-					break;
-				case 2:  // 00FF F000
-					temp = ((word1 & 0x00FF) << 4) | ((word2 & 0xF000) >> 12);
-					break;
-				case 3:  // 0FFF
-					temp = word1 & 0x0FFF;
-					break;
+			case 0:  // FFF0
+				temp = (word1 >> 4) & 0x0FFF;
+				break;
+			case 1:  // 000F FF00
+				temp = ((word1 & 0x000F) << 8) | ((word2 & 0xFF00) >> 8);
+				break;
+			case 2:  // 00FF F000
+				temp = ((word1 & 0x00FF) << 4) | ((word2 & 0xF000) >> 12);
+				break;
+			case 3:  // 0FFF
+				temp = word1 & 0x0FFF;
+				break;
 			}
 
 			return temp;
@@ -79,18 +81,27 @@ public:
 		uint16_t NumberOfSamples : 10;
 
 		CalorimeterHitDataPacket()
-			: Reserved1(0), BoardID(0), DetectorID(0), ChannelID(0), Time(0), InPayloadEventWindowTag(0), Baseline(0), IndexOfMaxDigitizerSample(0), ErrorFlags(0), NumberOfSamples(0) {}
+		    : Reserved1(0)
+		    , BoardID(0)
+		    , DetectorID(0)
+		    , ChannelID(0)
+		    , Time(0)
+		    , InPayloadEventWindowTag(0)
+		    , Baseline(0)
+		    , IndexOfMaxDigitizerSample(0)
+		    , ErrorFlags(0)
+		    , NumberOfSamples(0) {}
 
 		uint32_t extractBits(const uint16_t* words, size_t startBit, size_t bitLength)
 		{
 			uint32_t result = 0;
-			for (size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++)
+			for(size_t bitIndex = startBit; bitIndex < startBit + bitLength; bitIndex++)
 			{
 				size_t wordIndex = (bitIndex / 16) ^ 0x1;  // Swap pairs of 16-bit words (just flip the last bit)
 				size_t bitOffset = 15 - (bitIndex % 16);   // Big-endian
 
 				uint16_t bit = (words[wordIndex] >> bitOffset) & 0x1;
-				result = (result << 1) | bit;
+				result       = (result << 1) | bit;
 			}
 			return result;
 		}
@@ -126,7 +137,15 @@ public:
 		uint16_t NumberOfSamples : 12;
 
 		CalorimeterHitTestDataPacket()
-			: BeginMarker(0), BoardID(0), ChannelID(0), InPayloadEventWindowTag(0), LastSampleMarker(0), ErrorFlags(0), Time(0), IndexOfMaxDigitizerSample(0), NumberOfSamples(0) {}
+		    : BeginMarker(0)
+		    , BoardID(0)
+		    , ChannelID(0)
+		    , InPayloadEventWindowTag(0)
+		    , LastSampleMarker(0)
+		    , ErrorFlags(0)
+		    , Time(0)
+		    , IndexOfMaxDigitizerSample(0)
+		    , NumberOfSamples(0) {}
 	};
 
 	// CalorimeterFooterPacket: after transmission of all the hits the event is closed by a final packet containing the informaton about all the chanels that are reconstructed online in the FPGA:
@@ -144,23 +163,27 @@ public:
 		uint16_t DIRACE;
 		uint16_t DIRACF;
 		CalorimeterFooterPacket()
-			: DetectorType(0), BoardID(0), unused(0), ChannelStatusFlagA(0), ChannelStatusFlagC(0) {}
+		    : DetectorType(0)
+		    , BoardID(0)
+		    , unused(0)
+		    , ChannelStatusFlagA(0)
+		    , ChannelStatusFlagC(0) {}
 	};
 
 	struct CalorimeterCountersDataPacket
 	{
 		uint16_t numberOfCounters;
 		CalorimeterCountersDataPacket()
-			: numberOfCounters(0) {}
+		    : numberOfCounters(0) {}
 	};
 
-	std::vector<std::pair<CalorimeterHitDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitData(size_t blockIndex) const;
-	std::vector<std::pair<CalorimeterHitTestDataPacket, std::vector<uint16_t>>>* GetCalorimeterHitTestData(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacket, std::vector<uint16_t>>>*      GetCalorimeterHitData(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitTestDataPacket, std::vector<uint16_t>>>*  GetCalorimeterHitTestData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetCalorimeterCountersData(size_t blockIndex) const;
 	std::vector<std::pair<CalorimeterCountersDataPacket, std::vector<uint32_t>>>* GetEmulatedCountersData(size_t blockIndex) const;
-	std::unique_ptr<CalorimeterFooterPacket> GetCalorimeterFooter(size_t blockIndex) const;
-	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>>* GetCalorimeterHitsForTrigger(size_t blockIndex) const;
-	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>* GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
+	std::unique_ptr<CalorimeterFooterPacket>                                      GetCalorimeterFooter(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitDataPacket, uint16_t>>*                   GetCalorimeterHitsForTrigger(size_t blockIndex) const;
+	std::vector<std::pair<CalorimeterHitTestDataPacket, uint16_t>>*               GetCalorimeterHitTestForTrigger(size_t blockIndex) const;
 };
 
 using CalorimeterDataDecoders = std::vector<CalorimeterDataDecoder>;

@@ -1,7 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Types_DTC_SerdesClockSpeed_h
 #define artdaq_core_mu2e_Overlays_DTC_Types_DTC_SerdesClockSpeed_h
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_SerdesClockSpeed
 {

@@ -3,7 +3,8 @@
 
 #include <cstdint>  // uint8_t, uint16_t
 
-namespace CFOLib {
+namespace CFOLib
+{
 
 /// <summary>
 /// Defined Packet Types for the CFO DMA Protocol
@@ -11,7 +12,7 @@ namespace CFOLib {
 enum CFO_PacketType : uint8_t
 {
 	CFO_PacketType_DataHeader = 5,
-	CFO_PacketType_Invalid = 0x10,
+	CFO_PacketType_Invalid    = 0x10,
 };
 
 }  // namespace CFOLib

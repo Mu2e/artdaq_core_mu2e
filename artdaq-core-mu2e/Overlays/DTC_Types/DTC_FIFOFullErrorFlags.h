@@ -4,7 +4,8 @@
 #include <iomanip>
 #include <ostream>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// This structure is used to decode the FIFOFullErrorFlags register values
@@ -25,7 +26,15 @@ struct DTC_FIFOFullErrorFlags
 	/// Default Constructor, sets all flags to false
 	/// </summary>
 	DTC_FIFOFullErrorFlags()
-		: OutputData(false), CFOLinkInput(false), ReadoutRequestOutput(false), DataRequestOutput(false), OtherOutput(false), OutputDCS(false), OutputDCSStage2(false), DataInput(false), DCSStatusInput(false) {}
+	    : OutputData(false)
+	    , CFOLinkInput(false)
+	    , ReadoutRequestOutput(false)
+	    , DataRequestOutput(false)
+	    , OtherOutput(false)
+	    , OutputDCS(false)
+	    , OutputDCSStage2(false)
+	    , DataInput(false)
+	    , DCSStatusInput(false) {}
 
 	/// <summary>
 	/// Construct a DTC_FIFOFUllErrorFlags instance with the given values
@@ -39,9 +48,16 @@ struct DTC_FIFOFullErrorFlags
 	/// <param name="outputDCS2">Output DCS Stage 2 FIFO Full</param>
 	/// <param name="dataInput">Data Input FIFO Full</param>
 	/// <param name="dcsInput">DCS Status Input FIFO Full</param>
-	DTC_FIFOFullErrorFlags(bool outputData, bool cfoLinkInput, bool readoutRequest, bool dataRequest, bool otherOutput,
-						   bool outputDCS, bool outputDCS2, bool dataInput, bool dcsInput)
-		: OutputData(outputData), CFOLinkInput(cfoLinkInput), ReadoutRequestOutput(readoutRequest), DataRequestOutput(dataRequest), OtherOutput(otherOutput), OutputDCS(outputDCS), OutputDCSStage2(outputDCS2), DataInput(dataInput), DCSStatusInput(dcsInput) {}
+	DTC_FIFOFullErrorFlags(bool outputData, bool cfoLinkInput, bool readoutRequest, bool dataRequest, bool otherOutput, bool outputDCS, bool outputDCS2, bool dataInput, bool dcsInput)
+	    : OutputData(outputData)
+	    , CFOLinkInput(cfoLinkInput)
+	    , ReadoutRequestOutput(readoutRequest)
+	    , DataRequestOutput(dataRequest)
+	    , OtherOutput(otherOutput)
+	    , OutputDCS(outputDCS)
+	    , OutputDCSStage2(outputDCS2)
+	    , DataInput(dataInput)
+	    , DCSStatusInput(dcsInput) {}
 
 	/// <summary>
 	/// Write the DTC_FIFOFullErrorFlags to stream in JSON format.
@@ -55,11 +71,12 @@ struct DTC_FIFOFullErrorFlags
 		auto formatSet = (stream.flags() & std::ios_base::boolalpha) != 0;
 		stream.setf(std::ios_base::boolalpha);
 		stream << "{\"OutputData\":" << flags.OutputData << ",\"CFOLinkInput\":" << flags.CFOLinkInput
-			   << ",\"ReadoutRequestOutput\":" << flags.ReadoutRequestOutput
-			   << ",\"DataRequestOutput\":" << flags.DataRequestOutput << ",\"OtherOutput\":" << flags.OtherOutput
-			   << ",\"OutputDCS\":" << flags.OutputDCS << ",\"OutputDCSStage2\":" << flags.OutputDCSStage2
-			   << ",\"DataInput\":" << flags.DataInput << ",\"DCSStatusInput\":" << flags.DCSStatusInput << "}";
-		if (!formatSet) stream.unsetf(std::ios_base::boolalpha);
+		       << ",\"ReadoutRequestOutput\":" << flags.ReadoutRequestOutput
+		       << ",\"DataRequestOutput\":" << flags.DataRequestOutput << ",\"OtherOutput\":" << flags.OtherOutput
+		       << ",\"OutputDCS\":" << flags.OutputDCS << ",\"OutputDCSStage2\":" << flags.OutputDCSStage2
+		       << ",\"DataInput\":" << flags.DataInput << ",\"DCSStatusInput\":" << flags.DCSStatusInput << "}";
+		if(!formatSet)
+			stream.unsetf(std::ios_base::boolalpha);
 		return stream;
 	}
 };

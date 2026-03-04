@@ -4,12 +4,13 @@
 
 #include "artdaq-core/Data/Fragment.hh"
 
-namespace mu2e {
+namespace mu2e
+{
 class TrkDtcFragment
 {
-public:
+  public:
 	TrkDtcFragment(artdaq::Fragment const& f)
-		: artdaq_fragment_(f) {}
+	    : artdaq_fragment_(f) {}
 
 	static constexpr int32_t CURRENT_VERSION = 1;
 
@@ -41,7 +42,7 @@ public:
 
 	RegEntry getRegisterEntry(size_t index) const
 	{
-		if (index >= nReg())
+		if(index >= nReg())
 		{
 			TLOG(TLVL_ERROR, "TrkDtcFragment") << "Index " << index << " is out of range! (nReg=" << nReg() << ")";
 			return RegEntry();
@@ -55,7 +56,7 @@ public:
 	}
 	uint32_t val(int index) const { return getRegisterEntry(index).value; }
 
-private:
+  private:
 	artdaq::Fragment const& artdaq_fragment_;
 };
 }  // namespace mu2e
