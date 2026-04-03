@@ -5,6 +5,8 @@
 #include <ostream>
 #include <vector>  // std::vector
 
+#include "TRACE/trace.h"
+
 namespace DTCLib
 {
 
@@ -21,6 +23,11 @@ enum DTC_Link_ID : uint8_t
 	DTC_Link_Unused,
 	DTC_Link_ALL = 255
 };
+
+inline TraceStreamer& operator<<(TraceStreamer& ts, DTC_Link_ID const& link)
+{
+	return ts << static_cast<unsigned int>(link);
+}
 
 inline std::ostream& operator<<(std::ostream& o, DTC_Link_ID const& link)
 {
