@@ -23,7 +23,7 @@ enum FragmentType : artdaq::Fragment::type_t
 	CFO = artdaq::Fragment::FirstUserFragmentType + 11,     // CFO Fragment
 	STM_RAW = artdaq::Fragment::FirstUserFragmentType + 12,  // STM RAW fragment
 	STM_ZS = artdaq::Fragment::FirstUserFragmentType + 13,  // STM ZS fragment
-	STM_MWD = artdaq::Fragment::FirstUserFragmentType + 14,  // STM MWD fragment
+	STM_PH = artdaq::Fragment::FirstUserFragmentType + 14,  // STM PH fragment
 	INVALID                                                 // Should always be last.
 };
 

@@ -13,7 +13,7 @@ namespace stm {
 enum class Dataset : uint16_t {
   RAW = 100,
   ZS  = 101,
-  MWD = 102
+  PH = 102
 };
 
 // ---------------------------
@@ -53,6 +53,18 @@ struct RawHeader {
     ANCHOR_END = 20
   };
 };
+  
+//--------------------
+// ZS Header Layout
+//--------------------
+//Information for one single pulse
+struct ZSHeader {
+  static constexpr size_t WORDS = 2;
+  enum Index : size_t {
+    ZS_rawIndex = 0,   // raw index value of the ZS
+    ZS_pulseLength = 1, // length of ZS
+  };
+};
 
 } // namespace stm
 
@@ -74,13 +86,13 @@ public:
 
   bool isRaw() const { return dataset() == stm::Dataset::RAW; }
   bool isZS()  const { return dataset() == stm::Dataset::ZS; }
-  bool isMWD() const { return dataset() == stm::Dataset::MWD; }
+  bool isPH() const { return dataset() == stm::Dataset::PH; }
 
   // -----------------------
   // Header integrity
   // -----------------------
   bool hasValidAnchors() const {
-    if (!isRaw()) return true; // No header for ZS/MWD
+    if (!isRaw()) return true; // No header for ZS/PH
     return data_[stm::RawHeader::ANCHOR_START] == stm::RawHeader::ANCHOR_WORD &&
            data_[stm::RawHeader::ANCHOR_END]   == stm::RawHeader::ANCHOR_WORD;
   }
@@ -111,6 +123,10 @@ public:
   uint16_t rawLength() const {
     return data_[stm::RawHeader::RAW_LEN];
   }
+  
+  uint16_t prescale() const {
+    return data_[stm::RawHeader::PRESCALE];
+  }
 
   uint16_t zsRegions() const {
     return data_[stm::RawHeader::ZS_REGIONS];
@@ -119,21 +135,41 @@ public:
   uint16_t zsLength() const {
     return data_[stm::RawHeader::ZS_LEN];
   }
+  
+  //----------------
+  //Full data (including header) for ZS use
+  //----------------
+                                                          
+  int16_t const* dataBegin() const{
+    return data_;
+  }//Only for ZS at the moment
+  
+  size_t dataWords() const{
+    return frag_.dataSizeBytes()/sizeof(int16_t);
+  }//Only for ZS at the moment
+  
+  //ZS -> Addition of two ints
+  uint16_t zsIndex() const {
+    return data_[stm::ZSHeader::ZS_rawIndex];
+  }// zsIndex
 
-  uint16_t prescale() const {
-    return data_[stm::RawHeader::PRESCALE];
-  }
+  uint16_t zsPulseLength() const{
+    return data_[stm::ZSHeader::ZS_pulseLength];
+  }//single pulse length
 
   // -----------------------
   // Payload access
   // -----------------------
   int16_t const* payloadBegin() const {
-    return isRaw() ? data_ + stm::RawHeader::WORDS : data_;
+    return isRaw() ? data_ + stm::RawHeader::WORDS
+      : isZS() ? data_ + stm::ZSHeader::WORDS
+      : data_;
   }
-
+  
   size_t payloadWords() const {
     return isRaw() ? rawLength()
-                   : frag_.dataSizeBytes() / sizeof(int16_t);
+      : isZS() ? zsPulseLength()
+      : frag_.dataSizeBytes() / sizeof(int16_t);
   }
 
 private:
