@@ -5,6 +5,10 @@
 #include <ostream>
 #include <vector>  // std::vector
 
+#ifndef __ROOTCLING__
+#include "TRACE/trace.h"
+#endif
+
 namespace DTCLib
 {
 
@@ -21,6 +25,13 @@ enum DTC_Link_ID : uint8_t
 	DTC_Link_Unused,
 	DTC_Link_ALL = 255
 };
+
+#ifndef __ROOTCLING__
+inline TraceStreamer& operator<<(TraceStreamer& ts, DTC_Link_ID const& link)
+{
+	return ts << static_cast<unsigned int>(link);
+}
+#endif
 
 inline std::ostream& operator<<(std::ostream& o, DTC_Link_ID const& link)
 {
