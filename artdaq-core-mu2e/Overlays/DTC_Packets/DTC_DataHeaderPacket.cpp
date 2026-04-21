@@ -124,7 +124,7 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 		// comp2 += static_cast<uint64_t>(dtc) << 48;
 		if ((((*(ptr64 + 1)) >> 48) & 0xFF) != dtc)
 		{
-			TLOG(TLVL_ERROR) << "DTC ID check failed for ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << ". Expected DTC ID " << std::hex << std::showbase << dtc << " in upper byte of second quad word, but found " << std::hex << std::showbase << ((*(ptr64 + 1)) >> 48);
+			TLOG(TLVL_DEBUG + 22) << "DTC ID check failed for ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << ". Expected DTC ID " << std::hex << std::showbase << dtc << " in upper byte of second quad word, but found " << std::hex << std::showbase << ((*(ptr64 + 1)) >> 48);
 		}
 
 		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
