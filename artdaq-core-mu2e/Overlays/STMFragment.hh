@@ -10,12 +10,16 @@ namespace stm {
 // ---------------------------
 // Dataset identifiers
 // ---------------------------
-enum class Dataset : uint16_t {
-  RAW = 100,
-  ZS  = 101,
-  PH = 102
-};
 
+enum class Dataset : uint16_t {
+  RAW_HPGE = 100,
+  ZS_HPGE  = 101,
+  PH_HPGE  = 102,
+  RAW_LABR = 200,
+  ZS_LABR  = 201,
+  PH_LABR  = 202
+};
+  
 // ---------------------------
 // RAW header layout
 // ---------------------------
@@ -83,16 +87,26 @@ public:
   stm::Dataset dataset() const {
     return static_cast<stm::Dataset>(frag_.fragmentID());
   }
+  
+  bool isRaw_HPGe() const { return dataset() == stm::Dataset::RAW_HPGE; }
+  bool isZS_HPGe() const { return dataset() == stm::Dataset::ZS_HPGE; }
+  bool isPH_HPGe() const { return dataset() == stm::Dataset::PH_HPGE; }
+  bool isRaw_LaBr() const { return dataset() == stm::Dataset::RAW_LABR; }
+  bool isZS_LaBr() const { return dataset() == stm::Dataset::ZS_LABR; }
+  bool isPH_LaBr() const { return dataset() == stm::Dataset::PH_LABR; }
+  
+  bool isRaw() const { return isRaw_HPGe() || isRaw_LaBr(); }
+  bool isZS() const { return isZS_HPGe() || isZS_LaBr(); }
+  bool isPH() const { return isPH_HPGe() || isPH_LaBr(); }
 
-  bool isRaw() const { return dataset() == stm::Dataset::RAW; }
-  bool isZS()  const { return dataset() == stm::Dataset::ZS; }
-  bool isPH() const { return dataset() == stm::Dataset::PH; }
-
+  bool isHPGe() const { return isRaw_HPGe() || isZS_HPGe() || isPH_HPGe(); } 
+  bool isLaBr() const { return isRaw_LaBr() || isZS_LaBr() || isPH_LaBr(); }
+  
   // -----------------------
   // Header integrity
   // -----------------------
   bool hasValidAnchors() const {
-    if (!isRaw()) return true; // No header for ZS/PH
+    if (!isRaw()) return true;
     return data_[stm::RawHeader::ANCHOR_START] == stm::RawHeader::ANCHOR_WORD &&
            data_[stm::RawHeader::ANCHOR_END]   == stm::RawHeader::ANCHOR_WORD;
   }
