@@ -11,13 +11,17 @@ namespace stm {
 // Dataset identifiers
 // ---------------------------
 
+  
 enum class Dataset : uint16_t {
   RAW_HPGE = 100,
   ZS_HPGE  = 101,
   PH_HPGE  = 102,
+  HPGE_CONTAINER = 103,
+  
   RAW_LABR = 200,
   ZS_LABR  = 201,
-  PH_LABR  = 202
+  PH_LABR  = 202,
+  LABR_CONTAINER = 203
 };
   
 // ---------------------------
@@ -101,6 +105,9 @@ public:
 
   bool isHPGe() const { return isRaw_HPGe() || isZS_HPGe() || isPH_HPGe(); } 
   bool isLaBr() const { return isRaw_LaBr() || isZS_LaBr() || isPH_LaBr(); }
+
+  bool isHPGeContainer() const { return dataset() == stm::Dataset::HPGE_CONTAINER; }
+  bool isLaBrContainer() const { return dataset() == stm::Dataset::LABR_CONTAINER; }
   
   // -----------------------
   // Header integrity
