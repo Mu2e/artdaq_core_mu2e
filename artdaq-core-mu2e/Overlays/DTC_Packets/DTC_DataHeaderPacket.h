@@ -1,8 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DataHeaderPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DataHeaderPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
@@ -11,14 +11,15 @@
 #include <cstdint>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DTC Data Header Packet (A Data Header and its associated Data Packets forms a Data Block)
 /// </summary>
 class DTC_DataHeaderPacket : public DTC_DMAPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a DTC_DataHeaderPacket
 	/// </summary>
@@ -30,8 +31,7 @@ public:
 	/// <param name="packetVersion">Version of data format</param>
 	/// <param name="event_tag">Timestamp of Data Packet (Default: DTC_Timetstamp())</param>
 	/// <param name="evbMode">EVB Mode byte (Default: 0)</param>
-	DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, uint8_t status, uint8_t dtcid, DTC_Subsystem subsystemid,
-						 uint8_t packetVersion, DTC_EventWindowTag event_tag = DTC_EventWindowTag(), uint8_t evbMode = 0);
+	DTC_DataHeaderPacket(DTC_Link_ID link, uint16_t packetCount, uint8_t status, uint8_t dtcid, DTC_Subsystem subsystemid, uint8_t packetVersion, DTC_EventWindowTag event_tag = DTC_EventWindowTag(), uint8_t evbMode = 0);
 	/// <summary>
 	/// Default Copy Constructor
 	/// </summary>
@@ -130,13 +130,13 @@ public:
 
 	static bool IsDataHeaderPacket(const uint8_t* ptr, DTC_EventWindowTag timestamp = DTC_EventWindowTag(static_cast<uint64_t>(0)), uint8_t dtc = 0xFF, DTC_Link_ID roc = DTC_Link_Unused, DTC_Subsystem subsystem = DTC_Subsystem_Unused);
 
-private:
-	uint16_t packetCount_;
+  private:
+	uint16_t           packetCount_;
 	DTC_EventWindowTag event_tag_;
-	uint8_t status_;
-	uint8_t dataPacketVersion_;
-	uint8_t dtcId_;
-	uint8_t evbMode_;
+	uint8_t            status_;
+	uint8_t            dataPacketVersion_;
+	uint8_t            dtcId_;
+	uint8_t            evbMode_;
 };
 
 }  // namespace DTCLib

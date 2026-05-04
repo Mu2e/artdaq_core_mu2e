@@ -5,7 +5,8 @@
 
 #include <string>
 
-namespace mu2e {
+namespace mu2e
+{
 /// <summary>
 /// Gets the Build information for the artdaq_core_mu2e package
 /// </summary>

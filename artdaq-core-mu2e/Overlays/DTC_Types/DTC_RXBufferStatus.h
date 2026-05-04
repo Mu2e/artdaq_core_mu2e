@@ -4,16 +4,17 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_RXBufferStatus
 {
-	DTC_RXBufferStatus_Nominal = 0,
+	DTC_RXBufferStatus_Nominal     = 0,
 	DTC_RXBufferStatus_BufferEmpty = 1,
-	DTC_RXBufferStatus_BufferFull = 2,
-	DTC_RXBufferStatus_Underflow = 5,
-	DTC_RXBufferStatus_Overflow = 6,
-	DTC_RXBufferStatus_Unknown = 0x10,
+	DTC_RXBufferStatus_BufferFull  = 2,
+	DTC_RXBufferStatus_Underflow   = 5,
+	DTC_RXBufferStatus_Overflow    = 6,
+	DTC_RXBufferStatus_Unknown     = 0x10,
 };
 
 /// <summary>
@@ -28,7 +29,7 @@ struct DTC_RXBufferStatusConverter
 	/// </summary>
 	/// <param name="status">DTC_RXBufferStatus to convert</param>
 	explicit DTC_RXBufferStatusConverter(DTC_RXBufferStatus status)
-		: status_(status) {}
+	    : status_(status) {}
 
 	/// <summary>
 	/// Convert the DTC_RXBufferStatus to its string representation
@@ -36,21 +37,21 @@ struct DTC_RXBufferStatusConverter
 	/// <returns>String representation of DTC_RXBufferStatus</returns>
 	std::string toString() const
 	{
-		switch (status_)
+		switch(status_)
 		{
-			case DTC_RXBufferStatus_Nominal:
-				return "Nominal";
-			case DTC_RXBufferStatus_BufferEmpty:
-				return "BufferEmpty";
-			case DTC_RXBufferStatus_BufferFull:
-				return "BufferFull";
-			case DTC_RXBufferStatus_Overflow:
-				return "Overflow";
-			case DTC_RXBufferStatus_Underflow:
-				return "Underflow";
-			case DTC_RXBufferStatus_Unknown:
-			default:
-				return "Unknown";
+		case DTC_RXBufferStatus_Nominal:
+			return "Nominal";
+		case DTC_RXBufferStatus_BufferEmpty:
+			return "BufferEmpty";
+		case DTC_RXBufferStatus_BufferFull:
+			return "BufferFull";
+		case DTC_RXBufferStatus_Overflow:
+			return "Overflow";
+		case DTC_RXBufferStatus_Underflow:
+			return "Underflow";
+		case DTC_RXBufferStatus_Unknown:
+		default:
+			return "Unknown";
 		}
 	}
 

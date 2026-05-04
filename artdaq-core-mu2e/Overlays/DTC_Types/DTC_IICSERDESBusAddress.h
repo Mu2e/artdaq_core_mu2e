@@ -3,12 +3,13 @@
 
 #include <cstdint>  // uint8_t, uint16_t
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_IICSERDESBusAddress : uint8_t
 {
-	DTC_IICSERDESBusAddress_EVB = 0x55,
-	DTC_IICSERDESBusAddress_CFO = 0x5d,
+	DTC_IICSERDESBusAddress_EVB              = 0x55,
+	DTC_IICSERDESBusAddress_CFO              = 0x5d,
 	DTC_IICSERDESBusAddress_JitterAttenuator = 0x68,
 };
 

@@ -3,7 +3,8 @@
 
 #include <cstdint>  // uint8_t, uint16_t
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_IICDDRBusAddress : uint8_t
 {

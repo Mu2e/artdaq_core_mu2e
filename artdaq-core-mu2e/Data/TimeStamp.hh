@@ -25,30 +25,31 @@
 #include <ctime>
 #include <iosfwd>
 
-namespace mu2e {
+namespace mu2e
+{
 
 class TimeStamp
 {
-public:
+  public:
 	typedef uint32_t TimeStamp_t;
 
 	TimeStamp() {}
 
 	TimeStamp(time_t time)
-		: time_(static_cast<TimeStamp_t>(time))
+	    : time_(static_cast<TimeStamp_t>(time))
 	{
 	}
 
 	time_t get() const { return static_cast<time_t>(time_); }
 	time_t operator()() const { return get(); }
 
-private:
+  private:
 	TimeStamp_t time_ = 0;
 };
 
 // Print time as a formatted string; see note 4).
-std::ostream& operator<<(std::ostream& os,
-						 TimeStamp const& ts);
+std::ostream& operator<<(std::ostream&    os,
+                         TimeStamp const& ts);
 
 }  // namespace mu2e
 #endif /* mu2e_artdaq_core_Data_TimeStamp_hh */

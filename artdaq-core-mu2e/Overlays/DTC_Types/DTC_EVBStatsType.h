@@ -3,10 +3,11 @@
 
 #include <cstdint>  // uint8_t, uint16_t
 
-#define DTC_EVBStatsType_BRAM_TYPE_SIZE 5  /* 5-bits to handle stats from 32 DTCs */
+#define DTC_EVBStatsType_BRAM_TYPE_SIZE  5 /* 5-bits to handle stats from 32 DTCs */
 #define DTC_EVBStatsType_BRAM_TYPE_COUNT 6 /* 6 defined types enumerated below */
 
-namespace DTCLib {
+namespace DTCLib
+{
 // clang-format off
 enum DTC_EVBStatsType : uint8_t /* in hardware, defined as 4 bits*/
 {

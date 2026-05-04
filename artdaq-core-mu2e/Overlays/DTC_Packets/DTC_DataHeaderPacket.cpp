@@ -93,14 +93,18 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 	uint64_t comp1 = 0x0000000080500000;
 	uint64_t comp2 = 0x0000000000000000;
 
+	auto ptr64 = reinterpret_cast<const uint64_t*>(ptr);
+
 	if (timestamp != DTC_EventWindowTag(static_cast<uint64_t>(0)))
 	{
+		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << dtc << " with mask " << mask2 << " and comp " << comp2;
 		mask1 += 0xFFFF000000000000;
 		mask2 += 0x00000000FFFFFFFF;
 
 		auto tag = timestamp.GetEventWindowTag(true);
 		comp1 += (tag & 0xFFFF) << 48;
 		comp2 += (tag & 0xFFFFFFFF0000) >> 16;
+		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << dtc << " with mask " << mask2 << " and comp " << comp2;
 	}
 	if (roc != DTC_Link_Unused)
 	{
@@ -112,18 +116,29 @@ bool DTCLib::DTC_DataHeaderPacket::IsDataHeaderPacket(const uint8_t* ptr, DTC_Ev
 		mask1 += 0x0000E00000000000;
 		comp1 += static_cast<uint64_t>(subsystem) << 45;
 	}
-	if (dtc != 0xFF)
+	if (dtc != 0xFF)  // As of 12-Jan-2025, turning off DTC ID check (it was working) exception, demoted to error
 	{
-		mask2 += 0x00FF000000000000;
-		comp2 += static_cast<uint64_t>(dtc) << 48;
-	}
+		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
 
-	auto ptr64 = reinterpret_cast<const uint64_t*>(ptr);
+		// mask2 += static_cast<uint64_t>(0x0FF) << 48;
+		// comp2 += static_cast<uint64_t>(dtc) << 48;
+		if ((((*(ptr64 + 1)) >> 48) & 0xFF) != dtc)
+		{
+			TLOG(TLVL_DEBUG + 22) << "DTC ID check failed for ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << ". Expected DTC ID " << std::hex << std::showbase << dtc << " in upper byte of second quad word, but found " << std::hex << std::showbase << ((*(ptr64 + 1)) >> 48);
+		}
+
+		TLOG(TLVL_DEBUG + 21) << "Checking ptr dtc=" << std::hex << std::showbase << (int)dtc << " with mask " << mask2 << " and comp " << comp2;
+	}
 
 	auto check1 = *ptr64 & mask1;
 	auto check2 = *(ptr64 + 1) & mask2;
 
 	TLOG(TLVL_DEBUG + 20) << "Checking ptr " << std::hex << std::showbase << *ptr64 << " " << *(ptr64 + 1) << " with masks " << mask1 << " " << mask2 << ". check1 " << check1 << " =?= " << comp1 << " comp1, check2 " << check2 << " =?= " << comp2 << " comp2";
+
+	if (!(check1 == comp1 && check2 == comp2))
+	{
+		TLOG(TLVL_DEBUG) << "Failed header check! Looking for roc=" << roc << " and received " << std::hex << std::showbase << check1 << " =? " << comp1 << "  " << check2 << " =? " << comp2;
+	}
 
 	return check1 == comp1 && check2 == comp2;
 }

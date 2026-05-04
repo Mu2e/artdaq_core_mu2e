@@ -3,19 +3,20 @@
 
 #include "artdaq-core-mu2e/Overlays/CFO_Packets/CFO_EventRecord.h"
 
-#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventMode.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
 
 #include <cstdint>
 #include <memory>
 #include <ostream>
 #include <vector>
 
-namespace CFOLib {
+namespace CFOLib
+{
 
 class CFO_Event
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a CFO_Event in "overlay" mode using the given DMA buffer pointer. Flag will be set that the packet
 	/// is read-only.
@@ -26,18 +27,19 @@ public:
 	// explicit CFO_Event(size_t data_size);
 
 	CFO_Event()
-		: record_()  //, sub_events_(),
-					 // buffer_ptr_(nullptr)
-	{}
+	    : record_()  //, sub_events_(),
+	                 // buffer_ptr_(nullptr)
+	{
+	}
 
 	// static const int MAX_DMA_SIZE = 0x8000;  // 32k
 
 	// void SetupEvent();
-	size_t GetEventByteCount() const { return sizeof(record_); }
+	size_t                     GetEventByteCount() const { return sizeof(record_); }
 	DTCLib::DTC_EventWindowTag GetEventWindowTag() const;
-	DTCLib::DTC_EventMode GetEventMode() const;
-	const void* GetRawBufferPointer() const { return &record_; }
-	const CFO_EventRecord& GetEventRecord() const { return record_; }
+	DTCLib::DTC_EventMode      GetEventMode() const;
+	const void*                GetRawBufferPointer() const { return &record_; }
+	const CFO_EventRecord&     GetEventRecord() const { return record_; }
 
 	void SetEventWindowTag(DTCLib::DTC_EventWindowTag const& tag);
 	void SetEventMode(DTCLib::DTC_EventMode const& mode);
@@ -109,7 +111,7 @@ public:
 	// void UpdateHeader();
 	// void WriteEvent(std::ostream& output, bool includeDMAWriteSize = true);
 
-private:
+  private:
 	// std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
 	CFO_EventRecord record_;
 	// const void* buffer_ptr_;

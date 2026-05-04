@@ -10,7 +10,8 @@
 
 #include <cstdint>
 
-namespace mu2e {
+namespace mu2e
+{
 
 typedef uint64_t EWT;
 

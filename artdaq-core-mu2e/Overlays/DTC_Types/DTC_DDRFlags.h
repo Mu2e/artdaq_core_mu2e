@@ -3,7 +3,8 @@
 
 #include <ostream>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// This structure is used to decode the DDR Flags register values
@@ -21,12 +22,12 @@ struct DTC_DDRFlags
 	/// Default Constructor, sets all flags to false
 	/// </summary>
 	DTC_DDRFlags()
-		: InputFragmentBufferFull(false)
-		, InputFragmentBufferEmpty(false)
-		, InputFragmentBufferHalfFull(false)
-		, OutputEventBufferFull(false)
-		, OutputEventBufferEmpty(false)
-		, OutputEventBufferHalfFull(false) {}
+	    : InputFragmentBufferFull(false)
+	    , InputFragmentBufferEmpty(false)
+	    , InputFragmentBufferHalfFull(false)
+	    , OutputEventBufferFull(false)
+	    , OutputEventBufferEmpty(false)
+	    , OutputEventBufferHalfFull(false) {}
 
 	/// <summary>
 	/// Construct a DTC_DDRFlags instance with the given values
@@ -38,12 +39,12 @@ struct DTC_DDRFlags
 	/// <param name="ofbe">OutputEventBufferEmpty</param>
 	/// <param name="ofbhf">OutputEventBufferHalfFull</param>
 	DTC_DDRFlags(bool ifbf, bool ifbe, bool ifbhf, bool ofbf, bool ofbe, bool ofbhf)
-		: InputFragmentBufferFull(ifbf)
-		, InputFragmentBufferEmpty(ifbe)
-		, InputFragmentBufferHalfFull(ifbhf)
-		, OutputEventBufferFull(ofbf)
-		, OutputEventBufferEmpty(ofbe)
-		, OutputEventBufferHalfFull(ofbhf) {}
+	    : InputFragmentBufferFull(ifbf)
+	    , InputFragmentBufferEmpty(ifbe)
+	    , InputFragmentBufferHalfFull(ifbhf)
+	    , OutputEventBufferFull(ofbf)
+	    , OutputEventBufferEmpty(ofbe)
+	    , OutputEventBufferHalfFull(ofbhf) {}
 
 	/// <summary>
 	/// Write the DTC_DDRFlags to stream in JSON format.
@@ -57,12 +58,13 @@ struct DTC_DDRFlags
 		auto formatSet = (stream.flags() & std::ios_base::boolalpha) != 0;
 		stream.setf(std::ios_base::boolalpha);
 		stream << "{\"InputFragmentBufferFull\":" << flags.InputFragmentBufferFull
-			   << ",\"InputFragmentBufferEmpty\":" << flags.InputFragmentBufferEmpty
-			   << ",\"InputFragmentBufferHalfFull\":" << flags.InputFragmentBufferHalfFull
-			   << ",\"OutputEventBufferFull\":" << flags.OutputEventBufferFull
-			   << ",\"OutputEventBufferEmpty\":" << flags.OutputEventBufferEmpty
-			   << ",\"OutputEventBufferHalfFull\":" << flags.OutputEventBufferHalfFull << "}";
-		if (!formatSet) stream.unsetf(std::ios_base::boolalpha);
+		       << ",\"InputFragmentBufferEmpty\":" << flags.InputFragmentBufferEmpty
+		       << ",\"InputFragmentBufferHalfFull\":" << flags.InputFragmentBufferHalfFull
+		       << ",\"OutputEventBufferFull\":" << flags.OutputEventBufferFull
+		       << ",\"OutputEventBufferEmpty\":" << flags.OutputEventBufferEmpty
+		       << ",\"OutputEventBufferHalfFull\":" << flags.OutputEventBufferHalfFull << "}";
+		if(!formatSet)
+			stream.unsetf(std::ios_base::boolalpha);
 		return stream;
 	}
 };

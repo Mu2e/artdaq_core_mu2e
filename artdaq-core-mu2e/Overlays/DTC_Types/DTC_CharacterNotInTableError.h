@@ -6,7 +6,8 @@
 #include <bitset>
 #include <ostream>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// This structure is used to decode the SERDES Character Not In Table Error register
@@ -15,7 +16,7 @@ class DTC_CharacterNotInTableError
 {
 	std::bitset<2> data_;
 
-public:
+  public:
 	/// <summary>
 	/// Default Constructor
 	/// Initializes data bits to 0,0
@@ -75,7 +76,8 @@ public:
 	/// <returns>Data as int</returns>
 	int GetData(bool output) const
 	{
-		if (output) return static_cast<int>(data_.to_ulong());
+		if(output)
+			return static_cast<int>(data_.to_ulong());
 		return 0;
 	}
 

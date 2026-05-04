@@ -45,7 +45,7 @@ std::string DTCLib::DTC_EventWindowTag::toJSON(bool arrayMode) const
 	{
 		uint8_t ts[6];
 		GetEventWindowTag(ts, 0);
-		ss << "\t\"timestamp\": [\n"
+		ss << "\t\"event_tag\": [\n"
 		   << static_cast<int>(ts[0]) << ",\n";
 		ss << static_cast<int>(ts[1]) << ",\n";
 		ss << static_cast<int>(ts[2]) << ",\n";
@@ -55,7 +55,7 @@ std::string DTCLib::DTC_EventWindowTag::toJSON(bool arrayMode) const
 	}
 	else
 	{
-		ss << "\t\"timestamp\": " << event_tag_;
+		ss << "\t\"event_tag\": " << event_tag_;
 	}
 	return ss.str();
 }

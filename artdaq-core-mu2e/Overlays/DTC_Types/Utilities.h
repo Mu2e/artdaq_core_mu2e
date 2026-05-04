@@ -5,7 +5,8 @@
 #include <string>
 #include <utility>  // std::pair
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// Several useful data manipulation utilities
@@ -50,12 +51,12 @@ struct Utilities
 	/// <param name="tlvl">TLVL to use for printing (Default 2, or TLVL_INFO)</param>
 	static void PrintBuffer(const void* ptr, size_t sz, size_t quietCount = 0, int tlvl = 2 /*TLVL_INFO*/);
 
-	static unsigned getOptionValue(int* index, char** argv[]);
+	static unsigned           getOptionValue(int* index, char** argv[]);
 	static unsigned long long getOptionValueLong(int* index, char** argv[]);
 
 	static std::string getOptionString(int* index, char** argv[]);
 
-	static unsigned getLongOptionValue(int* index, char** argv[]);
+	static unsigned           getLongOptionValue(int* index, char** argv[]);
 	static unsigned long long getLongOptionValueLong(int* index, char** argv[]);
 
 	static std::string getLongOptionOption(int* index, char** argv[]);

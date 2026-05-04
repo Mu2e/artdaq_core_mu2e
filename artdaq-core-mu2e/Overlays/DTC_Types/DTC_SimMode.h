@@ -4,7 +4,8 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DTC_SimMode enumeration is used to control the behavior of the DTC class.
@@ -18,17 +19,17 @@ namespace DTCLib {
 /// </summary>
 enum DTC_SimMode
 {
-	DTC_SimMode_Disabled = 0,
-	DTC_SimMode_Tracker = 1,
+	DTC_SimMode_Disabled    = 0,
+	DTC_SimMode_Tracker     = 1,
 	DTC_SimMode_Calorimeter = 2,
-	DTC_SimMode_CosmicVeto = 3,
-	DTC_SimMode_NoCFO = 4,
+	DTC_SimMode_CosmicVeto  = 3,
+	DTC_SimMode_NoCFO       = 4,
 	DTC_SimMode_ROCEmulator = 5,
-	DTC_SimMode_Loopback = 6,
+	DTC_SimMode_Loopback    = 6,
 	DTC_SimMode_Performance = 7,  // This is simple ROC emulator style simulation
-	DTC_SimMode_LargeFile = 8,
-	DTC_SimMode_Timeout = 9,
-	DTC_SimMode_Event = 10,
+	DTC_SimMode_LargeFile   = 8,
+	DTC_SimMode_Timeout     = 9,
+	DTC_SimMode_Event       = 10,
 	DTC_SimMode_Invalid,
 };
 
@@ -44,7 +45,7 @@ struct DTC_SimModeConverter
 	/// </summary>
 	/// <param name="mode">DTC_SimMode to convert</param>
 	explicit DTC_SimModeConverter(DTC_SimMode mode)
-		: mode_(mode) {}
+	    : mode_(mode) {}
 
 	/// <summary>
 	/// Parse a string and return the DTC_SimMode which corresponds to it
@@ -62,31 +63,31 @@ struct DTC_SimModeConverter
 	/// <returns>String representation of DTC_SimMode</returns>
 	std::string toString() const
 	{
-		switch (mode_)
+		switch(mode_)
 		{
-			case DTC_SimMode_Tracker:
-				return "Tracker";
-			case DTC_SimMode_Calorimeter:
-				return "Calorimeter";
-			case DTC_SimMode_CosmicVeto:
-				return "CosmicVeto";
-			case DTC_SimMode_NoCFO:
-				return "NoCFO";
-			case DTC_SimMode_ROCEmulator:
-				return "ROCEmulator";
-			case DTC_SimMode_Loopback:
-				return "Loopback";
-			case DTC_SimMode_Performance:
-				return "Performance";
-			case DTC_SimMode_LargeFile:
-				return "LargeFile";
-			case DTC_SimMode_Timeout:
-				return "Timeout";
-			case DTC_SimMode_Event:
-				return "Event";
-			case DTC_SimMode_Disabled:
-			default:
-				return "Disabled";
+		case DTC_SimMode_Tracker:
+			return "Tracker";
+		case DTC_SimMode_Calorimeter:
+			return "Calorimeter";
+		case DTC_SimMode_CosmicVeto:
+			return "CosmicVeto";
+		case DTC_SimMode_NoCFO:
+			return "NoCFO";
+		case DTC_SimMode_ROCEmulator:
+			return "ROCEmulator";
+		case DTC_SimMode_Loopback:
+			return "Loopback";
+		case DTC_SimMode_Performance:
+			return "Performance";
+		case DTC_SimMode_LargeFile:
+			return "LargeFile";
+		case DTC_SimMode_Timeout:
+			return "Timeout";
+		case DTC_SimMode_Event:
+			return "Event";
+		case DTC_SimMode_Disabled:
+		default:
+			return "Disabled";
 		}
 	}
 

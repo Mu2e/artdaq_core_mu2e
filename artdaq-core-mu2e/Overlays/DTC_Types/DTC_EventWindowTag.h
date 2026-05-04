@@ -6,7 +6,8 @@
 #include <iostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The mu2e event_tag is a 48-bit quantity. This class manages all the different ways it could be accessed.
@@ -15,7 +16,7 @@ class DTC_EventWindowTag
 {
 	uint64_t event_tag_ : 48;
 
-public:
+  public:
 	/// <summary>
 	/// Default Constructor. Initializes Event Window Tag to value 0
 	/// </summary>
@@ -131,7 +132,7 @@ public:
 	/// <returns>event_tag as a 64-bit unsigned integer</returns>
 	uint64_t GetEventWindowTag(bool dummy) const
 	{
-		if (dummy)
+		if(dummy)
 		{
 			return event_tag_;
 		}

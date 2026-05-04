@@ -13,27 +13,29 @@
 //     for a long time.
 //
 
+#include <iosfwd>
 #include "artdaq-core-mu2e/Data/EWT.hh"
 #include "artdaq-core-mu2e/Data/TimeStamp.hh"
-#include <iosfwd>
 
-namespace mu2e {
+namespace mu2e
+{
 
 struct RunHeader
 {
 	RunHeader() {}
 
 	RunHeader(time_t startTime, EWT ewtFirst)
-		: startTime(startTime), ewtFirst(ewtFirst)
+	    : startTime(startTime)
+	    , ewtFirst(ewtFirst)
 	{
 	}
 
-	TimeStamp startTime;  // Time that the run started; seconds from the unix epoch in UTC.
-	EWT ewtFirst = 0;     // Event Window Tag of the first event in the Run.
+	TimeStamp startTime;     // Time that the run started; seconds from the unix epoch in UTC.
+	EWT       ewtFirst = 0;  // Event Window Tag of the first event in the Run.
 };
 
-std::ostream& operator<<(std::ostream& os,
-						 RunHeader const& rh);
+std::ostream& operator<<(std::ostream&    os,
+                         RunHeader const& rh);
 
 }  // namespace mu2e
 #endif /* mu2e_artdaq_core_Data_RunHeader_hh */

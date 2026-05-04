@@ -9,7 +9,8 @@
 #include <memory>
 #include <vector>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// A Data Block object (DataHeader packet plus associated Data Packets)
@@ -17,12 +18,12 @@ namespace DTCLib {
 /// </summary>
 struct DTC_DataBlock
 {
-	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};  ///< Used if the block owns its memory
-	const void* blockPointer{nullptr};                          ///< Pointer to DataBlock in Memory
-	size_t byteSize{0};                                         ///< Size of DataBlock
-private:
+	std::shared_ptr<std::vector<uint8_t>> allocBytes{nullptr};    ///< Used if the block owns its memory
+	const void*                           blockPointer{nullptr};  ///< Pointer to DataBlock in Memory
+	size_t                                byteSize{0};            ///< Size of DataBlock
+  private:
 	mutable std::shared_ptr<DTC_DataHeaderPacket> hdr{nullptr};  // use GetHeader()
-public:
+  public:
 	/**
 	 * @brief Create a DTC_DataBlock using a pointer to a memory location containing a Data Block
 	 * @param ptr Pointer to Data Block
@@ -30,9 +31,9 @@ public:
 	 * WARNING: This function assumes that the pointer is pointing to a valid DTC_DataHeaderPacket!
 	 */
 	DTC_DataBlock(const void* ptr)
-		: blockPointer(ptr)
+	    : blockPointer(ptr)
 	{
-		DTC_DataPacket pkt(ptr);
+		DTC_DataPacket       pkt(ptr);
 		DTC_DataHeaderPacket hdr(pkt);
 		byteSize = hdr.GetByteCount();
 	}
@@ -43,17 +44,21 @@ public:
 	/// <param name="ptr">Pointer to DataBlock in memory</param>
 	/// <param name="sz">Size of DataBlock</param>
 	DTC_DataBlock(const void* ptr, size_t sz)
-		: blockPointer(ptr), byteSize(sz) {}
+	    : blockPointer(ptr)
+	    , byteSize(sz) {}
 
 	DTC_DataBlock(size_t sz)
-		: allocBytes(new std::vector<uint8_t>(sz)), blockPointer(allocBytes->data()), byteSize(sz)
+	    : allocBytes(new std::vector<uint8_t>(sz))
+	    , blockPointer(allocBytes->data())
+	    , byteSize(sz)
 	{
 	}
 
 	inline std::shared_ptr<DTC_DataHeaderPacket> GetHeader() const
 	{
 		assert(byteSize >= 16);
-		if (hdr) return hdr;
+		if(hdr)
+			return hdr;
 		hdr = std::make_shared<DTC_DataHeaderPacket>(DTC_DataPacket(blockPointer));
 		return hdr;
 	}
