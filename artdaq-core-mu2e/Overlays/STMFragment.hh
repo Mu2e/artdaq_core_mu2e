@@ -57,7 +57,6 @@ struct RawHeader {
     ZS_REGIONS = 17,
     ZS_LEN = 18,
     PH_NUM = 19,
-
     ANCHOR_END = 20
   };
 };
@@ -155,6 +154,11 @@ public:
 
   uint16_t zsLength() const {
     return data_[stm::RawHeader::ZS_LEN];
+  }
+
+  //Extract PH count from Raw header
+  uint16_t phCount() const{
+    return data_[stm::RawHeader::PH_NUM];
   }
   
   //----------------
