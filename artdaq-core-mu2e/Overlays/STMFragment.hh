@@ -180,7 +180,7 @@ public:
 
   uint16_t zsPulseLength() const{
     return data_[stm::ZSHeader::ZS_pulseLength];
-  }//single pulse length
+  }//single pulse length from Raw header
 
   // -----------------------
   // Payload access
