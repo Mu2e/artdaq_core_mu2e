@@ -11,7 +11,7 @@ namespace stm {
 // Dataset identifiers
 // ---------------------------
 
-  
+
 enum class Dataset : uint16_t {
   RAW_HPGE = 100,
   ZS_HPGE  = 101,
@@ -23,7 +23,7 @@ enum class Dataset : uint16_t {
   PH_LABR  = 202,
   LABR_CONTAINER = 203
 };
-  
+
 // ---------------------------
 // RAW header layout
 // ---------------------------
@@ -60,10 +60,10 @@ struct RawHeader {
     ANCHOR_END = 20
   };
 };
-  
-//--------------------
+
+// --------------------
 // ZS Header Layout
-//--------------------
+// --------------------
 //Information for one single pulse
 struct ZSHeader {
   static constexpr size_t WORDS = 2;
@@ -90,14 +90,14 @@ public:
   stm::Dataset dataset() const {
     return static_cast<stm::Dataset>(frag_.fragmentID());
   }
-  
+
   bool isRaw_HPGe() const { return dataset() == stm::Dataset::RAW_HPGE; }
   bool isZS_HPGe() const { return dataset() == stm::Dataset::ZS_HPGE; }
   bool isPH_HPGe() const { return dataset() == stm::Dataset::PH_HPGE; }
   bool isRaw_LaBr() const { return dataset() == stm::Dataset::RAW_LABR; }
   bool isZS_LaBr() const { return dataset() == stm::Dataset::ZS_LABR; }
   bool isPH_LaBr() const { return dataset() == stm::Dataset::PH_LABR; }
-  
+
   bool isRaw() const { return isRaw_HPGe() || isRaw_LaBr(); }
   bool isZS() const { return isZS_HPGe() || isZS_LaBr(); }
   bool isPH() const { return isPH_HPGe() || isPH_LaBr(); }
@@ -107,7 +107,7 @@ public:
 
   bool isHPGeContainer() const { return dataset() == stm::Dataset::HPGE_CONTAINER; }
   bool isLaBrContainer() const { return dataset() == stm::Dataset::LABR_CONTAINER; }
-  
+
   // -----------------------
   // Header integrity
   // -----------------------
@@ -143,7 +143,7 @@ public:
   uint16_t rawLength() const {
     return data_[stm::RawHeader::RAW_LEN];
   }
-  
+
   uint16_t prescale() const {
     return data_[stm::RawHeader::PRESCALE];
   }
@@ -156,31 +156,29 @@ public:
     return data_[stm::RawHeader::ZS_LEN];
   }
 
-  //Extract PH count from Raw header
-  uint16_t phCount() const{
+  uint16_t phCount() const {
     return data_[stm::RawHeader::PH_NUM];
-  }
-  
-  //----------------
-  //Full data (including header) for ZS use
-  //----------------
-                                                          
-  int16_t const* dataBegin() const{
+  } //PH from Raw Header 
+
+  // ----------------
+  // Full data (including header) for ZS use
+  // ----------------
+
+  int16_t const* dataBegin() const {
     return data_;
-  }//Only for ZS at the moment
-  
-  size_t dataWords() const{
+  }  
+
+  size_t dataWords() const {
     return frag_.dataSizeBytes()/sizeof(int16_t);
-  }//Only for ZS at the moment
-  
-  //ZS -> Addition of two ints
+  }  
+
   uint16_t zsIndex() const {
     return data_[stm::ZSHeader::ZS_rawIndex];
-  }// zsIndex
+  }  // ZS index from ZS micro header
 
-  uint16_t zsPulseLength() const{
+  uint16_t zsPulseLength() const {
     return data_[stm::ZSHeader::ZS_pulseLength];
-  }//single pulse length from Raw header
+  }  // single zs pulse length from ZS micro header
 
   // -----------------------
   // Payload access
@@ -190,7 +188,7 @@ public:
       : isZS() ? data_ + stm::ZSHeader::WORDS
       : data_;
   }
-  
+
   size_t payloadWords() const {
     return isRaw() ? rawLength()
       : isZS() ? zsPulseLength()
