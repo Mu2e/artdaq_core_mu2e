@@ -11,17 +11,16 @@ namespace stm {
 // Dataset identifiers
 // ---------------------------
 
-
 enum class Dataset : uint16_t {
   RAW_HPGE = 100,
   ZS_HPGE  = 101,
   PH_HPGE  = 102,
-  HPGE_CONTAINER = 103,
+  CONTAINER_HPGE = 103,
   
   RAW_LABR = 200,
   ZS_LABR  = 201,
   PH_LABR  = 202,
-  LABR_CONTAINER = 203
+  CONTAINER_LABR = 203
 };
 
 // ---------------------------
@@ -91,22 +90,72 @@ public:
     return static_cast<stm::Dataset>(frag_.fragmentID());
   }
 
+  bool isRaw() const {
+    switch (dataset()) {
+    case stm::Dataset::RAW_HPGE:
+    case stm::Dataset::RAW_LABR:
+      return true;
+
+    default:
+      return false;
+    }
+  }
+
+  bool isZS() const {  
+    switch (dataset()) {
+    case stm::Dataset::ZS_HPGE:
+    case stm::Dataset::ZS_LABR:
+      return true;
+
+    default:
+      return false;
+    }
+  }
+
+  bool isPH() const {  
+    switch (dataset()) {
+    case stm::Dataset::PH_HPGE:
+    case stm::Dataset::PH_LABR:
+      return true;
+
+    default:
+      return false;
+    }
+  }
+
+  bool isHPGe() const {
+    switch (dataset()) {
+    case stm::Dataset::RAW_HPGE:
+    case stm::Dataset::ZS_HPGE:
+    case stm::Dataset::PH_HPGE:
+      return true;
+
+    default:
+      return false;
+    }
+  }
+
+  bool isLaBr() const {
+    switch (dataset()) {
+    case stm::Dataset::RAW_LABR:
+    case stm::Dataset::ZS_LABR:
+    case stm::Dataset::PH_LABR:
+      return true;
+
+    default:
+      return false;
+    }
+  }
+
+  bool isHPGeContainer() const { return dataset() == stm::Dataset::CONTAINER_HPGE; }
+  bool isLaBrContainer() const { return dataset() == stm::Dataset::CONTAINER_LABR; }
+
   bool isRaw_HPGe() const { return dataset() == stm::Dataset::RAW_HPGE; }
   bool isZS_HPGe() const { return dataset() == stm::Dataset::ZS_HPGE; }
   bool isPH_HPGe() const { return dataset() == stm::Dataset::PH_HPGE; }
   bool isRaw_LaBr() const { return dataset() == stm::Dataset::RAW_LABR; }
   bool isZS_LaBr() const { return dataset() == stm::Dataset::ZS_LABR; }
   bool isPH_LaBr() const { return dataset() == stm::Dataset::PH_LABR; }
-
-  bool isRaw() const { return isRaw_HPGe() || isRaw_LaBr(); }
-  bool isZS() const { return isZS_HPGe() || isZS_LaBr(); }
-  bool isPH() const { return isPH_HPGe() || isPH_LaBr(); }
-
-  bool isHPGe() const { return isRaw_HPGe() || isZS_HPGe() || isPH_HPGe(); } 
-  bool isLaBr() const { return isRaw_LaBr() || isZS_LaBr() || isPH_LaBr(); }
-
-  bool isHPGeContainer() const { return dataset() == stm::Dataset::HPGE_CONTAINER; }
-  bool isLaBrContainer() const { return dataset() == stm::Dataset::LABR_CONTAINER; }
 
   // -----------------------
   // Header integrity
@@ -120,24 +169,33 @@ public:
   // -----------------------
   // RAW header access
   // -----------------------
+
+  uint16_t channel() const{
+    return data_[stm::RawHeader::Ch_DTCclk_0] & 0xFF;
+  }
+
   uint64_t eventWindowTag() const {
-    return uint64_t(data_[stm::RawHeader::EWT_0]) |
-           (uint64_t(data_[stm::RawHeader::EWT_1]) << 16) |
-           (uint64_t(data_[stm::RawHeader::EWT_2]) << 32);
+    return uint64_t(uint16_t(data_[stm::RawHeader::EWT_0])) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::EWT_1])) << 16) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::EWT_2])) << 32);
   }
 
   uint64_t adcClock() const {
-    return uint64_t(data_[stm::RawHeader::ADCclk_0]) |
-           (uint64_t(data_[stm::RawHeader::ADCclk_1]) << 16) |
-           (uint64_t(data_[stm::RawHeader::ADCclk_2]) << 32) |
-           (uint64_t(data_[stm::RawHeader::ADCclk_3]) << 48);
+    return uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_0])) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_1])) << 16) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_2])) << 32) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_3])) << 48);
   }
 
   uint64_t dtcClock() const {
-    return uint64_t(data_[stm::RawHeader::Ch_DTCclk_0]) |
-           (uint64_t(data_[stm::RawHeader::DTCclk_1]) << 16) |
-           (uint64_t(data_[stm::RawHeader::DTCclk_2]) << 32) |
-           (uint64_t(data_[stm::RawHeader::DTCclk_3]) << 48);
+    return uint64_t((uint16_t(data_[stm::RawHeader::Ch_DTCclk_0]) >> 8)) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_1])) <<  8) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_2])) << 24) |
+      (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_3])) << 40);
+  }
+
+  bool spillFlag() const{
+    return data_[stm::RawHeader::EM_2_DRTDC] & 0x1;
   }
 
   uint16_t rawLength() const {
@@ -161,7 +219,7 @@ public:
   } //PH from Raw Header 
 
   // ----------------
-  // Full data (including header) for ZS use
+  // Full data (including header)
   // ----------------
 
   int16_t const* dataBegin() const {
@@ -172,6 +230,9 @@ public:
     return frag_.dataSizeBytes()/sizeof(int16_t);
   }  
 
+  //---------
+  // ZS data
+  //----------
   uint16_t zsIndex() const {
     return data_[stm::ZSHeader::ZS_rawIndex];
   }  // ZS index from ZS micro header
