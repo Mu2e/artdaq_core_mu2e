@@ -5,7 +5,8 @@
 #include <cstdint>
 #include "artdaq-core/Data/Fragment.hh"
 
-namespace stm {
+namespace stm
+{
 
 // ---------------------------
 // Dataset identifiers
@@ -13,14 +14,14 @@ namespace stm {
 
 enum class Dataset : uint16_t
 {
-	RAW_HPGE = 100,
-	ZS_HPGE = 101,
-	PH_HPGE = 102,
+	RAW_HPGE       = 100,
+	ZS_HPGE        = 101,
+	PH_HPGE        = 102,
 	CONTAINER_HPGE = 103,
 
-	RAW_LABR = 200,
-	ZS_LABR = 201,
-	PH_LABR = 202,
+	RAW_LABR       = 200,
+	ZS_LABR        = 201,
+	PH_LABR        = 202,
 	CONTAINER_LABR = 203
 };
 
@@ -29,7 +30,7 @@ enum class Dataset : uint16_t
 // ---------------------------
 struct RawHeader
 {
-	static constexpr size_t WORDS = 21;
+	static constexpr size_t   WORDS       = 21;
 	static constexpr uint16_t ANCHOR_WORD = 0xCAFE;
 
 	enum Index : size_t
@@ -46,19 +47,19 @@ struct RawHeader
 		ADCclk_3 = 7,
 
 		Ch_DTCclk_0 = 8,
-		DTCclk_1 = 9,
-		DTCclk_2 = 10,
-		DTCclk_3 = 11,
+		DTCclk_1    = 9,
+		DTCclk_2    = 10,
+		DTCclk_3    = 11,
 
-		EM_0 = 12,
-		EM_1 = 13,
+		EM_0       = 12,
+		EM_1       = 13,
 		EM_2_DRTDC = 14,
 
-		PRESCALE = 15,
-		RAW_LEN = 16,
+		PRESCALE   = 15,
+		RAW_LEN    = 16,
 		ZS_REGIONS = 17,
-		ZS_LEN = 18,
-		PH_NUM = 19,
+		ZS_LEN     = 18,
+		PH_NUM     = 19,
 		ANCHOR_END = 20
 	};
 };
@@ -72,21 +73,22 @@ struct ZSHeader
 	static constexpr size_t WORDS = 2;
 	enum Index : size_t
 	{
-		ZS_rawIndex = 0,     // raw index value of the ZS
+		ZS_rawIndex    = 0,  // raw index value of the ZS
 		ZS_pulseLength = 1,  // length of ZS
 	};
 };
 
 }  // namespace stm
 
-namespace mu2e {
+namespace mu2e
+{
 
 class STMFragment
 {
-public:
+  public:
 	explicit STMFragment(artdaq::Fragment const& f)
-		: frag_(f),
-		  data_(reinterpret_cast<int16_t const*>(f.dataBegin()))
+	    : frag_(f)
+	    , data_(reinterpret_cast<int16_t const*>(f.dataBegin()))
 	{
 	}
 
@@ -100,68 +102,68 @@ public:
 
 	bool isRaw() const
 	{
-		switch (dataset())
+		switch(dataset())
 		{
-			case stm::Dataset::RAW_HPGE:
-			case stm::Dataset::RAW_LABR:
-				return true;
+		case stm::Dataset::RAW_HPGE:
+		case stm::Dataset::RAW_LABR:
+			return true;
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
 	bool isZS() const
 	{
-		switch (dataset())
+		switch(dataset())
 		{
-			case stm::Dataset::ZS_HPGE:
-			case stm::Dataset::ZS_LABR:
-				return true;
+		case stm::Dataset::ZS_HPGE:
+		case stm::Dataset::ZS_LABR:
+			return true;
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
 	bool isPH() const
 	{
-		switch (dataset())
+		switch(dataset())
 		{
-			case stm::Dataset::PH_HPGE:
-			case stm::Dataset::PH_LABR:
-				return true;
+		case stm::Dataset::PH_HPGE:
+		case stm::Dataset::PH_LABR:
+			return true;
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
 	bool isHPGe() const
 	{
-		switch (dataset())
+		switch(dataset())
 		{
-			case stm::Dataset::RAW_HPGE:
-			case stm::Dataset::ZS_HPGE:
-			case stm::Dataset::PH_HPGE:
-				return true;
+		case stm::Dataset::RAW_HPGE:
+		case stm::Dataset::ZS_HPGE:
+		case stm::Dataset::PH_HPGE:
+			return true;
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
 	bool isLaBr() const
 	{
-		switch (dataset())
+		switch(dataset())
 		{
-			case stm::Dataset::RAW_LABR:
-			case stm::Dataset::ZS_LABR:
-			case stm::Dataset::PH_LABR:
-				return true;
+		case stm::Dataset::RAW_LABR:
+		case stm::Dataset::ZS_LABR:
+		case stm::Dataset::PH_LABR:
+			return true;
 
-			default:
-				return false;
+		default:
+			return false;
 		}
 	}
 
@@ -180,10 +182,10 @@ public:
 	// -----------------------
 	bool hasValidAnchors() const
 	{
-		if (!isRaw())
+		if(!isRaw())
 			return true;
 		return data_[stm::RawHeader::ANCHOR_START] == stm::RawHeader::ANCHOR_WORD &&
-			   data_[stm::RawHeader::ANCHOR_END] == stm::RawHeader::ANCHOR_WORD;
+		       data_[stm::RawHeader::ANCHOR_END] == stm::RawHeader::ANCHOR_WORD;
 	}
 
 	// -----------------------
@@ -198,24 +200,24 @@ public:
 	uint64_t eventWindowTag() const
 	{
 		return uint64_t(uint16_t(data_[stm::RawHeader::EWT_0])) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::EWT_1])) << 16) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::EWT_2])) << 32);
+		       (uint64_t(uint16_t(data_[stm::RawHeader::EWT_1])) << 16) |
+		       (uint64_t(uint16_t(data_[stm::RawHeader::EWT_2])) << 32);
 	}
 
 	uint64_t adcClock() const
 	{
 		return uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_0])) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_1])) << 16) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_2])) << 32) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_3])) << 48);
+		       (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_1])) << 16) |
+		       (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_2])) << 32) |
+		       (uint64_t(uint16_t(data_[stm::RawHeader::ADCclk_3])) << 48);
 	}
 
 	uint64_t dtcClock() const
 	{
 		return uint64_t((uint16_t(data_[stm::RawHeader::Ch_DTCclk_0]) >> 8)) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_1])) << 8) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_2])) << 24) |
-			   (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_3])) << 40);
+		       (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_1])) << 8) |
+		       (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_2])) << 24) |
+		       (uint64_t(uint16_t(data_[stm::RawHeader::DTCclk_3])) << 40);
 	}
 
 	bool spillFlag() const
@@ -281,20 +283,20 @@ public:
 	int16_t const* payloadBegin() const
 	{
 		return isRaw()  ? data_ + stm::RawHeader::WORDS
-			   : isZS() ? data_ + stm::ZSHeader::WORDS
-						: data_;
+		       : isZS() ? data_ + stm::ZSHeader::WORDS
+		                : data_;
 	}
 
 	size_t payloadWords() const
 	{
 		return isRaw()  ? rawLength()
-			   : isZS() ? zsPulseLength()
-						: frag_.dataSizeBytes() / sizeof(int16_t);
+		       : isZS() ? zsPulseLength()
+		                : frag_.dataSizeBytes() / sizeof(int16_t);
 	}
 
-private:
+  private:
 	artdaq::Fragment const& frag_;
-	int16_t const* data_;
+	int16_t const*          data_;
 };
 
 }  // namespace mu2e
