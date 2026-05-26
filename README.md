@@ -22,4 +22,4 @@ This package is a part of the Mu2e TDAQ Suite
 
 # Additional Documentation (Package-Specific)
 
-Code that needs to been seen both by artdaq_mu2e and by Offline; mostly data formats.
+Code that needs to been seen by artdaq-mu2e, mu2e-pcie-utils and by Offline; mostly data formats.
