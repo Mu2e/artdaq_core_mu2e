@@ -263,6 +263,10 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 		for (size_t i = 0; i < header_.inclusive_subevent_byte_count; i += 4)
 			std::cout << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
 		std::cout << std::endl;
+		std::cout << "--> Printing beyond buffer ptr data: 0x ";
+		for (size_t i = static_cast<size_t>(header_.inclusive_subevent_byte_count); i < static_cast<size_t>(header_.inclusive_subevent_byte_count) + 64; i += 4)
+			std::cout << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+		std::cout << std::endl;
 		corruption_detected_ = true;
 	}
 

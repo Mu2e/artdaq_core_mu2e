@@ -93,11 +93,11 @@ struct DTC_SubEventHeader
 		std::ostringstream oss;
 
 		oss << "\"DTC_SubEventHeader\": {\n";
-		oss << "\t\"inclusive_subevent_byte_count\": " << inclusive_subevent_byte_count;
-		oss << ",\n\t\"event_tag_low\": " << event_tag_low;
-		oss << ",\n\t\"event_tag_high\": " << event_tag_high;
+		oss << "\t\"inclusive_subevent_byte_count\": " << inclusive_subevent_byte_count << "(0x" << std::hex << inclusive_subevent_byte_count << std::dec << ")";
+		oss << ",\n\t\"event_tag_low\": " << event_tag_low << "(0x" << std::hex << event_tag_low << std::dec << ")";
+		oss << ",\n\t\"event_tag_high\": " << event_tag_high << "(0x" << std::hex << event_tag_high << std::dec << ")";
 		oss << ",\n\t\"num_rocs\": " << num_rocs;
-		oss << ",\n\t\"event_mode\": 0x" << std::hex << event_mode << std::dec;
+		oss << ",\n\t\"event_mode\": " << event_mode << "(0x" << std::hex << event_mode << std::dec << ")";
 		oss << ",\n\t\"dtc_mac\": " << dtc_mac;
 		oss << ",\n\t\"partition_id\": " << partition_id;
 		oss << ",\n\t\"evb_mode\": " << evb_mode;
@@ -108,13 +108,13 @@ struct DTC_SubEventHeader
 		oss << ",\n\t\"link3_subsystem\": " << link3_subsystem;
 		oss << ",\n\t\"link4_subsystem\": " << link4_subsystem;
 		oss << ",\n\t\"link5_subsystem\": " << link5_subsystem;
-		oss << ",\n\t\"link0_status\": " << link0_status;
-		oss << ",\n\t\"link1_status\": " << link1_status;
-		oss << ",\n\t\"link2_status\": " << link2_status;
-		oss << ",\n\t\"link3_status\": " << link3_status;
-		oss << ",\n\t\"link4_status\": " << link4_status;
-		oss << ",\n\t\"link5_status\": " << link5_status;
-		oss << ",\n\t\"subevent_format_version\": " << subevent_format_version;
+		oss << ",\n\t\"link0_status\": " << link0_status << "(0x" << std::hex << link0_status << std::dec << ")";
+		oss << ",\n\t\"link1_status\": " << link1_status << "(0x" << std::hex << link1_status << std::dec << ")";
+		oss << ",\n\t\"link2_status\": " << link2_status << "(0x" << std::hex << link2_status << std::dec << ")";
+		oss << ",\n\t\"link3_status\": " << link3_status << "(0x" << std::hex << link3_status << std::dec << ")";
+		oss << ",\n\t\"link4_status\": " << link4_status << "(0x" << std::hex << link4_status << std::dec << ")";
+		oss << ",\n\t\"link5_status\": " << link5_status << "(0x" << std::hex << link5_status << std::dec << ")";
+		oss << ",\n\t\"subevent_format_version\": " << subevent_format_version << "(0x" << std::hex << subevent_format_version << std::dec << ")";
 		oss << ",\n\t\"emtdc\": " << emtdc;
 		oss << ",\n\t\"link0_drp_rx_latency\": " << link0_drp_rx_latency;
 		oss << ",\n\t\"link1_drp_rx_latency\": " << link1_drp_rx_latency;
