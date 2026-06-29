@@ -233,9 +233,24 @@ class STMFragment
 		return data_[stm::RawHeader::RAW_LEN];
 	}
 
-	uint16_t prescale() const
+	bool rawPrescaled() const
 	{
-		return data_[stm::RawHeader::PRESCALE];
+		return (data_[stm::RawHeader::PRESCALE] >> 15) & 0x1;
+	}
+
+	bool zsPrescaled() const
+	{
+		return (data_[stm::RawHeader::PRESCALE] >> 7) & 0x1;
+	}
+
+	uint8_t rawPrescaleValue() const
+	{
+		return (data_[stm::RawHeader::PRESCALE] >> 8) & 0x7F;
+	}
+
+	uint8_t zsPrescaleValue() const
+	{
+		return data_[stm::RawHeader::PRESCALE] & 0x7F;
 	}
 
 	uint16_t zsRegions() const
