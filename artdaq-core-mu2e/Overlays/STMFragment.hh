@@ -30,7 +30,7 @@ enum class Dataset : uint16_t
 // ---------------------------
 struct RawHeader
 {
-	static constexpr size_t   WORDS       = 21;
+	static constexpr size_t   WORDS       = 22;
 	static constexpr uint16_t ANCHOR_WORD = 0xCAFE;
 
 	enum Index : size_t
@@ -60,7 +60,10 @@ struct RawHeader
 		ZS_REGIONS = 17,
 		ZS_LEN     = 18,
 		PH_NUM     = 19,
-		ANCHOR_END = 20
+
+		DATA_FLAGS = 20,
+
+		ANCHOR_END = 21
 	};
 };
 
@@ -249,6 +252,16 @@ class STMFragment
 	{
 		return data_[stm::RawHeader::PH_NUM];
 	}  // PH from Raw Header
+
+	bool badData() const
+	{
+		return data_[stm::RawHeader::DATA_FLAGS] & 0x1;
+	}
+
+	bool missing() const
+	{
+		return data_[stm::RawHeader::DATA_FLAGS] & 0x2;
+	}
 
 	// ----------------
 	// Full data (including header)
