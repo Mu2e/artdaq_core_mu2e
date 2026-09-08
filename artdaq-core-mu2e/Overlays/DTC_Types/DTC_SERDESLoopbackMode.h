@@ -4,15 +4,16 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_SERDESLoopbackMode
 {
 	DTC_SERDESLoopbackMode_Disabled = 0,
-	DTC_SERDESLoopbackMode_NearPCS = 1,
-	DTC_SERDESLoopbackMode_NearPMA = 2,
-	DTC_SERDESLoopbackMode_FarPMA = 4,
-	DTC_SERDESLoopbackMode_FarPCS = 6,
+	DTC_SERDESLoopbackMode_NearPCS  = 1,
+	DTC_SERDESLoopbackMode_NearPMA  = 2,
+	DTC_SERDESLoopbackMode_FarPMA   = 4,
+	DTC_SERDESLoopbackMode_FarPCS   = 6,
 };
 
 /// <summary>
@@ -28,7 +29,7 @@ struct DTC_SERDESLoopbackModeConverter
 	/// </summary>
 	/// <param name="mode">DTC_SERDESLoopbackMode to convert</param>
 	explicit DTC_SERDESLoopbackModeConverter(DTC_SERDESLoopbackMode mode)
-		: mode_(mode) {}
+	    : mode_(mode) {}
 
 	/// <summary>
 	/// Convert the DTC_SERDESLoopbackMode to its string representation
@@ -36,18 +37,18 @@ struct DTC_SERDESLoopbackModeConverter
 	/// <returns>String representation of DTC_SERDESLoopbackMode</returns>
 	std::string toString() const
 	{
-		switch (mode_)
+		switch(mode_)
 		{
-			case DTC_SERDESLoopbackMode_Disabled:
-				return "Disabled";
-			case DTC_SERDESLoopbackMode_NearPCS:
-				return "NearPCS";
-			case DTC_SERDESLoopbackMode_NearPMA:
-				return "NearPMA";
-			case DTC_SERDESLoopbackMode_FarPMA:
-				return "FarPMA";
-			case DTC_SERDESLoopbackMode_FarPCS:
-				return "FarPCS";
+		case DTC_SERDESLoopbackMode_Disabled:
+			return "Disabled";
+		case DTC_SERDESLoopbackMode_NearPCS:
+			return "NearPCS";
+		case DTC_SERDESLoopbackMode_NearPMA:
+			return "NearPMA";
+		case DTC_SERDESLoopbackMode_FarPMA:
+			return "FarPMA";
+		case DTC_SERDESLoopbackMode_FarPCS:
+			return "FarPCS";
 		}
 		return "Unknown";
 	}

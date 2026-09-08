@@ -1,8 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DCSReplyPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DCSReplyPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
 
@@ -10,14 +10,15 @@
 #include <utility>  // std::pair
 #include <vector>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DCS Reply Packet
 /// </summary>
 class DTC_DCSReplyPacket : public DTC_DMAPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Default Copy Constructor
 	/// </summary>
@@ -83,7 +84,8 @@ public:
 	/// <returns>Pair of address, data from the reply packet</returns>
 	std::pair<uint16_t, uint16_t> GetReply(bool secondOp = false)
 	{
-		if (!secondOp) return std::make_pair(address1_, data1_);
+		if(!secondOp)
+			return std::make_pair(address1_, data1_);
 		return std::make_pair(address2_, data2_);
 	}
 
@@ -109,18 +111,18 @@ public:
 	/// <returns>"packet format" string representation of DTC_DCSReplyPacket</returns>
 	std::string toPacketFormat() override;
 
-private:
-	uint8_t DTCErrorBits_;
-	DTC_DCSOperationType type_;
-	bool doubleOp_;
-	bool requestAck_;
-	bool dcsReceiveFIFOEmpty_;
-	bool corruptFlag_;
-	uint16_t packetCount_;
-	uint16_t address1_;
-	uint16_t data1_;
-	uint16_t address2_;
-	uint16_t data2_;
+  private:
+	uint8_t               DTCErrorBits_;
+	DTC_DCSOperationType  type_;
+	bool                  doubleOp_;
+	bool                  requestAck_;
+	bool                  dcsReceiveFIFOEmpty_;
+	bool                  corruptFlag_;
+	uint16_t              packetCount_;
+	uint16_t              address1_;
+	uint16_t              data1_;
+	uint16_t              address2_;
+	uint16_t              data2_;
 	std::vector<uint16_t> blockReadData_;
 };
 

@@ -13,27 +13,29 @@
 //     for a long time.
 //
 
+#include <iosfwd>
 #include "artdaq-core-mu2e/Data/EWT.hh"
 #include "artdaq-core-mu2e/Data/TimeStamp.hh"
-#include <iosfwd>
 
-namespace mu2e {
+namespace mu2e
+{
 
 struct SubRunHeader
 {
 	SubRunHeader() {}
 
 	SubRunHeader(time_t startTime, EWT ewtFirst)
-		: startTime(startTime), ewtFirst(ewtFirst)
+	    : startTime(startTime)
+	    , ewtFirst(ewtFirst)
 	{
 	}
 
-	TimeStamp startTime;  // Time that the run started; seconds from the unix epoch in UTC.
-	EWT ewtFirst = 0;     // Event Window Tag of the first event in the SubRun.
+	TimeStamp startTime;     // Time that the run started; seconds from the unix epoch in UTC.
+	EWT       ewtFirst = 0;  // Event Window Tag of the first event in the SubRun.
 };
 
-std::ostream& operator<<(std::ostream& os,
-						 SubRunHeader const& sh);
+std::ostream& operator<<(std::ostream&       os,
+                         SubRunHeader const& sh);
 
 }  // namespace mu2e
 #endif /* mu2e_artdaq_core_Data_SubRunHeader_hh */

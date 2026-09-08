@@ -7,7 +7,8 @@
 #include <string>
 #include <vector>
 
-namespace CFOLib {
+namespace CFOLib
+{
 
 /// <summary>
 /// The CFO_DataPacket class represents the 16 bytes of raw data for all CFO packets.
@@ -16,7 +17,7 @@ namespace CFOLib {
 /// </summary>
 class CFO_DataPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a CFO_DataPacket in owner mode
 	/// </summary>
@@ -27,7 +28,9 @@ public:
 	/// </summary>
 	/// <param name="data">Pointer to data</param>
 	explicit CFO_DataPacket(const void* data)
-		: dataPtr_(static_cast<const uint8_t*>(data)), dataSize_(16), memPacket_(true) {}
+	    : dataPtr_(static_cast<const uint8_t*>(data))
+	    , dataSize_(16)
+	    , memPacket_(true) {}
 
 	/// <summary>
 	/// Creates a copy of the CFO_DataPacket. Mode is preserved, if the existing DataPacket was in "owner" mode, a deep
@@ -108,7 +111,7 @@ public:
 	/// <returns>True if successful</returns>
 	bool CramIn(CFO_DataPacket& other, int offset)
 	{
-		if (other.dataSize_ + offset <= dataSize_)
+		if(other.dataSize_ + offset <= dataSize_)
 		{
 			memcpy(const_cast<uint8_t*>(dataPtr_) + offset, other.dataPtr_, other.dataSize_);
 			return true;
@@ -159,10 +162,10 @@ public:
 	uint64_t event_tag_high : 16;
 	uint64_t event_mode : 40;
 
-private:
-	const uint8_t* dataPtr_;
-	uint16_t dataSize_;
-	bool memPacket_;
+  private:
+	const uint8_t*       dataPtr_;
+	uint16_t             dataSize_;
+	bool                 memPacket_;
 	std::vector<uint8_t> vals_;
 };
 

@@ -8,31 +8,35 @@
 #include <ostream>
 #include <string>
 
-namespace CFOLib {
+namespace CFOLib
+{
 
 /// <summary>
 /// Header information common to all CFO Packets (except Data Packets)
 /// </summary>
 class CFO_DMAPacket
 {
-protected:
+  protected:
 	uint16_t byteCount_;  ///< Byte count of current block
-	bool valid_;          ///< Whether the CFO believes the packet to be valid
+	bool     valid_;      ///< Whether the CFO believes the packet to be valid
 	// uint8_t subsystemID_;        ///< Subsystem ID (Data Header packet only)
 	// CFO_Link_ID linkID_;         ///< Link identifier of packet
 	CFO_PacketType packetType_;  ///< Packet type
-								 // uint8_t hopCount_;           ///< Hop count
-public:
+	                             // uint8_t hopCount_;           ///< Hop count
+  public:
 	/// <summary>
 	/// CFO_DMAPacket default constructor. Fills in header fields with default (invalid) values.
 	/// </summary>
 	CFO_DMAPacket()
-		: byteCount_(0), valid_(false),
-		// subsystemID_(0),
-		// linkID_(DTC_Link_Unused),
-		packetType_(CFO_PacketType_Invalid)
+	    : byteCount_(0)
+	    , valid_(false)
+	    ,
+	    // subsystemID_(0),
+	    // linkID_(DTC_Link_Unused),
+	    packetType_(CFO_PacketType_Invalid)
 	// hopCount_(0)
-	{}
+	{
+	}
 
 	/// <summary>
 	/// Create a CFO_DMAPacket with the given parameters
@@ -44,10 +48,11 @@ public:
 	/// <param name="subsystemID">Subsystem ID for packet</param>
 	/// <param name="hopCount">Hop count for packet, default 0</param>
 	CFO_DMAPacket(CFO_PacketType type,
-				  // DTC_Link_ID link,
-				  uint16_t byteCount = 16, bool valid = true
-				  // uint8_t subsystemID = 0
-				  //, uint8_t hopCount = 0
+	              // DTC_Link_ID link,
+	              uint16_t byteCount = 16,
+	              bool     valid     = true
+	              // uint8_t subsystemID = 0
+	              //, uint8_t hopCount = 0
 	);
 
 	/// <summary>

@@ -1,11 +1,13 @@
 #ifndef mu2e_artdaq_core_Overlays_FragmentType_hh
 #define mu2e_artdaq_core_Overlays_FragmentType_hh
-#include "artdaq-core/Data/Fragment.hh"
 #include <unordered_map>
+#include "artdaq-core/Data/Fragment.hh"
 
-namespace mu2e {
+namespace mu2e
+{
 
-namespace detail {
+namespace detail
+{
 enum FragmentType : artdaq::Fragment::type_t
 {
 	EMPTY = artdaq::Fragment::EmptyFragmentType,

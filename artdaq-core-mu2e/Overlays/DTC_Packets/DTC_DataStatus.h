@@ -3,7 +3,8 @@
 
 #include <cstdint>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// Possible values for the Status word of the Data Header packet

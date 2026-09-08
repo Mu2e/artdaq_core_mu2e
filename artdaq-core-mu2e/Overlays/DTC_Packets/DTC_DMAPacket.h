@@ -1,8 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DMAPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DMAPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_PacketType.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_PacketType.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
 
@@ -10,26 +10,32 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// Header information common to all DTC Packets (except Data Packets)
 /// </summary>
 class DTC_DMAPacket
 {
-protected:
-	uint16_t byteCount_;         ///< Byte count of current block
-	bool valid_;                 ///< Whether the DTC believes the packet to be valid
-	uint8_t subsystemID_;        ///< Subsystem ID (Data Header packet only)
-	DTC_Link_ID linkID_;         ///< Link identifier of packet
-	DTC_PacketType packetType_;  ///< Packet type
-	uint8_t hopCount_;           ///< Hop count
-public:
+  protected:
+	uint16_t       byteCount_;    ///< Byte count of current block
+	bool           valid_;        ///< Whether the DTC believes the packet to be valid
+	uint8_t        subsystemID_;  ///< Subsystem ID (Data Header packet only)
+	DTC_Link_ID    linkID_;       ///< Link identifier of packet
+	DTC_PacketType packetType_;   ///< Packet type
+	uint8_t        hopCount_;     ///< Hop count
+  public:
 	/// <summary>
 	/// DTC_DMAPacket default constructor. Fills in header fields with default (invalid) values.
 	/// </summary>
 	DTC_DMAPacket()
-		: byteCount_(0), valid_(false), subsystemID_(0), linkID_(DTC_Link_Unused), packetType_(DTC_PacketType_Invalid), hopCount_(0) {}
+	    : byteCount_(0)
+	    , valid_(false)
+	    , subsystemID_(0)
+	    , linkID_(DTC_Link_Unused)
+	    , packetType_(DTC_PacketType_Invalid)
+	    , hopCount_(0) {}
 
 	/// <summary>
 	/// Create a DTC_DMAPacket with the given parameters

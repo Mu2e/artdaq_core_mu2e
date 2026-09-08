@@ -15,4 +15,3 @@ if(DictCompileOptions)
 
 	set_target_properties(artdaq-core-mu2e_Overlays_root_dict PROPERTIES COMPILE_OPTIONS "${DictCompileOptions}")
 endif()
-

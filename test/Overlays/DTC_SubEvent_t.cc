@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_SUITE(DTC_SubEvent_t)
 
 BOOST_AUTO_TEST_CASE(Constructor)
 {
-	size_t size_bytes = sizeof(DTCLib::DTC_SubEventHeader);
+	size_t size_bytes = sizeof(DTCLib::DTC_SubEventHeader);  // 6 empty ROC headers;
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(size_bytes);
 
@@ -24,7 +24,11 @@ BOOST_AUTO_TEST_CASE(Constructor)
 	memcpy(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(evt->GetRawBufferPointer())), &evtHdr, sizeof(DTCLib::DTC_SubEventHeader));
 
 	TLOG(TLVL_TRACE + 22) << "Calling SetupSubEvent";
-	auto ok = evt->SetupSubEvent();
+	std::string accumulatedErrors = "";
+	auto ok = evt->SetupSubEvent(accumulatedErrors);
+	if (accumulatedErrors.size())
+		TLOG(TLVL_ERROR) << "Returned from SetupSubEvent, accumulatedErrors = " << accumulatedErrors;
+	BOOST_REQUIRE(!accumulatedErrors.size());
 	BOOST_REQUIRE(ok);
 
 	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 0);
@@ -49,7 +53,11 @@ BOOST_AUTO_TEST_CASE(BadBinaryFile_Short)
 	std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
 
 	auto evt = std::make_unique<DTCLib::DTC_SubEvent>(buffer.data());
-	auto ok = evt->SetupSubEvent();
+	std::string accumulatedErrors = "";
+	auto ok = evt->SetupSubEvent(accumulatedErrors);
+	if (accumulatedErrors.size())
+		TLOG(TLVL_ERROR) << "Returned from SetupSubEvent, accumulatedErrors = " << accumulatedErrors;
+	BOOST_REQUIRE(accumulatedErrors.size());
 	BOOST_REQUIRE(!ok);
 	BOOST_REQUIRE_EQUAL(evt->GetDataBlockCount(), 6);
 	BOOST_REQUIRE_EQUAL(evt->GetEventWindowTag(), DTCLib::DTC_EventWindowTag(1));

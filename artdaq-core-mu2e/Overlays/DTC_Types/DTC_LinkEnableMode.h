@@ -4,7 +4,8 @@
 #include <iomanip>
 #include <ostream>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// This structure is used to decode the LinkEnable register value
@@ -18,7 +19,8 @@ struct DTC_LinkEnableMode
 	/// Default constructor. Sets all enable bits to true.
 	/// </summary>
 	DTC_LinkEnableMode()
-		: TransmitEnable(true), ReceiveEnable(true) {}
+	    : TransmitEnable(true)
+	    , ReceiveEnable(true) {}
 
 	/// <summary>
 	/// Construct a DTC_LinkEnableMode instance with the given flags
@@ -27,7 +29,8 @@ struct DTC_LinkEnableMode
 	/// <param name="receive">Enable RX</param>
 	/// <param name="timing">Enable CFO</param>
 	DTC_LinkEnableMode(bool transmit, bool receive)
-		: TransmitEnable(transmit), ReceiveEnable(receive) {}
+	    : TransmitEnable(transmit)
+	    , ReceiveEnable(receive) {}
 
 	/// <summary>
 	/// Write the DTC_LinkEnableMode to stream in JSON format.
@@ -41,7 +44,8 @@ struct DTC_LinkEnableMode
 		auto formatSet = (stream.flags() & std::ios_base::boolalpha) != 0;
 		stream.setf(std::ios_base::boolalpha);
 		stream << "{\"TransmitEnable\":" << mode.TransmitEnable << ",\"ReceiveEnable\":" << mode.ReceiveEnable << "}";
-		if (!formatSet) stream.unsetf(std::ios_base::boolalpha);
+		if(!formatSet)
+			stream.unsetf(std::ios_base::boolalpha);
 		return stream;
 	}
 

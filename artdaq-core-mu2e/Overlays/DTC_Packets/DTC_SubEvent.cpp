@@ -75,7 +75,7 @@ void DTCLib::DTC_SubEvent::UpdateHeader()
 	TLOG(TLVL_UPDATEHEADER) << "Inclusive SubEvent Byte Count is now " << header_.inclusive_subevent_byte_count << " for subevent " << static_cast<int>(GetDTCID());
 }
 
-bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nullptr */)
+bool DTCLib::DTC_SubEvent::SetupSubEvent(optional_string accumulatedErrors)
 {
 	auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
 
@@ -174,7 +174,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nul
 				}
 				else
 				{
-					errSS << "\nCorruption detected in block " << static_cast<int>(roc_fragi) << " of SubEvent EWT: " << GetEventWindowTag() << ", DTC " << static_cast<int>(GetDTCID());
+					errSS << "\nCorruption (unable to find next Header packet) detected in block " << static_cast<int>(roc_fragi) << " of SubEvent EWT: " << GetEventWindowTag() << ", DTC " << static_cast<int>(GetDTCID());
 					TLOG(TLVL_ERROR) << errSS.str();
 					corruption_detected_ = true;
 
@@ -254,10 +254,19 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nul
 		}
 	}
 
-	if (roc_fragi != 5)
+	if (++roc_fragi != header_.num_rocs)
 	{
-		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) + 1 << ". Check for corrupted byte/packet counts.";
+		errSS << "\nCorruption detected in SubEvent! Expected 6 ROC fragments, found " << static_cast<int>(roc_fragi) << ". Check for corrupted byte/packet counts.";
 		TLOG(TLVL_ERROR) << errSS.str();
+		auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
+		std::cout << "--> Printing entire buffer ptr data: 0x ";
+		for (size_t i = 0; i < header_.inclusive_subevent_byte_count; i += 4)
+			std::cout << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+		std::cout << std::endl;
+		std::cout << "--> Printing beyond buffer ptr data: 0x ";
+		for (size_t i = static_cast<size_t>(header_.inclusive_subevent_byte_count); i < static_cast<size_t>(header_.inclusive_subevent_byte_count) + 64; i += 4)
+			std::cout << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << ' ';
+		std::cout << std::endl;
 		corruption_detected_ = true;
 	}
 
@@ -273,7 +282,7 @@ bool DTCLib::DTC_SubEvent::SetupSubEvent(std::string *accumulatedErrors /* = nul
 		errSS << "\nData Corruption Detected in SubEvent! EWT: " << GetEventWindowTag() << ", DTCID: " << static_cast<int>(GetDTCID());
 		TLOG(TLVL_ERROR) << errSS.str();
 	}
-	if (accumulatedErrors) *accumulatedErrors = errSS.str();
+	if (accumulatedErrors) accumulatedErrors->get() = errSS.str();
 	return !corruption_detected_;
 
 }  // end SetupSubEvent()

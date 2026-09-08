@@ -4,16 +4,17 @@
 #include <ostream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_DebugType
 {
-	DTC_DebugType_SpecialSequence = 0,
-	DTC_DebugType_ExternalSerial = 1,
+	DTC_DebugType_SpecialSequence         = 0,
+	DTC_DebugType_ExternalSerial          = 1,
 	DTC_DebugType_ExternalSerialWithReset = 2,
-	DTC_DebugType_RAMTest = 3,
-	DTC_DebugType_DDRTest = 4,
-	DTC_DebugType_Invalid = 5,
+	DTC_DebugType_RAMTest                 = 3,
+	DTC_DebugType_DDRTest                 = 4,
+	DTC_DebugType_Invalid                 = 5,
 };
 
 /// <summary>
@@ -28,7 +29,7 @@ struct DTC_DebugTypeConverter
 	/// </summary>
 	/// <param name="type">DTC_DebugType to convert</param>
 	explicit DTC_DebugTypeConverter(DTC_DebugType type)
-		: type_(type) {}
+	    : type_(type) {}
 
 	/// <summary>
 	/// Convert the DTC_DebugType to its string representation
@@ -36,20 +37,20 @@ struct DTC_DebugTypeConverter
 	/// <returns>String representation of DTC_DebugType</returns>
 	std::string toString() const
 	{
-		switch (type_)
+		switch(type_)
 		{
-			case DTC_DebugType_SpecialSequence:
-				return "Special Sequence";
-			case DTC_DebugType_ExternalSerial:
-				return "External Serial";
-			case DTC_DebugType_ExternalSerialWithReset:
-				return "External Serial with FIFO Reset";
-			case DTC_DebugType_RAMTest:
-				return "FPGA SRAM Error Checking";
-			case DTC_DebugType_DDRTest:
-				return "DDR3 Memory Error Checking";
-			case DTC_DebugType_Invalid:
-				return "INVALID!!!";
+		case DTC_DebugType_SpecialSequence:
+			return "Special Sequence";
+		case DTC_DebugType_ExternalSerial:
+			return "External Serial";
+		case DTC_DebugType_ExternalSerialWithReset:
+			return "External Serial with FIFO Reset";
+		case DTC_DebugType_RAMTest:
+			return "FPGA SRAM Error Checking";
+		case DTC_DebugType_DDRTest:
+			return "DDR3 Memory Error Checking";
+		case DTC_DebugType_Invalid:
+			return "INVALID!!!";
 		}
 		return "Unknown";
 	}

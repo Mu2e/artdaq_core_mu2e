@@ -1,5 +1,5 @@
-#include <memory>   // std::shared_ptr, std::make_shared
 #include <cstring>  // memcpy
+#include <memory>   // std::shared_ptr, std::make_shared
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_CharacterNotInTableError.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DCSOperationType.h"
@@ -11,17 +11,17 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_IICDDRBusAddress.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_IICSERDESBusAddress.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_LinkEnableMode.h"
-#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_LinkStatus.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Link_ID.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_OscillatorType.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_PLL_ID.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_PRBSMode.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_ROC_Emulation_Type.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_RXBufferStatus.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_RXStatus.h"
-#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_SerdesClockSpeed.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_SERDESLoopbackMode.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_SERDESRXDisparityError.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_SerdesClockSpeed.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_SimMode.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Subsystem.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/Exceptions.h"

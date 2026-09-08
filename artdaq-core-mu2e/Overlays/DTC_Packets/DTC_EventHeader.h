@@ -6,7 +6,8 @@
 #include <sstream>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 struct DTC_EventHeader
 {
@@ -27,20 +28,21 @@ struct DTC_EventHeader
 	uint64_t reserved2 : 16;
 
 	DTC_EventHeader()
-		: inclusive_event_byte_count(0)
-		, reserved1(0)
-		, event_tag_low(0)
-		, event_tag_high(0)
-		, num_dtcs(0)
-		, event_mode(0)
-		, dtc_mac(0)
-		, partition_id(0)
-		, evb_mode(0)
-		, evb_id(0)
-		, evb_status(0)
-		, emtdc(0)
-		, reserved2(0)
-	{}
+	    : inclusive_event_byte_count(0)
+	    , reserved1(0)
+	    , event_tag_low(0)
+	    , event_tag_high(0)
+	    , num_dtcs(0)
+	    , event_mode(0)
+	    , dtc_mac(0)
+	    , partition_id(0)
+	    , evb_mode(0)
+	    , evb_id(0)
+	    , evb_status(0)
+	    , emtdc(0)
+	    , reserved2(0)
+	{
+	}
 
 	inline std::string toJson() const
 	{
