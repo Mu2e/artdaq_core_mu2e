@@ -3,16 +3,17 @@
 
 #include <cstdint>
 
-namespace mu2e {
+namespace mu2e
+{
 class Mu2eEventHeader
 {
-public:
+  public:
 	explicit Mu2eEventHeader() {}
 	Mu2eEventHeader(uint64_t timestamp, uint8_t mode);
 
-public:
+  public:
 	uint64_t EventWindowTag;
-	uint8_t EventMode;
+	uint8_t  EventMode;
 };
 
 }  // namespace mu2e

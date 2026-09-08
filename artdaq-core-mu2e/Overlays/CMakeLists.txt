@@ -1,6 +1,6 @@
 cet_make_library(
-    SOURCE 
-      FragmentType.cc 
+    SOURCE
+      FragmentType.cc
       DTCEventFragment.cc
       CFOEventFragment.cc
       STMFragment.cc
@@ -29,6 +29,7 @@ cet_make_library(
       Decoders/CFODataDecoder.cc
       Decoders/CRVDataDecoder.cc
       Decoders/TrackerDataDecoder.cc
+      Decoders/MobileSyncDataDecoder.cc
     LIBRARIES PUBLIC
       artdaq-core::Data
 )
@@ -43,8 +44,8 @@ include(ArtdaqCorePlugins)
   cet_build_plugin(Mu2e artdaq::fragmentNameHelper LIBRARIES REG  artdaq-core-mu2e::Overlays )
 
 
-install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types)
-install_source (SUBDIRS CFO_Packets DTC_Packets DTC_Types)
+install_headers(SUBDIRS CFO_Packets DTC_Packets DTC_Types Decoders)
+install_source (SUBDIRS CFO_Packets DTC_Packets DTC_Types Decoders)
 
 if($ENV{BUILD_ROOT_INTERFACE})
   message(-- artdaq-core-mu2e/Overlays::BUILD_ROOT_INTERFACE=$ENV{BUILD_ROOT_INTERFACE})

@@ -12,7 +12,8 @@
 
 // Implementation of "DTCEventFragment", an artdaq::Fragment overlay class
 
-namespace mu2e {
+namespace mu2e
+{
 class DTCEventFragment;
 }
 
@@ -21,7 +22,7 @@ class DTCEventFragment;
  */
 class mu2e::DTCEventFragment
 {
-public:
+  public:
 	/// The current version of the DTCEventFragment
 	static constexpr uint8_t CURRENT_VERSION = 1;
 
@@ -41,7 +42,7 @@ public:
 	 * to refer to the artdaq::Fragment object
 	 */
 	explicit DTCEventFragment(artdaq::Fragment const& f)
-		: artdaq_Fragment_(f) {}
+	    : artdaq_Fragment_(f) {}
 
 	virtual ~DTCEventFragment()
 	{
@@ -49,7 +50,7 @@ public:
 
 	bool IsCorrupt() const
 	{
-		if (artdaq_Fragment_.hasMetadata())
+		if(artdaq_Fragment_.hasMetadata())
 		{
 			return artdaq_Fragment_.metadata<Metadata>()->corrupt_flag;
 		}
@@ -58,7 +59,7 @@ public:
 
 	DTCLib::DTC_Event getData() const
 	{
-		if (event_ptr_ == nullptr)
+		if(event_ptr_ == nullptr)
 		{
 			event_ptr_.reset(new DTCLib::DTC_Event(artdaq_Fragment_.dataBeginBytes()));
 			event_ptr_->SetupEvent();
@@ -72,14 +73,14 @@ public:
 		return data.GetSubsystemData(subsys);
 	}
 
-protected:
-private:
-	DTCEventFragment(DTCEventFragment const&) = delete;             // DTCEventFragment should definitely not be copied
-	DTCEventFragment(DTCEventFragment&&) = delete;                  // DTCEventFragment should not be moved, only the underlying Fragment
+  protected:
+  private:
+	DTCEventFragment(DTCEventFragment const&)            = delete;  // DTCEventFragment should definitely not be copied
+	DTCEventFragment(DTCEventFragment&&)                 = delete;  // DTCEventFragment should not be moved, only the underlying Fragment
 	DTCEventFragment& operator=(DTCEventFragment const&) = delete;  // DTCEventFragment should definitely not be copied
-	DTCEventFragment& operator=(DTCEventFragment&&) = delete;       // DTCEventFragment should not be moved, only the underlying Fragment
+	DTCEventFragment& operator=(DTCEventFragment&&)      = delete;  // DTCEventFragment should not be moved, only the underlying Fragment
 
-	artdaq::Fragment const& artdaq_Fragment_;
+	artdaq::Fragment const&                    artdaq_Fragment_;
 	mutable std::unique_ptr<DTCLib::DTC_Event> event_ptr_{nullptr};
 };
 

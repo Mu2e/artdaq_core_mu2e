@@ -3,16 +3,18 @@
 
 #include <cstdint>  // uint8_t, uint16_t
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 enum DTC_Subsystem : uint8_t
 {
-	DTC_Subsystem_Tracker = 0,
+	DTC_Subsystem_Tracker     = 0,
 	DTC_Subsystem_Calorimeter = 1,
-	DTC_Subsystem_CRV = 2,
-	DTC_Subsystem_Other = 3,
-	DTC_Subsystem_STM = 4,
-	DTC_Subsystem_ExtMon = 5,
+	DTC_Subsystem_CRV         = 2,
+	DTC_Subsystem_Other       = 3,
+	DTC_Subsystem_STM         = 4,
+	DTC_Subsystem_ExtMon      = 5,
+	DTC_Subsystem_MobileSync  = 6,
 	DTC_Subsystem_Unused
 };
 

@@ -18,13 +18,14 @@
 //            bit is out of range.  Is this the behaviour we want?
 //
 
-#include "artdaq-core-mu2e/Data/EWT.hh"
 #include <array>
 #include <cstdint>
 #include <iosfwd>
 #include <vector>
+#include "artdaq-core-mu2e/Data/EWT.hh"
 
-namespace mu2e {
+namespace mu2e
+{
 
 struct EventHeader
 {
@@ -33,36 +34,66 @@ struct EventHeader
 	EventHeader() {}
 
 	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags)
-		: ewt(ewt), mode(mode), rfmTDC_est(rfmTDC), flags(flags), rnr_check(0), ndtc_check(0), dtc_check(0), ewt_check(0)
+	    : ewt(ewt)
+	    , mode(mode)
+	    , rfmTDC_est(rfmTDC)
+	    , flags(flags)
+	    , rnr_check(0)
+	    , ndtc_check(0)
+	    , dtc_check(0)
+	    , ewt_check(0)
 	{
 	}
 
-	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags,
-				uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck)
-		: ewt(ewt), mode(mode), rfmTDC_est(rfmTDC), flags(flags), rnr_check(rnrCheck), ndtc_check(ndtcCheck), dtc_check(dtcCheck), ewt_check(ewtCheck)
+	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC, uint8_t flags, uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck)
+	    : ewt(ewt)
+	    , mode(mode)
+	    , rfmTDC_est(rfmTDC)
+	    , flags(flags)
+	    , rnr_check(rnrCheck)
+	    , ndtc_check(ndtcCheck)
+	    , dtc_check(dtcCheck)
+	    , ewt_check(ewtCheck)
 	{
 	}
 
 	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC_est, uint8_t flags, uint16_t eventDuration, uint8_t rfmTDC_measured)
-		: ewt(ewt), mode(mode), rfmTDC_est(rfmTDC_est), flags(flags), eventDuration(eventDuration), rfmTDC_measured(rfmTDC_measured), rnr_check(0), ndtc_check(0), dtc_check(0), ewt_check(0)
+	    : ewt(ewt)
+	    , mode(mode)
+	    , rfmTDC_est(rfmTDC_est)
+	    , flags(flags)
+	    , eventDuration(eventDuration)
+	    , rfmTDC_measured(rfmTDC_measured)
+	    , rnr_check(0)
+	    , ndtc_check(0)
+	    , dtc_check(0)
+	    , ewt_check(0)
 	{
 	}
 
-	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC_est, uint8_t flags, uint16_t eventDuration, uint8_t rfmTDC_measured,
-				uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck)
-		: ewt(ewt), mode(mode), rfmTDC_est(rfmTDC_est), flags(flags), eventDuration(eventDuration), rfmTDC_measured(rfmTDC_measured), rnr_check(rnrCheck), ndtc_check(ndtcCheck), dtc_check(dtcCheck), ewt_check(ewtCheck)
+	EventHeader(EWT ewt, uint32_t mode, uint8_t rfmTDC_est, uint8_t flags, uint16_t eventDuration, uint8_t rfmTDC_measured, uint8_t rnrCheck, uint8_t ndtcCheck, uint8_t dtcCheck, uint8_t ewtCheck)
+	    : ewt(ewt)
+	    , mode(mode)
+	    , rfmTDC_est(rfmTDC_est)
+	    , flags(flags)
+	    , eventDuration(eventDuration)
+	    , rfmTDC_measured(rfmTDC_measured)
+	    , rnr_check(rnrCheck)
+	    , ndtc_check(ndtcCheck)
+	    , dtc_check(dtcCheck)
+	    , ewt_check(ewtCheck)
 	{
 	}
 
 	// Information from the Heartbeat Packet
-	EWT ewt = 0;             // Event Window Tag
-	uint32_t mode = 0;       // Event Mode
-	uint8_t rfmTDC_est = 0;  // RF Marker TDC
-	uint8_t flags = 0;       // on-spill bit and reserved flags
+	EWT      ewt        = 0;  // Event Window Tag
+	uint32_t mode       = 0;  // Event Mode
+	uint8_t  rfmTDC_est = 0;  // RF Marker TDC
+	uint8_t  flags      = 0;  // on-spill bit and reserved flags
 
 	// Information from the CFO Event Window Data Record
-	uint16_t eventDuration = 0;
-	uint8_t rfmTDC_measured = 0;
+	uint16_t eventDuration   = 0;
+	uint8_t  rfmTDC_measured = 0;
 
 	uint8_t rnr_check : 1;   // Round-robin check
 	uint8_t ndtc_check : 1;  // check if nDTCs used in the event matches the configured value
@@ -83,10 +114,10 @@ struct EventHeader
 
 	void initErrorChecks()
 	{
-		rnr_check = 1;
-		dtc_check = 1;
+		rnr_check  = 1;
+		dtc_check  = 1;
 		ndtc_check = 1;
-		ewt_check = 1;
+		ewt_check  = 1;
 	}
 };
 

@@ -8,11 +8,13 @@
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_Subsystem.h"
 
-#include <cstdint>
-#include <vector>
 #include <array>
+#include <cstdint>
+#include <optional>
+#include <vector>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 class DTC_SubEvent
 {
@@ -27,9 +29,12 @@ public:
 	explicit DTC_SubEvent(size_t data_size);
 
 	DTC_SubEvent()
-		: header_(), data_blocks_(), buffer_ptr_(nullptr) {}
+	    : header_()
+	    , data_blocks_()
+	    , buffer_ptr_(nullptr) {}
 
-	bool SetupSubEvent();
+	using optional_string = std::optional<std::reference_wrapper<std::string>>;
+	bool   SetupSubEvent(optional_string accumulatedErrors = std::nullopt);
 	size_t GetSubEventByteCount() const { return header_.inclusive_subevent_byte_count; }
 
 	DTC_EventWindowTag GetEventWindowTag() const;
@@ -46,7 +51,8 @@ public:
 	size_t GetDataBlockCount() const { return data_blocks_.size(); }
 	const DTC_DataBlock* GetDataBlock(size_t idx) const
 	{
-		if (idx >= data_blocks_.size()) throw std::out_of_range("Index " + std::to_string(idx) + " is out of range (max: " + std::to_string(data_blocks_.size() - 1) + ")");
+		if(idx >= data_blocks_.size())
+			throw std::out_of_range("Index " + std::to_string(idx) + " is out of range (max: " + std::to_string(data_blocks_.size() - 1) + ")");
 		return &data_blocks_[idx];
 	}
 	void AddDataBlock(DTC_DataBlock blk)
@@ -55,7 +61,8 @@ public:
 		auto insert_iter = data_blocks_.begin();
 		while (insert_iter != data_blocks_.end())
 		{
-			if (block_id < insert_iter->GetHeader()->GetLinkID()) break;
+			if(block_id < insert_iter->GetHeader()->GetLinkID())
+				break;
 			++insert_iter;
         }
 		data_blocks_.insert(insert_iter, blk);
@@ -91,12 +98,18 @@ public:
 	}
 	bool HasSubsystem(DTC_Subsystem subsys) const
 	{
-		if (static_cast<DTC_Subsystem>(header_.link0_subsystem) == subsys) return true;
-		if (static_cast<DTC_Subsystem>(header_.link1_subsystem) == subsys) return true;
-		if (static_cast<DTC_Subsystem>(header_.link2_subsystem) == subsys) return true;
-		if (static_cast<DTC_Subsystem>(header_.link3_subsystem) == subsys) return true;
-		if (static_cast<DTC_Subsystem>(header_.link4_subsystem) == subsys) return true;
-		if (static_cast<DTC_Subsystem>(header_.link5_subsystem) == subsys) return true;
+		if(static_cast<DTC_Subsystem>(header_.link0_subsystem) == subsys)
+			return true;
+		if(static_cast<DTC_Subsystem>(header_.link1_subsystem) == subsys)
+			return true;
+		if(static_cast<DTC_Subsystem>(header_.link2_subsystem) == subsys)
+			return true;
+		if(static_cast<DTC_Subsystem>(header_.link3_subsystem) == subsys)
+			return true;
+		if(static_cast<DTC_Subsystem>(header_.link4_subsystem) == subsys)
+			return true;
+		if(static_cast<DTC_Subsystem>(header_.link5_subsystem) == subsys)
+			return true;
 		return false;
 	}
 	void SetDTCMAC(uint8_t mac)

@@ -1,8 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_HeartbeatPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_HeartbeatPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventMode.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
@@ -11,14 +11,15 @@
 #include <cstdint>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DTC Heartbeat Packet (sometimes referred to as a "Readout Request" packet)
 /// </summary>
 class DTC_HeartbeatPacket : public DTC_DMAPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a DTC_HeartbeatPacket
 	/// </summary>
@@ -81,9 +82,9 @@ public:
 	/// <returns>"packet format" string representation of DTC_HeartbeatPacket</returns>
 	std::string toPacketFormat() override;
 
-private:
+  private:
 	DTC_EventWindowTag event_tag_;
-	DTC_EventMode eventMode_;
+	DTC_EventMode      eventMode_;
 };
 
 }  // namespace DTCLib

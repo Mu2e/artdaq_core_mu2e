@@ -1,8 +1,8 @@
 #ifndef artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DataRequestPacket_h
 #define artdaq_core_mu2e_Overlays_DTC_Packets_DTC_DataRequestPacket_h
 
-#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DMAPacket.h"
+#include "artdaq-core-mu2e/Overlays/DTC_Packets/DTC_DataPacket.h"
 
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_DebugType.h"
 #include "artdaq-core-mu2e/Overlays/DTC_Types/DTC_EventWindowTag.h"
@@ -11,14 +11,15 @@
 #include <cstdint>
 #include <string>
 
-namespace DTCLib {
+namespace DTCLib
+{
 
 /// <summary>
 /// The DTC Data Request Packet
 /// </summary>
 class DTC_DataRequestPacket : public DTC_DMAPacket
 {
-public:
+  public:
 	/// <summary>
 	/// Construct a DTC_DataRequestPacket
 	/// </summary>
@@ -26,8 +27,7 @@ public:
 	/// <param name="debug">Debug Mode flag (Default: true)</param>
 	/// <param name="debugPacketCount">Debug Packet Count (Default: 0)</param>
 	/// <param name="type">Debug Type (Default: DTC_DebugType_SpecialSequence</param>
-	DTC_DataRequestPacket(DTC_Link_ID link, bool debug = true, uint16_t debugPacketCount = 0,
-						  DTC_DebugType type = DTC_DebugType_SpecialSequence);
+	DTC_DataRequestPacket(DTC_Link_ID link, bool debug = true, uint16_t debugPacketCount = 0, DTC_DebugType type = DTC_DebugType_SpecialSequence);
 	/// <summary>
 	/// Construct a DTC_DataRequestPacket
 	/// </summary>
@@ -36,8 +36,7 @@ public:
 	/// <param name="debug">Debug Mode flag (Default: true)</param>
 	/// <param name="debugPacketCount">Debug Packet Count (Default: 0)</param>
 	/// <param name="type">Debug Type (Default: DTC_DebugType_SpecialSequence</param>
-	DTC_DataRequestPacket(DTC_Link_ID link, DTC_EventWindowTag event_tag, bool debug = true, uint16_t debugPacketCount = 0,
-						  DTC_DebugType type = DTC_DebugType_SpecialSequence);
+	DTC_DataRequestPacket(DTC_Link_ID link, DTC_EventWindowTag event_tag, bool debug = true, uint16_t debugPacketCount = 0, DTC_DebugType type = DTC_DebugType_SpecialSequence);
 	/// <summary>
 	/// Default Copy Constructor
 	/// </summary>
@@ -100,11 +99,11 @@ public:
 	/// <returns>"packet format" string representation of DTC_DataRequestPacket</returns>
 	std::string toPacketFormat() override;
 
-private:
+  private:
 	DTC_EventWindowTag event_tag_;
-	bool debug_;
-	uint16_t debugPacketCount_;
-	DTC_DebugType type_;
+	bool               debug_;
+	uint16_t           debugPacketCount_;
+	DTC_DebugType      type_;
 };
 
 }  // namespace DTCLib
