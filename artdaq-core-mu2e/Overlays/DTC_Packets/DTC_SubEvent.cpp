@@ -21,12 +21,13 @@ DTCLib::DTC_SubEvent::DTC_SubEvent(const void *data)
 	if (header_.subevent_format_version != REQUIRED_SUBEVENT_FORMAT_VERSION)
 	{
 		auto ptr = reinterpret_cast<const uint8_t *>(buffer_ptr_);
-		std::stringstream ss;
-		for (size_t i = 0; i < sizeof(header_); i += 4)
-			ss << std::dec << "#" << std::setw(2) << std::setfill('0') << i << "/" << sizeof(header_) << ": 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i]))) << std::endl;
-
-		TLOG(TLVL_ERROR) << "SUBEVENT FORMAT VERSION MISMATCH - Subevent header raw data:\n"
-						 << ss.str();
+		TLOG_SCOPED(TLVL_ERROR)
+		{
+			TLOG_ADD << "SUBEVENT FORMAT VERSION MISMATCH - Subevent header raw data:";
+			for (size_t i = 0; i < sizeof(header_); i += 4)
+				TLOG_ADD << "\n"
+						 << std::dec << "#" << std::setw(2) << std::setfill('0') << i << "/" << sizeof(header_) << ": 0x" << std::hex << std::setw(8) << std::setfill('0') << *((uint32_t *)(&(ptr[i])));
+		}
 
 		TLOG(TLVL_ERROR) << "A DTC_WrongPacketTypeException occurred while setting up a DTC Subevent in the header format version 0x" << std::hex << header_.subevent_format_version << " != 0x" << static_cast<uint16_t>(REQUIRED_SUBEVENT_FORMAT_VERSION) << ". Check that your DTC FPGA version matches the software expectation.";
 		throw DTC_WrongPacketTypeException(REQUIRED_SUBEVENT_FORMAT_VERSION, header_.subevent_format_version);
